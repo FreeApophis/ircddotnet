@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChannelInfo.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="IrcDaemon.cs" />
     <Compile Include="IrcServer.cs" />
     <Compile Include="Program.cs" />

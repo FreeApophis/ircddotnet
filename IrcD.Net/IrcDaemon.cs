@@ -17,8 +17,8 @@ namespace IrcD
 
     class IrcDaemon {
         
-        const int maxBufferSize = 1024;
-        const int maxServerLineLength = 500;
+        const int maxBufferSize = 2048;
+        const int maxServerLineLength = 800;
 
         const string NumericFormat = "{0:000}";
         const string ServerCRLF = "\r\n";
@@ -100,6 +100,11 @@ namespace IrcD
             }
         }
         
+        private Dictionary<string, string> oLine = new Dictionary<string, string>();
+        
+        public Dictionary<string, string> OLine {
+            get { return oLine; }
+        }
 
         public IrcDaemon() {
             
@@ -312,6 +317,7 @@ namespace IrcD
         /// <param name="channel"></param>
         /// <returns></returns>
         private bool ValidChannel(string channel) {
+            // TODO: implement channel check
             if(channel.StartsWith("#")) {
                 return true;
             } else {
@@ -446,8 +452,12 @@ namespace IrcD
         /// <param name="pass"></param>
         /// <returns></returns>
         private bool IsIrcOp(string user, string pass) {
-            // TODO: Logic for Oper
-            return true;
+            string realpass;
+            if(oLine.TryGetValue(user, out realpass)) {
+                if(pass==realpass)
+                    return true;
+            }
+            return false;
         }
         #endregion
         
