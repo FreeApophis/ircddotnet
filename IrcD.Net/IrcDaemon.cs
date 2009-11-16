@@ -1,11 +1,23 @@
 ﻿/*
- * Erstellt mit SharpDevelop.
- * Benutzer: apophis
- * Datum: 19.03.2009
- * Zeit: 15:18
+ *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
+ *  It should run on both .NET and Mono
  * 
- * Sie können diese Vorlage unter Extras > Optionen > Codeerstellung > Standardheader ändern.
+ *  Copyright (c) 2009 Thomas Bruderer <apophis@apophis.ch>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -17,25 +29,25 @@ namespace IrcD
 
     class IrcDaemon {
         
-        const int maxBufferSize = 2048;
-        const int maxServerLineLength = 800;
+        const int MaxBufferSize = 2048;
+        const int MaxServerLineLength = 800;
 
         const string NumericFormat = "{0:000}";
         const string ServerCRLF = "\r\n";
         
-        private delegate void commandDelegate(UserInfo info, List<string> args);
+        private delegate void CommandDelegate(UserInfo info, List<string> args);
 
-        private Dictionary<Socket, UserInfo> sockets = new Dictionary<Socket, UserInfo>();
-        private Dictionary<string, ChannelInfo> channels = new Dictionary<string, ChannelInfo>();
-        private Dictionary<string, Socket> nicks = new Dictionary<string, Socket>();
-        private Dictionary<string, commandDelegate> commands = new Dictionary<string, commandDelegate>(StringComparer.CurrentCultureIgnoreCase);
+        private readonly Dictionary<Socket, UserInfo> sockets = new Dictionary<Socket, UserInfo>();
+        private readonly Dictionary<string, ChannelInfo> channels = new Dictionary<string, ChannelInfo>();
+        private readonly Dictionary<string, Socket> nicks = new Dictionary<string, Socket>();
+        private readonly Dictionary<string, CommandDelegate> commands = new Dictionary<string, CommandDelegate>(StringComparer.CurrentCultureIgnoreCase);
         
         private bool connected = true;
-        private byte[] buffer = new byte[maxBufferSize];
+        private byte[] buffer = new byte[MaxBufferSize];
         private EndPoint ep = new IPEndPoint(0,0);
         private EndPoint localEp;
         
-        private StringBuilder commandSB = new StringBuilder(maxServerLineLength);
+        private StringBuilder commandSB = new StringBuilder(MaxServerLineLength);
         
         private int serverPort = 6667;
         
@@ -125,7 +137,7 @@ namespace IrcD
 
         void AddRfcOptCommands()
         {
-            commands.Add("AWAY", awayDelegate);
+            commands.Add("AWAY", AwayDelegate);
             commands.Add("REHASH", rehashDelegate);
             commands.Add("DIE", dieDelegate);
             commands.Add("RESTART", restartDelegate);
@@ -191,7 +203,7 @@ namespace IrcD
             sockets.Add(connectSocket, new UserInfo(this, connectSocket, "TODO:Server", true, true));
             
             while (connected) {
-                List<Socket> activeSockets = new List<Socket>(sockets.Keys);
+                var activeSockets = new List<Socket>(sockets.Keys);
                 Socket.Select(activeSockets, null, null, 10000000);
                 
                 foreach(Socket s in activeSockets) {
@@ -203,11 +215,11 @@ namespace IrcD
                         try {
                             buffer.Initialize();
                             numBytes = s.ReceiveFrom(buffer, ref ep);
-                            foreach(string line in System.Text.Encoding.UTF8.GetString(buffer, 0, numBytes).Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)) {
+                            foreach(string line in Encoding.UTF8.GetString(buffer, 0, numBytes).Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)) {
                                 Parser(line, s, sockets[s]);
                             }
                         } catch (SocketException e) {
-                            System.Console.WriteLine("ERROR: " + e.Message + "(CODE:" + e.ErrorCode + ")");
+                            Console.WriteLine("ERROR: " + e.Message + "(CODE:" + e.ErrorCode + ")");
                             quitDelegate(sockets[s], new List<string>() { "Socket reset by peer" });
                         }
                     }
@@ -220,7 +232,7 @@ namespace IrcD
             string prefix = null;
             string command = null;
             ReplyCode replycode = ReplyCode.Null;
-            List<string> args = new List<string>();
+            var args = new List<string>();
             
             try {
                 int i = 0;
@@ -274,7 +286,7 @@ namespace IrcD
             if (command==null)
                 return;
             
-            commandDelegate commandHandler;
+            CommandDelegate commandHandler;
             if(commands.TryGetValue(command, out commandHandler)) {
                 commandHandler.Invoke(info, args);
             } else {
@@ -2661,7 +2673,7 @@ namespace IrcD
         #endregion
         
         #region Command Delegates RFC 2812 - optional
-        private void awayDelegate(UserInfo info, List<string> args) {
+        private void AwayDelegate(UserInfo info, List<string> args) {
             if(!info.Registered) {
                 SendNotRegistered(info);
                 return;
