@@ -54,12 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChannelInfo.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="IrcDaemon.cs" />
     <Compile Include="IrcServer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReplyCode.cs" />
+    <Compile Include="ServerOptions.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="UserPerChannelInfo.cs" />
   </ItemGroup>

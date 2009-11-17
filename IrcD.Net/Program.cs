@@ -25,7 +25,11 @@ namespace IrcD
     {
         public static void Main(string[] args)
         {
-            var ircd = new IrcDaemon { ServerPass = null, ServerName = "apophis.ch" };
+            var ircd = new IrcDaemon();
+
+            ircd.Options.ServerPass = null;
+            ircd.Options.ServerName = "apophis.ch";
+
             ircd.MainLoop();
         }
     }
