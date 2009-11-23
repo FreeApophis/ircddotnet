@@ -62,5 +62,6 @@
     <Compile Include="ServerOptions.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="UserPerChannelInfo.cs" />
+    <Compile Include="WildCard.cs" />
   </ItemGroup>
 </Project>
