@@ -23,7 +23,7 @@ namespace IrcD
 	/// <summary>
 	///
 	/// </summary>
-	public enum ReplyCode: int
+	public enum ReplyCode
 	{
 	    Null =                           000,
 	    Welcome =                        001,
