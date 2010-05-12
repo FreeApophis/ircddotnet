@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -159,32 +159,41 @@ namespace IrcD
             while (connected)
             {
                 var activeSockets = new List<Socket>(sockets.Keys);
-                Socket.Select(activeSockets, null, null, 10000000);
+
+                Socket.Select(activeSockets, null, null, 2000000);
 
                 foreach (Socket s in activeSockets)
                 {
-                    if (sockets[s].IsAcceptSocket)
+                    try
                     {
-                        Socket temp = s.Accept();
-                        sockets.Add(temp, new UserInfo(this, temp, ((IPEndPoint)temp.RemoteEndPoint).Address.ToString(), false, String.IsNullOrEmpty(Options.ServerPass)));
-                        Console.WriteLine("Client connected!");
-                    }
-                    else
-                    {
-                        try
+                        if (sockets[s].IsAcceptSocket)
                         {
-                            buffer.Initialize();
-                            int numBytes = s.ReceiveFrom(buffer, ref ep);
-                            foreach (string line in Encoding.UTF8.GetString(buffer, 0, numBytes).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                            Socket temp = s.Accept();
+                            sockets.Add(temp, new UserInfo(this, temp, ((IPEndPoint)temp.RemoteEndPoint).Address.ToString(), false, String.IsNullOrEmpty(Options.ServerPass)));
+                            Console.WriteLine("Client connected!");
+                        }
+                        else
+                        {
+                            try
                             {
-                                Parser(line, s, sockets[s]);
+                                buffer.Initialize();
+                                int numBytes = s.ReceiveFrom(buffer, ref ep);
+                                foreach (string line in Encoding.UTF8.GetString(buffer, 0, numBytes).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    Parser(line, s, sockets[s]);
+                                }
+                            }
+                            catch (SocketException e)
+                            {
+                                Console.WriteLine("ERROR: " + e.Message + "(CODE:" + e.ErrorCode + ")");
+                                QuitDelegate(sockets[s], new List<string> { "Socket reset by peer" });
                             }
                         }
-                        catch (SocketException e)
-                        {
-                            Console.WriteLine("ERROR: " + e.Message + "(CODE:" + e.ErrorCode + ")");
-                            QuitDelegate(sockets[s], new List<string> { "Socket reset by peer" });
-                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Unknown ERROR: " + e.Message);
+                        Console.WriteLine("Trace: " + e.StackTrace);
                     }
                 }
             }
@@ -234,7 +243,7 @@ namespace IrcD
                 while (i < line.Length)
                 {
                     if (line[i] == ' ' && i != paramStart)
-                    {                        
+                    {
                         args.Add(line.Substring(paramStart, i - paramStart));
                         paramStart = i + 1;
                     }
@@ -279,7 +288,7 @@ namespace IrcD
                 {
                     // we only inform the client about invalid commands if he is already successfully registered
                     // we dont want to make "wrong protocol ping-pong"
-                    SendUknownCommand(info, command);
+                    SendUnknownCommand(info, command);
                 }
 
             }
@@ -1210,7 +1219,7 @@ namespace IrcD
         /// </summary>
         /// <param name="info"></param>
         /// <param name="command"></param>
-        protected void SendUknownCommand(UserInfo info, string command)
+        protected void SendUnknownCommand(UserInfo info, string command)
         {
             commandSB.Length = 0;
             commandSB.Append(ServerPrefix);
@@ -2482,7 +2491,7 @@ namespace IrcD
                         }
                     }
 
-                    // Check for (+k)
+                    // Check for (+i)
                     if (chan.Mode_i)
                     {
                         // TODO: implement invite
@@ -2593,7 +2602,7 @@ namespace IrcD
                     }
                     else
                     {
-                        // TODO: SEND: channel does not exist
+                        SendNoSuchChannel(info, args[0]);
                     }
                     break;
                 case 2:

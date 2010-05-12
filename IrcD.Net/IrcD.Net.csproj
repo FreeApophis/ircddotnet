@@ -64,4 +64,7 @@
     <Compile Include="UserPerChannelInfo.cs" />
     <Compile Include="WildCard.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CommandHandler\" />
+  </ItemGroup>
 </Project>

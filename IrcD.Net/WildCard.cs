@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2008-2009 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2008-2010 Thomas Bruderer <apophis@apophis.ch>
  *  Copyright (c) 2005-2009 Davide Icardi, reinux
  *  
  *  http://www.codeproject.com/KB/recipes/wildcardtoregex.aspx
