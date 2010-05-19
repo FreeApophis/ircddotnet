@@ -22,216 +22,262 @@ using System.Collections.Generic;
 
 namespace IrcD
 {
-    class ChannelInfo {
-        public ChannelInfo(string name) {
+    class ChannelInfo
+    {
+        public ChannelInfo(string name)
+        {
             this.name = name;
         }
-        
+
         private string name;
-        
-        public string Name {
-            get { 
-                return name; 
+
+        public string Name
+        {
+            get
+            {
+                return name;
             }
-        }       
-        
+        }
+
         private string topic;
-        
-        public string Topic {
-            get {
+
+        public string Topic
+        {
+            get
+            {
                 return topic;
             }
-            set {
+            set
+            {
                 topic = value;
             }
         }
-        
+
         private Dictionary<string, UserPerChannelInfo> user = new Dictionary<string, UserPerChannelInfo>();
-        
-        public Dictionary<string, UserPerChannelInfo> User {
-            get {
+
+        public Dictionary<string, UserPerChannelInfo> User
+        {
+            get
+            {
                 return user;
             }
         }
 
         private bool mode_a;
-        
+
         /// <summary>
         /// Anonymous Channel Flag
         /// </summary>
-        public bool Mode_a {
-            get { 
-                return mode_a; 
+        public bool Mode_a
+        {
+            get
+            {
+                return mode_a;
             }
-            set { 
+            set
+            {
                 mode_a = value;
             }
         }
-        
+
         private List<string> mode_b = new List<string>();
-        
+
         /// <summary>
         /// Ban list
         /// </summary>
-        public List<string> Mode_b {
-            get {
-                return mode_b; 
+        public List<string> Mode_b
+        {
+            get
+            {
+                return mode_b;
             }
         }
-        
+
         private List<string> mode_e = new List<string>();
-        
+
         /// <summary>
         /// Ban except list
         /// </summary>
-        public List<string> Mode_e {
-            get { 
-                return mode_e; 
+        public List<string> Mode_e
+        {
+            get
+            {
+                return mode_e;
             }
         }
-        
+
         private bool mode_i;
-        
+
         /// <summary>
         /// Invite Only Channel Flag
         /// </summary>
-        public bool Mode_i {
-            get { 
+        public bool Mode_i
+        {
+            get
+            {
                 return mode_i;
             }
-            set { 
-                mode_i = value; 
+            set
+            {
+                mode_i = value;
             }
         }
-        
+
         private List<string> mode_I = new List<string>();
-        
+
         /// <summary>
         /// Invite List
         /// </summary>
-        public List<string> Mode_I {
-            get { 
-                return mode_I; 
+        public List<string> Mode_I
+        {
+            get
+            {
+                return mode_I;
             }
         }
-        
+
         private string mode_k;
-        
+
         /// <summary>
         /// Channel Key
         /// </summary>
-        public string Mode_k {
-            get { 
+        public string Mode_k
+        {
+            get
+            {
                 return mode_k;
             }
-            set { 
-                mode_k = value; 
+            set
+            {
+                mode_k = value;
             }
         }
-        
+
         private int mode_l = -1;
-        
+
         /// <summary>
         /// Channel Limit
         /// </summary>
-        public int Mode_l {
-            get { 
-                return mode_l; 
+        public int Mode_l
+        {
+            get
+            {
+                return mode_l;
             }
-            set {
-                mode_l = value; 
+            set
+            {
+                mode_l = value;
             }
         }
-        
+
         private bool mode_m;
-        
+
         /// <summary>
         /// Moderated Channel Flag
         /// </summary>
-        public bool Mode_m {
-            get { 
-                return mode_m; 
+        public bool Mode_m
+        {
+            get
+            {
+                return mode_m;
             }
-            set { 
-                mode_m = value; 
+            set
+            {
+                mode_m = value;
             }
         }
-        
+
         private bool mode_n;
-        
+
         /// <summary>
         ///  No Messages To Channel From Clients On The Outside
         /// </summary>
-        public bool Mode_n {
-            get { 
-                return mode_n; 
+        public bool Mode_n
+        {
+            get
+            {
+                return mode_n;
             }
-            set { 
+            set
+            {
                 mode_n = value;
             }
         }
 
         private bool mode_p;
-        
+
         /// <summary>
         /// Private Flag
         /// </summary>
-        public bool Mode_p {
-            get { 
+        public bool Mode_p
+        {
+            get
+            {
                 return mode_p;
             }
-            set { 
+            set
+            {
                 mode_p = value;
             }
         }
-        
+
         private bool mode_q;
-        
+
         /// <summary>
         /// Quiet Flag
         /// </summary>
-        public bool Mode_q {
-            get { 
-                return mode_q; 
+        public bool Mode_q
+        {
+            get
+            {
+                return mode_q;
             }
-            set { 
+            set
+            {
                 mode_q = value;
             }
         }
         private bool mode_r;
-        
+
         /// <summary>
         /// Server Reop Flag
         /// </summary>
-        public bool Mode_r {
+        public bool Mode_r
+        {
             get { return mode_r; }
             set { mode_r = value; }
         }
-        
+
         private bool mode_s;
-        
+
         /// <summary>
         /// Secret Flag
         /// </summary>
-        public bool Mode_s {
-            get { 
-                return mode_s; 
+        public bool Mode_s
+        {
+            get
+            {
+                return mode_s;
             }
-            set { 
-                mode_s = value; 
+            set
+            {
+                mode_s = value;
             }
         }
-        
+
         private bool mode_t;
-        
+
         /// <summary>
         /// Topic Restricted Flag
         /// </summary>
-        public bool Mode_t {
-            get { 
-                return mode_t; 
+        public bool Mode_t
+        {
+            get
+            {
+                return mode_t;
             }
-            set { 
+            set
+            {
                 mode_t = value;
             }
         }

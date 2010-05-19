@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.Modes;
 
 namespace IrcD
 {
@@ -90,9 +91,9 @@ namespace IrcD
         private bool clientCompatibilityMode = true;
 
         /// <summary>
-        /// Some clients have big problems with correct parsing of the RFC, 
-        /// this setting rearranges commands that even X-Chat and MIRC have 
-        /// a correct behaviour, however their implementation of the RFC 
+        /// Some clients have big problems with correct parsing of the RFC,
+        /// this setting rearranges commands that even X-Chat and MIRC have
+        /// a correct behaviour, however their implementation of the RFC
         /// especially their parsers are just stupid!
         /// </summary>
         public bool ClientCompatibilityMode
@@ -106,5 +107,7 @@ namespace IrcD
                 clientCompatibilityMode = value;
             }
         }
+
+        public IrcMode IrcMode { get; set; }
     }
 }

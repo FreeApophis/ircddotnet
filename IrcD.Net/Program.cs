@@ -18,6 +18,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Linq;
+using IrcD.Database;
 
 namespace IrcD
 {
@@ -27,7 +29,7 @@ namespace IrcD
         {
             var ircd = new IrcDaemon();
 
-            ircd.Options.ServerPass = null;
+            ircd.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();
             ircd.Options.ServerName = "apophis.ch";
 
             ircd.MainLoop();

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using IrcD.Utils;
 
 namespace IrcD
 {
@@ -170,7 +171,7 @@ namespace IrcD
                         {
                             Socket temp = s.Accept();
                             sockets.Add(temp, new UserInfo(this, temp, ((IPEndPoint)temp.RemoteEndPoint).Address.ToString(), false, String.IsNullOrEmpty(Options.ServerPass)));
-                            Console.WriteLine("Client connected!");
+                            Logger.Log("Client connected!");
                         }
                         else
                         {
@@ -185,15 +186,15 @@ namespace IrcD
                             }
                             catch (SocketException e)
                             {
-                                Console.WriteLine("ERROR: " + e.Message + "(CODE:" + e.ErrorCode + ")");
+                                Logger.Log("ERROR: " + e.Message + "(CODE:" + e.ErrorCode + ")");
                                 QuitDelegate(sockets[s], new List<string> { "Socket reset by peer" });
                             }
                         }
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("Unknown ERROR: " + e.Message);
-                        Console.WriteLine("Trace: " + e.StackTrace);
+                        Logger.Log("Unknown ERROR: " + e.Message);
+                        Logger.Log("Trace: " + e.StackTrace);
                     }
                 }
             }
