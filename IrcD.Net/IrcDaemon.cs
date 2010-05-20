@@ -23,6 +23,10 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using IrcD.Modes;
+using IrcD.Modes.ChannelModes;
+using IrcD.Modes.ChannelRanks;
+using IrcD.Modes.UserModes;
 using IrcD.Utils;
 
 namespace IrcD
@@ -44,6 +48,11 @@ namespace IrcD
         private readonly Dictionary<string, ChannelInfo> channels = new Dictionary<string, ChannelInfo>();
         private readonly Dictionary<string, Socket> nicks = new Dictionary<string, Socket>();
         private readonly Dictionary<string, CommandDelegate> commands = new Dictionary<string, CommandDelegate>(StringComparer.CurrentCultureIgnoreCase);
+
+        // Supported
+        private readonly ModeList<ChannelRank> supportedRanks = new ModeList<ChannelRank>();
+        private readonly ModeList<ChannelMode> supportedChannelModes = new ModeList<ChannelMode>();
+        private readonly ModeList<UserMode> supportedUserModes = new ModeList<UserMode>();
 
         private bool connected = true;
         private byte[] buffer = new byte[MaxBufferSize];
@@ -83,6 +92,26 @@ namespace IrcD
             AddRfcOptCommands();
             // Nonstandard IRC Commands
             AddNonRfcCommands();
+            // Add Modes
+            AddModes();
+        }
+
+        private void AddModes()
+        {
+            supportedRanks.Add(new ModeVoice());
+            supportedRanks.Add(new ModeOp());
+
+            supportedChannelModes.Add(new ModeBan());
+            supportedChannelModes.Add(new ModeBanException());
+            supportedChannelModes.Add(new ModeColorless());
+            supportedChannelModes.Add(new ModeKey());
+            supportedChannelModes.Add(new ModeLimit());
+            supportedChannelModes.Add(new ModeModerated());
+            supportedChannelModes.Add(new ModeNoExternal());
+            supportedChannelModes.Add(new ModePrivate());
+
+            supportedUserModes.Add(new ModeInvisible());
+            supportedUserModes.Add(new ModeRestricted());
         }
 
         void AddNonRfcCommands()
@@ -282,7 +311,7 @@ namespace IrcD
             else
             {
 #if DEBUG
-                Console.WriteLine("Command " + command + "is not yet implemented");
+                Logger.Log("Command " + command + "is not yet implemented");
 #endif
 
                 if (info.Registered)
@@ -295,13 +324,17 @@ namespace IrcD
             }
 
 #if DEBUG
-            Console.WriteLine(line);
-            Console.Write("[" + info.Usermask + "]-[" + command + "]");
+            Logger.Log(line);
+            var parsedLine = new StringBuilder();
+            parsedLine.Append("[" + info.Usermask + "]-[" + command + "]");
+
             foreach (string arg in args)
             {
-                Console.Write("-<" + arg + ">");
+                parsedLine.Append("-<" + arg + ">");
             }
-            Console.WriteLine();
+
+            Logger.Log(parsedLine.ToString());
+
 #endif
         }
 
@@ -571,8 +604,14 @@ namespace IrcD
             commandSB.AppendFormat(NumericFormat, (int)ReplyCode.MyInfo);
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
-            commandSB.Append(" :<servername> <version> <available user modes> <available channel modes>");
-            commandSB.Append(serverCreated);
+            commandSB.Append(" :");
+            commandSB.Append(Options.ServerName);
+            commandSB.Append(" ");
+            commandSB.Append("ircD.Net.<version> <available user modes> <available channel modes>");
+            commandSB.Append(" ");
+            commandSB.Append(supportedUserModes.ToString());
+            commandSB.Append(" ");
+            commandSB.Append(supportedRanks.ToString() + supportedChannelModes);
             commandSB.Append(ServerCRLF);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }

@@ -1,27 +1,52 @@
-﻿using System;
+﻿/*
+ *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
+ *  It should run on both .NET and Mono
+ * 
+ *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace IrcD.Modes
 {
-    class ModeList<T> : SortedList<char, T> where T : Mode
+    public class ModeList<TMode> : SortedList<char, TMode> where TMode : Mode
     {
-        public void Add(T element)
+        public void Add(TMode element)
         {
-            this.Add(element.Mode, element);
+            Add(element.Char, element);
         }
+
+
 
         public override string ToString()
         {
-            StringBuilder modes = new StringBuilder();
-            
-            foreach (var mode in this) 
+            var modes = new StringBuilder();
+
+            foreach (var mode in this)
             {
-                modes.Append(mode.Value.Mode);
+                modes.Append(mode.Value.Char);
             }
 
             return modes.ToString();
         }
+    }
+
+    public class RankList : ModeList<ChannelRank>
+    {
+
     }
 }

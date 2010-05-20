@@ -18,23 +18,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using IrcD.Database;
-using System.Diagnostics;
-
-namespace IrcD.Utils
+namespace IrcD.Modes
 {
-    class Logger
+    public class ChannelRank : Mode
     {
-        public static void Log(string message, int level = 4)
-        {
-            var stackTrace = new StackTrace();
-            var callerFrame = stackTrace.GetFrame(1);
-            var location = callerFrame.GetFileName() + " on Line " + callerFrame.GetFileLineNumber();
-            var entity = new Log { Level = level, Message = message, Location = location, Time = DateTime.Now };
+        private readonly char prefix;
 
-            DatabaseCommon.Db.Logs.InsertOnSubmit(entity);
-            DatabaseCommon.Db.SubmitChanges();
+        public char Prefix
+        {
+            get
+            {
+                return prefix;
+            }
         }
+
+        public ChannelRank(char mode, char prefix)
+            : base(mode)
+        {
+            this.prefix = prefix;
+        }        
     }
 }

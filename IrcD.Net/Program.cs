@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,10 +30,10 @@ namespace IrcD
             var ircd = new IrcDaemon();
 
             ircd.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();
-            ircd.Options.ServerName = "apophis.ch";
+            ircd.Options.ServerName = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerName" select setting.Value).SingleOrDefault();
+            ircd.Options.MOTD.AddRange(DatabaseCommon.Db.Settings.Where(setting => setting.Key == "MessageOfTheDay").Select(setting => setting.Value));
 
             ircd.MainLoop();
         }
     }
-
 }

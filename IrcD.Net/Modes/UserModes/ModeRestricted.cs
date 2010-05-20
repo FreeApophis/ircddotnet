@@ -18,23 +18,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using IrcD.Database;
-using System.Diagnostics;
-
-namespace IrcD.Utils
+namespace IrcD.Modes.UserModes
 {
-    class Logger
+    public class ModeRestricted : UserMode
     {
-        public static void Log(string message, int level = 4)
+        public ModeRestricted()
+            : base('r')
         {
-            var stackTrace = new StackTrace();
-            var callerFrame = stackTrace.GetFrame(1);
-            var location = callerFrame.GetFileName() + " on Line " + callerFrame.GetFileLineNumber();
-            var entity = new Log { Level = level, Message = message, Location = location, Time = DateTime.Now };
 
-            DatabaseCommon.Db.Logs.InsertOnSubmit(entity);
-            DatabaseCommon.Db.SubmitChanges();
         }
     }
 }
