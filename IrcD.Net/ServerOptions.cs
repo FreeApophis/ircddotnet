@@ -19,11 +19,10 @@
  */
 
 using System.Collections.Generic;
-using IrcD.Modes;
 
 namespace IrcD
 {
-    class ServerOptions
+    public class ServerOptions
     {
         private int serverPort = 6667;
 

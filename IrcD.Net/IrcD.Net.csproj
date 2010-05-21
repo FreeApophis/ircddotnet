@@ -79,9 +79,11 @@
     <Compile Include="Database\DatabaseCommon.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Enums\IrcMode.cs" />
+    <Compile Include="InfoBase.cs" />
     <Compile Include="IrcDaemon.cs" />
     <Compile Include="IrcServer.cs" />
     <Compile Include="Modes\ChannelMode.cs" />
+    <Compile Include="Modes\ChannelModeList.cs" />
     <Compile Include="Modes\ChannelModes\ModeBanException.cs" />
     <Compile Include="Modes\ChannelModes\ModeBan.cs" />
     <Compile Include="Modes\ChannelModes\ModeColorless.cs" />
@@ -92,12 +94,15 @@
     <Compile Include="Modes\ChannelModes\ModePrivate.cs" />
     <Compile Include="Modes\ChannelModes\ModeSecret.cs" />
     <Compile Include="Modes\ChannelModes\ModeTopic.cs" />
+    <Compile Include="Modes\ChannelRanks\HalfOp.cs" />
     <Compile Include="Modes\ChannelRanks\ModeOp.cs" />
     <Compile Include="Modes\ChannelRanks\ModeVoice.cs" />
     <Compile Include="Modes\ChannelRank.cs" />
     <Compile Include="Modes\Mode.cs" />
     <Compile Include="Modes\ModeList.cs" />
+    <Compile Include="Modes\RankList.cs" />
     <Compile Include="Modes\UserMode.cs" />
+    <Compile Include="Modes\UserModeList.cs" />
     <Compile Include="Modes\UserModes\ModeInvisible.cs" />
     <Compile Include="Modes\UserModes\ModeRestricted.cs" />
     <Compile Include="Program.cs" />

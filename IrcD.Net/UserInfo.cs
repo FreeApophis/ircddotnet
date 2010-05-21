@@ -21,22 +21,21 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Text;
 
 namespace IrcD
 {
 
-    class UserInfo
+    public class UserInfo : InfoBase
     {
-        public UserInfo(IrcDaemon daemon, Socket socket, string host, bool isAcceptSocket, bool passAccepted)
+        public UserInfo(IrcDaemon ircDaemon, Socket socket, string host, bool isAcceptSocket, bool passAccepted)
+            : base(ircDaemon)
         {
-            this.daemon = daemon;
             this.host = host;
             this.isAcceptSocket = isAcceptSocket;
             this.passAccepted = passAccepted;
             this.socket = socket;
         }
-
-        private IrcDaemon daemon;
 
         private Socket socket;
 
@@ -198,31 +197,32 @@ namespace IrcD
             }
         }
 
-        public bool Mode_i { get; internal set; }
-        public bool Mode_w { get; internal set; }
-        public bool Mode_o { get; internal set; }
-        public bool Mode_O { get; internal set; }
-        public bool Mode_r { get; internal set; }
-        public bool Mode_s { get; internal set; }
 
         public string ModeString
         {
             get
             {
-                return "+" + ((string.IsNullOrEmpty(awayMsg)) ? "" : "a") + ((Mode_i) ? "i" : "") + ((Mode_w) ? "w" : "") + ((Mode_o) ? "o" : "") + ((Mode_O) ? "O" : "") + ((Mode_r) ? "r" : "") + ((Mode_s) ? "s" : "");
+                return "TODO";
             }
         }
 
-        private List<ChannelInfo> channels = new List<ChannelInfo>();
+        private readonly List<UserPerChannelInfo> channels = new List<UserPerChannelInfo>();
 
-        public List<ChannelInfo> Channels
+        public List<UserPerChannelInfo> Channels
         {
             get { return channels; }
         }
 
         public override string ToString()
         {
-            return Usermask + " (" + Realname + ") " + ((Mode_i) ? "+i" : "-i") + ((Mode_w) ? "+w" : "-w") + ((Mode_o) ? "+o" : "-o") + ((Mode_O) ? "+O" : "-O") + ((Mode_i) ? "+r" : "-r");
+            return "TODO";
+        }
+
+        public override void WriteLine(StringBuilder line)
+        {
+            line.Append(IrcDaemon.ServerCrLf);
+
+            socket.Send(Encoding.UTF8.GetBytes(line.ToString()));
         }
     }
 }

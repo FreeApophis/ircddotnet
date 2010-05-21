@@ -18,14 +18,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace IrcD.Modes.ChannelRanks
-{
-    public class ModeVoice : ChannelRank
-    {
-        public ModeVoice()
-            : base('v', '+',10)
-        {
+using System.Linq;
 
+namespace IrcD.Modes
+{
+    public class RankList : ModeList<ChannelRank>
+    {
+        public char NickPrefix
+        {
+            get
+            {
+                return this
+                    .OrderByDescending(rank => rank.Value.Importance)
+                    .Select(rank => rank.Value.Char)
+                    .DefaultIfEmpty(' ')
+                    .First();
+            }
         }
     }
 }

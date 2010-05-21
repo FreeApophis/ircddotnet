@@ -23,7 +23,7 @@ namespace IrcD.Modes.ChannelRanks
     class ModeOp : ChannelRank
     {
         public ModeOp()
-            : base('o', '@')
+            : base('o', '@', 30)
         {
 
         }

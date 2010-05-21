@@ -20,10 +20,10 @@
 
 namespace IrcD.Modes.ChannelRanks
 {
-    public class ModeVoice : ChannelRank
+    class ModeHalfOp : ChannelRank
     {
-        public ModeVoice()
-            : base('v', '+',10)
+        public ModeHalfOp()
+            : base('h', '%', 20)
         {
 
         }

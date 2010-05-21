@@ -18,14 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace IrcD.Modes.ChannelRanks
+namespace IrcD.Modes
 {
-    public class ModeVoice : ChannelRank
+    public class ChannelModeList : ModeList<ChannelMode>
     {
-        public ModeVoice()
-            : base('v', '+',10)
-        {
 
-        }
     }
 }

@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -32,14 +33,14 @@ using IrcD.Utils;
 namespace IrcD
 {
 
-    class IrcDaemon
+    public class IrcDaemon
     {
 
         const int MaxBufferSize = 2048;
         const int MaxServerLineLength = 800;
 
         const string NumericFormat = "{0:000}";
-        const string ServerCRLF = "\r\n";
+        public const string ServerCrLf = "\r\n";
         const char PrefixCharacter = ':';
 
         private delegate void CommandDelegate(UserInfo info, List<string> args);
@@ -365,27 +366,6 @@ namespace IrcD
             return false;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="chans"></param>
-        /// <returns></returns>
-        private List<UserInfo> GetUserFromChannelList(List<ChannelInfo> chans)
-        {
-            List<UserInfo> temp = new List<UserInfo>();
-            foreach (ChannelInfo chan in chans)
-            {
-                foreach (UserPerChannelInfo user in chan.User.Values)
-                {
-                    if (!temp.Contains(user.Info))
-                    {
-                        temp.Add(user.Info);
-                    }
-                }
-            }
-            return temp;
-        }
-
         private string[] GetSubArgument(string arg)
         {
             return arg.Split(new[] { ',' });
@@ -550,7 +530,7 @@ namespace IrcD
             commandSB.Append(info.Nick);
             commandSB.Append(" :Welcome to the Internet Relay Network ");
             commandSB.Append(info.Usermask);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -570,7 +550,7 @@ namespace IrcD
             commandSB.Append(Options.ServerName);
             commandSB.Append(", running version ");
             commandSB.Append(System.Reflection.Assembly.GetExecutingAssembly().FullName);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -588,7 +568,7 @@ namespace IrcD
             commandSB.Append(info.Nick);
             commandSB.Append(" :This server was created ");
             commandSB.Append(serverCreated);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -612,7 +592,7 @@ namespace IrcD
             commandSB.Append(supportedUserModes.ToString());
             commandSB.Append(" ");
             commandSB.Append(supportedRanks.ToString() + supportedChannelModes);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -630,7 +610,7 @@ namespace IrcD
             commandSB.Append(info.Nick);
             // TODO: features supported by server
             commandSB.Append(" :are supported by this server");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -648,7 +628,7 @@ namespace IrcD
             commandSB.Append(info.Nick);
             // TODO: bounce to which server
             commandSB.Append(" :Try server <server name>, port <port number>");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -666,7 +646,7 @@ namespace IrcD
             commandSB.Append(info.Nick);
             commandSB.Append(" ");
             commandSB.Append(info.ModeString);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -687,7 +667,7 @@ namespace IrcD
             commandSB.Append(awayUser.Nick);
             commandSB.Append(" :");
             commandSB.Append(awayUser.AwayMsg);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -709,7 +689,7 @@ namespace IrcD
             {
                 commandSB.Append(nick + " ");
             }
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -726,7 +706,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :You are no longer marked as being away");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -743,7 +723,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :You have been marked as being away");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -769,7 +749,7 @@ namespace IrcD
             commandSB.Append(who.Host);
             commandSB.Append(" * :");
             commandSB.Append(who.Realname);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -792,7 +772,7 @@ namespace IrcD
             commandSB.Append(Options.ServerName); // TODO: when doing multiple IRC Server
             commandSB.Append(" :");
             commandSB.Append("IRC#Daemon Server Info"); // TODO: ServerInfo?
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -812,7 +792,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(who.Nick);
             commandSB.Append(" :is an IRC operator");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -834,7 +814,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append((DateTime.Now - who.LastAction).TotalSeconds);
             commandSB.Append(" :seconds idle");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -855,7 +835,7 @@ namespace IrcD
             commandSB.Append(who.Nick);
             commandSB.Append(" ");
             commandSB.Append(" :End of WHOIS list");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -875,14 +855,14 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(who.Nick);
             commandSB.Append(" :");
-            foreach (ChannelInfo chan in who.Channels)
+            foreach (var chan in who.Channels.Select(c => c.ChannelInfo))
             {
                 commandSB.Append("");   // TODO: nickprefix (is in UPCI)
                 commandSB.Append(chan.Name);
                 commandSB.Append(" ");
                 // TODO: Split at max length
             }
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -902,10 +882,10 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(chan.Name);
             commandSB.Append(" ");
-            commandSB.Append(chan.User.Count);
+            commandSB.Append(chan.Users.Count);
             commandSB.Append(" :");
             commandSB.Append(chan.Topic);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -922,7 +902,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :End of LIST");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -942,7 +922,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(chan.Name);
             commandSB.Append(" :No topic is set");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -962,7 +942,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(chan.Name);
             commandSB.Append(" :" + chan.Topic);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -982,14 +962,14 @@ namespace IrcD
             commandSB.Append(" = ");
             commandSB.Append(chan.Name);
             commandSB.Append(" :");
-            foreach (UserPerChannelInfo upci in chan.User.Values)
+            foreach (UserPerChannelInfo upci in chan.Users.Values)
             {
-                commandSB.Append(upci.NickPrefix);
-                commandSB.Append(upci.Info.Nick);
+                commandSB.Append(upci.Modes.NickPrefix);
+                commandSB.Append(upci.UserInfo.Nick);
                 commandSB.Append(" ");
                 // TODO: Split at max length
             }
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1009,7 +989,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(chan.Name);
             commandSB.Append(" :End of NAMES list");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1029,7 +1009,7 @@ namespace IrcD
                 commandSB.Append(info.Nick);
                 commandSB.Append(" :- ");
                 commandSB.Append(motdLine);
-                commandSB.Append(ServerCRLF);
+                commandSB.Append(ServerCrLf);
                 info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
             }
         }
@@ -1049,7 +1029,7 @@ namespace IrcD
             commandSB.Append(" :- ");
             commandSB.Append(Options.ServerName);
             commandSB.Append(" Message of the day -");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1067,7 +1047,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :End of MOTD command");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1084,7 +1064,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :You are now an IRC operator");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
         /// <summary>
@@ -1101,7 +1081,7 @@ namespace IrcD
             commandSB.Append(info.Nick);
             commandSB.Append(" :You are service ");
             commandSB.Append(info.Nick);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1121,7 +1101,7 @@ namespace IrcD
             commandSB.Append(ServerPrefix);
             commandSB.Append(" :");
             commandSB.Append(DateTime.Now.ToString());
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
         #endregion
@@ -1141,7 +1121,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(nick);
             commandSB.Append(" :No such nick/channel");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1159,7 +1139,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(server);
             commandSB.Append(" :No such server");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1177,7 +1157,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(channel);
             commandSB.Append(" :No such channel");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1195,7 +1175,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(channel);
             commandSB.Append(" :Cannot send to channel");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1213,7 +1193,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(channel);
             commandSB.Append(" :You have joined too many channels");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1233,7 +1213,7 @@ namespace IrcD
             commandSB.Append(" :No recipient given (");
             commandSB.Append(command);
             commandSB.Append(")");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1250,7 +1230,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :No text to send");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1270,7 +1250,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(command);
             commandSB.Append(" :Unknown command");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1287,7 +1267,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :MOTD File is missing");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1304,7 +1284,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :No nickname given");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1322,7 +1302,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(nick);
             commandSB.Append(" :Erroneous nickname");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1340,7 +1320,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(nick);
             commandSB.Append(" :Nickname is already in use");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1358,7 +1338,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(channel);
             commandSB.Append(" :You're not on that channel");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1375,7 +1355,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :SUMMON has been disabled");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1392,7 +1372,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :USERS has been disabled");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1409,7 +1389,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :You have not registered");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1426,7 +1406,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :Not enough parameters");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1443,7 +1423,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :Unauthorized command (already registered)");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1460,7 +1440,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :Your host isn't among the privileged");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1477,7 +1457,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :Password incorrect");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1494,7 +1474,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :You are banned from this server");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1511,7 +1491,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :You will be banned from this server");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1531,7 +1511,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(chan.Name);
             commandSB.Append(" :Cannot join channel (+l)");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1553,7 +1533,7 @@ namespace IrcD
             commandSB.Append(mode);
             commandSB.Append(" :is unknown mode char to me for ");
             commandSB.Append(chan.Name);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1573,7 +1553,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(chan.Name);
             commandSB.Append(" :Cannot join channel (+i)");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
         /// <summary>
@@ -1592,7 +1572,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(chan.Name);
             commandSB.Append(" :Cannot join channel (+b)");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1612,7 +1592,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(chan.Name);
             commandSB.Append(" :Cannot join channel (+k)");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1632,7 +1612,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(chan.Name);
             commandSB.Append(" :Bad Channel Mask");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1652,7 +1632,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(chan.Name);
             commandSB.Append(" :Channel doesn't support modes");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1675,7 +1655,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(mode);
             commandSB.Append(" :Channel list is full");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1692,7 +1672,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :Permission Denied- You're not an IRC operator");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1712,7 +1692,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(chan.Name);
             commandSB.Append(" :You're not channel operator");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1729,7 +1709,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :You can't kill a server!");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1746,7 +1726,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :Your connection is restricted!");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1763,7 +1743,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :You're not the original channel operator");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1780,7 +1760,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :No O-lines for your host");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1797,7 +1777,7 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :Unknown MODE flag");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1814,20 +1794,19 @@ namespace IrcD
             commandSB.Append(" ");
             commandSB.Append(info.Nick);
             commandSB.Append(" :Cannot change mode for other users");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             info.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
         #endregion
 
         #region Server Messages
-        internal void SendNick(UserInfo sender, UserInfo receiver, string newnick)
+        internal void SendNick(UserInfo sender, InfoBase receiver, string newnick)
         {
             commandSB.Length = 0;
             commandSB.Append(sender.Prefix);
             commandSB.Append(" NICK ");
             commandSB.Append(newnick);
-            commandSB.Append(ServerCRLF);
-            receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
+            receiver.WriteLine(commandSB);
         }
 
         internal void SendJoin(UserInfo sender, UserInfo receiver, ChannelInfo chan)
@@ -1836,7 +1815,7 @@ namespace IrcD
             commandSB.Append(sender.Prefix);
             commandSB.Append(" JOIN ");
             commandSB.Append(chan.Name);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1848,7 +1827,7 @@ namespace IrcD
             commandSB.Append(chan.Name);
             commandSB.Append(" :");
             commandSB.Append(message);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1860,7 +1839,7 @@ namespace IrcD
             commandSB.Append(chan);
             commandSB.Append(" :");
             commandSB.Append(newtopic);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1872,7 +1851,7 @@ namespace IrcD
             commandSB.Append(target);
             commandSB.Append(" ");
             commandSB.Append(modestring);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1885,7 +1864,7 @@ namespace IrcD
             commandSB.Append(target);
             commandSB.Append(" :");
             commandSB.Append(message);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1897,18 +1876,18 @@ namespace IrcD
             commandSB.Append(target);
             commandSB.Append(" :");
             commandSB.Append(message);
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
-        internal void SendQuit(UserInfo sender, UserInfo receiver, string message)
+        internal void SendQuit(UserInfo sender, InfoBase receiver, string message)
         {
             commandSB.Length = 0;
             commandSB.Append(sender.Prefix);
             commandSB.Append(" QUIT :");
             commandSB.Append(message);
-            commandSB.Append(ServerCRLF);
-            receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
+
+            receiver.WriteLine(commandSB);
         }
 
         internal void SendPing(UserInfo receiver)
@@ -1916,7 +1895,7 @@ namespace IrcD
             commandSB.Length = 0;
             commandSB.Append(ServerPrefix);
             commandSB.Append(" PING ");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
 
@@ -1925,7 +1904,7 @@ namespace IrcD
             commandSB.Length = 0;
             commandSB.Append(ServerPrefix);
             commandSB.Append(" PONG ");
-            commandSB.Append(ServerCRLF);
+            commandSB.Append(ServerCrLf);
             receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
         }
         #endregion
@@ -1981,9 +1960,9 @@ namespace IrcD
 
             nicks.Add(args[0], info.Socket);
 
-            foreach (UserInfo ui in GetUserFromChannelList(info.Channels))
+            foreach (var channelInfo in info.Channels.Select(channel => channel.ChannelInfo))
             {
-                SendNick(info, ui, args[0]);
+                SendNick(info, channelInfo, args[0]);
             }
 
             info.Nick = args[0];
@@ -2016,8 +1995,9 @@ namespace IrcD
             int flags;
             int.TryParse(args[1], out flags);
 
-            info.Mode_i = ((flags & 8) > 0);
-            info.Mode_w = ((flags & 4) > 0);
+            //TODO: new Modes
+            //info.Mode_i = ((flags & 8) > 0);
+            //info.Mode_w = ((flags & 4) > 0);
 
             info.User = args[0];
 
@@ -2053,8 +2033,9 @@ namespace IrcD
 
             if (IsIrcOp(args[0], args[1]))
             {
-                info.Mode_o = true;
-                info.Mode_O = true;
+                // TODO: new modes
+                //info.Mode_o = true;
+                //info.Mode_O = true;
                 SendYouAreOper(info);
             }
             else
@@ -2066,316 +2047,317 @@ namespace IrcD
 
         internal void ModeDelegate(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                SendNotRegistered(info);
-                return;
-            }
-            if (args.Count == 0)
-            {
-                SendNeedMoreParams(info);
-                return;
-            }
+            // TODO: new modes
+            //if (!info.Registered)
+            //{
+            //    SendNotRegistered(info);
+            //    return;
+            //}
+            //if (args.Count == 0)
+            //{
+            //    SendNeedMoreParams(info);
+            //    return;
+            //}
 
-            if (ValidChannel(args[0]))
-            {
-                if (!channels.ContainsKey(args[0]))
-                {
-                    // TODO: Send Chan does not exist;
-                    return;
-                }
-                ChannelInfo chan = channels[args[0]];
-                if (args.Count == 1)
-                {
-                    // TODO: which modes should we send?
-                }
-                else
-                {
-                    string reply = "";
-                    Dictionary<string, List<string>> compatibilityCache = null;
-                    foreach (ModeElement cmode in ParseChannelModes(args))
-                    {
-                        switch (cmode.Mode)
-                        {
-                            case 'a':
-                                if (cmode.Plus != null)
-                                {
-                                    chan.Mode_a = cmode.Plus.Value;
-                                }
-                                break;
-                            case 'b':
-                                if (cmode.Plus != null)
-                                {
-                                    if (cmode.Plus.Value)
-                                    {
-                                        chan.Mode_b.Add(cmode.Param);
-                                    }
-                                    else
-                                    {
-                                        chan.Mode_b.Remove(cmode.Param);
-                                    }
-                                }
-                                break;
-                            case 'e':
-                                if (cmode.Plus != null)
-                                {
-                                    if (cmode.Plus.Value)
-                                    {
-                                        chan.Mode_e.Add(cmode.Param);
-                                    }
-                                    else
-                                    {
-                                        chan.Mode_e.Remove(cmode.Param);
-                                    }
-                                }
-                                break;
-                            case 'h':
-                                if (cmode.Param == null || cmode.Plus == null)
-                                    throw new ArgumentNullException();
-                                if (chan.User.ContainsKey(cmode.Param))
-                                {
-                                    chan.User[cmode.Param].Mode_h = cmode.Plus.Value;
-                                }
-                                break;
-                            case 'i':
-                                if (cmode.Plus != null)
-                                {
-                                    chan.Mode_i = cmode.Plus.Value;
-                                }
-                                break;
-                            case 'I':
-                                if (cmode.Plus != null)
-                                {
-                                    if (cmode.Plus.Value)
-                                    {
-                                        chan.Mode_I.Add(cmode.Param);
-                                    }
-                                    else
-                                    {
-                                        chan.Mode_I.Remove(cmode.Param);
-                                    }
-                                }
-                                break;
-                            case 'k':
-                                if (cmode.Plus != null)
-                                {
-                                    chan.Mode_k = cmode.Plus.Value ? cmode.Param : null;
-                                }
-                                break;
-                            case 'l':
-                                if (cmode.Param == null)
-                                    throw new ArgumentNullException();
-                                if (cmode.Plus != null)
-                                {
-                                    if (cmode.Plus.Value)
-                                    {
-                                        chan.Mode_l = int.Parse(cmode.Param);
-                                    }
-                                    else
-                                    {
-                                        chan.Mode_l = -1;
-                                    }
-                                }
-                                break;
-                            case 'm':
-                                if (cmode.Plus != null)
-                                {
-                                    chan.Mode_m = cmode.Plus.Value;
-                                }
-                                break;
-                            case 'n':
-                                if (cmode.Plus != null)
-                                {
-                                    chan.Mode_n = cmode.Plus.Value;
-                                }
-                                break;
-                            case 'o':
-                                if (cmode.Param == null || cmode.Plus == null)
-                                    throw new ArgumentNullException();
-                                if (chan.User.ContainsKey(cmode.Param))
-                                {
-                                    chan.User[cmode.Param].Mode_o = cmode.Plus.Value;
-                                }
-                                break;
-                            case 'O':
-                                break;
-                            case 'p':
-                                if (cmode.Plus != null)
-                                {
-                                    chan.Mode_p = cmode.Plus.Value;
-                                }
-                                break;
-                            case 'q':
-                                if (cmode.Plus != null)
-                                {
-                                    chan.Mode_q = cmode.Plus.Value;
-                                }
-                                break;
-                            case 'r':
-                                if (cmode.Plus != null)
-                                {
-                                    chan.Mode_r = cmode.Plus.Value;
-                                }
-                                break;
-                            case 's':
-                                if (cmode.Plus != null)
-                                {
-                                    chan.Mode_s = cmode.Plus.Value;
-                                }
-                                break;
-                            case 't':
-                                if (cmode.Plus != null)
-                                {
-                                    chan.Mode_t = cmode.Plus.Value;
-                                }
-                                break;
-                            case 'v':
-                                if (cmode.Param == null || cmode.Plus == null)
-                                    throw new ArgumentNullException();
-                                if (chan.User.ContainsKey(cmode.Param))
-                                {
-                                    chan.User[cmode.Param].Mode_v = cmode.Plus.Value;
-                                }
-                                break;
-                            default:
-                                SendUnknownMode(info, chan, cmode.Mode);
-                                continue;
-                        }
+            //if (ValidChannel(args[0]))
+            //{
+            //    if (!channels.ContainsKey(args[0]))
+            //    {
+            //        // TODO: Send Chan does not exist;
+            //        return;
+            //    }
+            //    ChannelInfo chan = channels[args[0]];
+            //    if (args.Count == 1)
+            //    {
+            //        // TODO: which modes should we send?
+            //    }
+            //    else
+            //    {
+            //        string reply = "";
+            //        Dictionary<string, List<string>> compatibilityCache = null;
+            //        foreach (ModeElement cmode in ParseChannelModes(args))
+            //        {
+            //            switch (cmode.Mode)
+            //            {
+            //                case 'a':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        chan.Mode_a = cmode.Plus.Value;
+            //                    }
+            //                    break;
+            //                case 'b':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        if (cmode.Plus.Value)
+            //                        {
+            //                            chan.Mode_b.Add(cmode.Param);
+            //                        }
+            //                        else
+            //                        {
+            //                            chan.Mode_b.Remove(cmode.Param);
+            //                        }
+            //                    }
+            //                    break;
+            //                case 'e':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        if (cmode.Plus.Value)
+            //                        {
+            //                            chan.Mode_e.Add(cmode.Param);
+            //                        }
+            //                        else
+            //                        {
+            //                            chan.Mode_e.Remove(cmode.Param);
+            //                        }
+            //                    }
+            //                    break;
+            //                case 'h':
+            //                    if (cmode.Param == null || cmode.Plus == null)
+            //                        throw new ArgumentNullException();
+            //                    if (chan.User.ContainsKey(cmode.Param))
+            //                    {
+            //                        chan.User[cmode.Param].Mode_h = cmode.Plus.Value;
+            //                    }
+            //                    break;
+            //                case 'i':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        chan.Mode_i = cmode.Plus.Value;
+            //                    }
+            //                    break;
+            //                case 'I':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        if (cmode.Plus.Value)
+            //                        {
+            //                            chan.Mode_I.Add(cmode.Param);
+            //                        }
+            //                        else
+            //                        {
+            //                            chan.Mode_I.Remove(cmode.Param);
+            //                        }
+            //                    }
+            //                    break;
+            //                case 'k':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        chan.Mode_k = cmode.Plus.Value ? cmode.Param : null;
+            //                    }
+            //                    break;
+            //                case 'l':
+            //                    if (cmode.Param == null)
+            //                        throw new ArgumentNullException();
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        if (cmode.Plus.Value)
+            //                        {
+            //                            chan.Mode_l = int.Parse(cmode.Param);
+            //                        }
+            //                        else
+            //                        {
+            //                            chan.Mode_l = -1;
+            //                        }
+            //                    }
+            //                    break;
+            //                case 'm':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        chan.Mode_m = cmode.Plus.Value;
+            //                    }
+            //                    break;
+            //                case 'n':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        chan.Mode_n = cmode.Plus.Value;
+            //                    }
+            //                    break;
+            //                case 'o':
+            //                    if (cmode.Param == null || cmode.Plus == null)
+            //                        throw new ArgumentNullException();
+            //                    if (chan.User.ContainsKey(cmode.Param))
+            //                    {
+            //                        chan.User[cmode.Param].Mode_o = cmode.Plus.Value;
+            //                    }
+            //                    break;
+            //                case 'O':
+            //                    break;
+            //                case 'p':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        chan.Mode_p = cmode.Plus.Value;
+            //                    }
+            //                    break;
+            //                case 'q':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        chan.Mode_q = cmode.Plus.Value;
+            //                    }
+            //                    break;
+            //                case 'r':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        chan.Mode_r = cmode.Plus.Value;
+            //                    }
+            //                    break;
+            //                case 's':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        chan.Mode_s = cmode.Plus.Value;
+            //                    }
+            //                    break;
+            //                case 't':
+            //                    if (cmode.Plus != null)
+            //                    {
+            //                        chan.Mode_t = cmode.Plus.Value;
+            //                    }
+            //                    break;
+            //                case 'v':
+            //                    if (cmode.Param == null || cmode.Plus == null)
+            //                        throw new ArgumentNullException();
+            //                    if (chan.User.ContainsKey(cmode.Param))
+            //                    {
+            //                        chan.User[cmode.Param].Mode_v = cmode.Plus.Value;
+            //                    }
+            //                    break;
+            //                default:
+            //                    SendUnknownMode(info, chan, cmode.Mode);
+            //                    continue;
+            //            }
 
-                        if (Options.ClientCompatibilityMode)
-                        {
-                            compatibilityCache = compatibilityCache ?? new Dictionary<string, List<string>>();
-                            string key = ((cmode.Plus.HasValue) ? cmode.Plus.Value ? "+" : "-" : "") + cmode.Mode;
-                            if (compatibilityCache.ContainsKey(key))
-                            {
-                                compatibilityCache[key].Add(cmode.Param ?? "");
-                            }
-                            else
-                            {
-                                compatibilityCache.Add(key, new List<string> { cmode.Param ?? "" });
-                            }
-                        }
-                        else
-                        {
-                            //TODO: this is very convinient, but mIRC and xchat cannot parse this (RTF RFC)
-                            if (cmode.Plus == null)
-                            {
-                                reply += cmode.Mode + " ";
-                            }
-                            else if (cmode.Plus.Value)
-                            {
-                                reply += "+" + cmode.Mode + " " + ((cmode.Param == null) ? "" : cmode.Param + " ");
-                            }
-                            else
-                            {
-                                reply += "-" + cmode.Mode + " " + ((cmode.Param == null) ? "" : cmode.Param + " ");
-                            }
-                        }
-                    }
-                    if (Options.ClientCompatibilityMode && compatibilityCache != null)
-                    {
-                        foreach (var modes in compatibilityCache)
-                        {
+            //            if (Options.ClientCompatibilityMode)
+            //            {
+            //                compatibilityCache = compatibilityCache ?? new Dictionary<string, List<string>>();
+            //                string key = ((cmode.Plus.HasValue) ? cmode.Plus.Value ? "+" : "-" : "") + cmode.Mode;
+            //                if (compatibilityCache.ContainsKey(key))
+            //                {
+            //                    compatibilityCache[key].Add(cmode.Param ?? "");
+            //                }
+            //                else
+            //                {
+            //                    compatibilityCache.Add(key, new List<string> { cmode.Param ?? "" });
+            //                }
+            //            }
+            //            else
+            //            {
+            //                //TODO: this is very convinient, but mIRC and xchat cannot parse this (RTF RFC)
+            //                if (cmode.Plus == null)
+            //                {
+            //                    reply += cmode.Mode + " ";
+            //                }
+            //                else if (cmode.Plus.Value)
+            //                {
+            //                    reply += "+" + cmode.Mode + " " + ((cmode.Param == null) ? "" : cmode.Param + " ");
+            //                }
+            //                else
+            //                {
+            //                    reply += "-" + cmode.Mode + " " + ((cmode.Param == null) ? "" : cmode.Param + " ");
+            //                }
+            //            }
+            //        }
+            //        if (Options.ClientCompatibilityMode && compatibilityCache != null)
+            //        {
+            //            foreach (var modes in compatibilityCache)
+            //            {
 
-                            if (modes.Key[0] == '+' || modes.Key[0] == '-')
-                            {
-                                reply += modes.Key[0];
-                                reply += new string(modes.Key[1], modes.Value.Count);
-                                foreach (var param in modes.Value)
-                                {
-                                    if (param.Length > 0)
-                                    {
-                                        reply += " " + param;
-                                    }
-                                }
-                                reply += " ";
-                            }
-                            else
-                            {
-                                reply += new string(modes.Key[0], modes.Value.Count) + " ";
-                            }
-                        }
-                    }
+            //                if (modes.Key[0] == '+' || modes.Key[0] == '-')
+            //                {
+            //                    reply += modes.Key[0];
+            //                    reply += new string(modes.Key[1], modes.Value.Count);
+            //                    foreach (var param in modes.Value)
+            //                    {
+            //                        if (param.Length > 0)
+            //                        {
+            //                            reply += " " + param;
+            //                        }
+            //                    }
+            //                    reply += " ";
+            //                }
+            //                else
+            //                {
+            //                    reply += new string(modes.Key[0], modes.Value.Count) + " ";
+            //                }
+            //            }
+            //        }
 
-                    if (reply.Length > 0)
-                    {
-                        foreach (UserPerChannelInfo upci in chan.User.Values)
-                        {
-                            SendMode(info, upci.Info, chan.Name, reply);
-                        }
-                    }
+            //        if (reply.Length > 0)
+            //        {
+            //            foreach (UserPerChannelInfo upci in chan.User.Values)
+            //            {
+            //                SendMode(info, upci.Info, chan.Name, reply);
+            //            }
+            //        }
 
-                }
-            }
-            else if (args[0] == info.Nick)
-            {
-                if (args.Count == 1)
-                {
-                    SendUserModeIs(info);
-                }
-                else
-                {
-                    string reply = "";
-                    foreach (KeyValuePair<char, bool> umode in ParseUserMode(args[1]))
-                    {
-                        switch (umode.Key)
-                        {
-                            case 'i':
-                                info.Mode_i = umode.Value;
-                                break;
-                            case 'O':
-                                if (!umode.Value)
-                                {
-                                    info.Mode_O = false;
-                                }
-                                else
-                                {
-                                    continue;
-                                }
-                                break;
-                            case 'o':
-                                if (!umode.Value)
-                                {
-                                    info.Mode_o = false;
-                                }
-                                else
-                                {
-                                    continue;
-                                }
-                                break;
-                            case 'r':
-                                if (umode.Value)
-                                {
-                                    info.Mode_r = true;
-                                }
-                                else
-                                {
-                                    continue;
-                                }
-                                break;
-                            case 's':
-                                info.Mode_s = umode.Value;
-                                break;
-                            case 'w':
-                                info.Mode_w = umode.Value;
-                                break;
-                            default:
-                                SendUserModeUnknownFlag(info);
-                                continue;
-                        }
-                        reply += ((umode.Value) ? "+" : "-") + umode.Key;
+            //    }
+            //}
+            //else if (args[0] == info.Nick)
+            //{
+            //    if (args.Count == 1)
+            //    {
+            //        SendUserModeIs(info);
+            //    }
+            //    else
+            //    {
+            //        string reply = "";
+            //        foreach (KeyValuePair<char, bool> umode in ParseUserMode(args[1]))
+            //        {
+            //            switch (umode.Key)
+            //            {
+            //                case 'i':
+            //                    info.Mode_i = umode.Value;
+            //                    break;
+            //                case 'O':
+            //                    if (!umode.Value)
+            //                    {
+            //                        info.Mode_O = false;
+            //                    }
+            //                    else
+            //                    {
+            //                        continue;
+            //                    }
+            //                    break;
+            //                case 'o':
+            //                    if (!umode.Value)
+            //                    {
+            //                        info.Mode_o = false;
+            //                    }
+            //                    else
+            //                    {
+            //                        continue;
+            //                    }
+            //                    break;
+            //                case 'r':
+            //                    if (umode.Value)
+            //                    {
+            //                        info.Mode_r = true;
+            //                    }
+            //                    else
+            //                    {
+            //                        continue;
+            //                    }
+            //                    break;
+            //                case 's':
+            //                    info.Mode_s = umode.Value;
+            //                    break;
+            //                case 'w':
+            //                    info.Mode_w = umode.Value;
+            //                    break;
+            //                default:
+            //                    SendUserModeUnknownFlag(info);
+            //                    continue;
+            //            }
+            //            reply += ((umode.Value) ? "+" : "-") + umode.Key;
 
-                    }
-                    if (reply.Length > 0)
-                    {
-                        SendMode(info, info, info.Nick, reply);
-                    }
-                }
-            }
-            else
-            {
-                SendUsersDoNotMatch(info);
-            }
+            //        }
+            //        if (reply.Length > 0)
+            //        {
+            //            SendMode(info, info, info.Nick, reply);
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    SendUsersDoNotMatch(info);
+            //}
         }
 
         internal void ServiceDelegate(UserInfo info, List<string> args)
@@ -2428,14 +2410,14 @@ namespace IrcD
 
             string message = (args.Count > 0) ? args[0] : "";
 
-            foreach (UserInfo ui in GetUserFromChannelList(info.Channels))
+            foreach (ChannelInfo channelInfo in info.Channels.Select(upci => upci.ChannelInfo))
             {
-                SendQuit(info, ui, message);
+                SendQuit(info, channelInfo, message);
             }
 
-            foreach (ChannelInfo chaninfo in info.Channels)
+            foreach (ChannelInfo chaninfo in info.Channels.Select(upci => upci.ChannelInfo))
             {
-                chaninfo.User.Remove(info.Nick);    // can't fail?
+                chaninfo.Users.Remove(info.Nick);
             }
 
             sockets.Remove(info.Socket);
@@ -2472,7 +2454,7 @@ namespace IrcD
                 // this is a part all channels, this is plainly stupid to handle PARTS in a join message.
                 // we won't handle that, we give it to the part handler! YO! why not defining a /part * instead of /join 0
                 commandSB.Length = 0; bool first = true;
-                foreach (ChannelInfo ci in info.Channels)
+                foreach (ChannelInfo ci in info.Channels.Select(upci => upci.ChannelInfo))
                 {
                     if (first)
                     {
@@ -2506,37 +2488,38 @@ namespace IrcD
                 if (channels.ContainsKey(ch))
                 {
                     chan = channels[ch];
+                    // TODO: new modes
                     // Check for (+l)
-                    if ((chan.Mode_l != -1) && (chan.Mode_l <= chan.User.Count))
-                    {
-                        SendChannelIsFull(info, chan);
-                        return;
-                    }
+                    //if ((chan.Mode_l != -1) && (chan.Mode_l <= chan.User.Count))
+                    //{
+                    //    SendChannelIsFull(info, chan);
+                    //    return;
+                    //}
 
                     // Check for (+k)
-                    if (!string.IsNullOrEmpty(chan.Mode_k))
-                    {
-                        bool j = false;
-                        foreach (string key in keys)
-                        {
-                            if (key == chan.Mode_k)
-                            {
-                                j = true;
-                            }
-                        }
-                        if (!j)
-                        {
-                            SendBadChannelKey(info, chan);
-                            return;
-                        }
-                    }
+                    //if (!string.IsNullOrEmpty(chan.Mode_k))
+                    //{
+                    //    bool j = false;
+                    //    foreach (string key in keys)
+                    //    {
+                    //        if (key == chan.Mode_k)
+                    //        {
+                    //            j = true;
+                    //        }
+                    //    }
+                    //    if (!j)
+                    //    {
+                    //        SendBadChannelKey(info, chan);
+                    //        return;
+                    //    }
+                    //}
 
                     // Check for (+i)
-                    if (chan.Mode_i)
-                    {
-                        // TODO: implement invite
-                        SendInviteOnlyChannel(info, chan);
-                    }
+                    //if (chan.Mode_i)
+                    //{
+                    //    // TODO: implement invite
+                    //    SendInviteOnlyChannel(info, chan);
+                    //}
 
                     // Check for (+b) (TODO)
                     if (false)
@@ -2546,17 +2529,17 @@ namespace IrcD
                 }
                 else
                 {
-                    chan = new ChannelInfo(ch);
+                    chan = new ChannelInfo(ch, this);
                     channels.Add(chan.Name, chan);
                 }
 
-                var chanuser = new UserPerChannelInfo(info);
-                chan.User.Add(info.Nick, chanuser);
-                info.Channels.Add(chan);
+                var chanuser = new UserPerChannelInfo(info, chan);
+                chan.Users.Add(info.Nick, chanuser);
+                info.Channels.Add(chanuser);
 
-                foreach (UserPerChannelInfo upci in chan.User.Values)
+                foreach (UserPerChannelInfo upci in chan.Users.Values)
                 {
-                    SendJoin(info, upci.Info, chan);
+                    SendJoin(info, upci.UserInfo, chan);
                 }
 
 
@@ -2568,7 +2551,7 @@ namespace IrcD
                 {
                     SendTopicReply(info, chan);
                 }
-                SendNamesReply(chanuser.Info, chan);
+                SendNamesReply(chanuser.UserInfo, chan);
                 SendEndOfNamesReply(info, chan);
             }
 
@@ -2593,20 +2576,20 @@ namespace IrcD
                 if (channels.ContainsKey(ch))
                 {
                     ChannelInfo chan = channels[ch];
-                    if (info.Channels.Contains(chan))
-                    {
-                        foreach (UserPerChannelInfo upci in chan.User.Values)
-                        {
-                            SendPart(info, upci.Info, chan, message);
-                        }
-                        chan.User.Remove(info.Nick);
-                        info.Channels.Remove(chan);
-                    }
-                    else
-                    {
-                        SendNotOnChannel(info, ch);
-                        continue;
-                    }
+                    //if (info.Channels.Contains(chan))
+                    //{
+                    //    foreach (UserPerChannelInfo upci in chan.User.Values)
+                    //    {
+                    //        SendPart(info, upci.Info, chan, message);
+                    //    }
+                    //    chan.User.Remove(info.Nick);
+                    //    info.Channels.Remove(chan);
+                    //}
+                    //else
+                    //{
+                    //    SendNotOnChannel(info, ch);
+                    //    continue;
+                    //}
                 }
                 else
                 {
@@ -2649,9 +2632,9 @@ namespace IrcD
                     if (channels.ContainsKey(args[0]))
                     {
                         channels[args[0]].Topic = args[1];
-                        foreach (UserPerChannelInfo upci in channels[args[0]].User.Values)
+                        foreach (UserPerChannelInfo upci in channels[args[0]].Users.Values)
                         {
-                            SendTopic(info, upci.Info, args[0], args[1]);
+                            SendTopic(info, upci.UserInfo, args[0], args[1]);
                         }
                     }
                     break;
@@ -2747,26 +2730,26 @@ namespace IrcD
                 if (channels.ContainsKey(args[0]))
                 {
                     ChannelInfo chan = channels[args[0]];
-                    if (chan.Mode_n && (!info.Channels.Contains(chan)) /*TODO: banned user cannot send even without Mode_n set*/)
-                    {
-                        SendCannotSendToChannel(info, chan.Name);
-                        return;
-                    }
-                    if (!chan.Mode_m || (chan.Mode_m && info.Channels.Contains(chan) &&
-                                        (chan.User[info.Nick].Mode_v || chan.User[info.Nick].Mode_h || chan.User[info.Nick].Mode_o)))
-                    {
-                        foreach (UserPerChannelInfo upci in chan.User.Values)
-                        {
-                            if (upci.Info.Nick != info.Nick)
-                            {
-                                SendPrivMsg(info, upci.Info, chan.Name, args[1]);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        SendCannotSendToChannel(info, chan.Name);
-                    }
+                    //if (chan.Mode_n && (!info.Channels.Contains(chan)) /*TODO: banned user cannot send even without Mode_n set*/)
+                    //{
+                    //    SendCannotSendToChannel(info, chan.Name);
+                    //    return;
+                    //}
+                    //if (!chan.Mode_m || (chan.Mode_m && info.Channels.Contains(chan) &&
+                    //                    (chan.User[info.Nick].Mode_v || chan.User[info.Nick].Mode_h || chan.User[info.Nick].Mode_o)))
+                    //{
+                    //    foreach (UserPerChannelInfo upci in chan.User.Values)
+                    //    {
+                    //        if (upci.Info.Nick != info.Nick)
+                    //        {
+                    //            SendPrivMsg(info, upci.Info, chan.Name, args[1]);
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    SendCannotSendToChannel(info, chan.Name);
+                    //}
                 }
                 else
                 {
@@ -2820,27 +2803,27 @@ namespace IrcD
             {
                 if (channels.ContainsKey(args[0]))
                 {
-                    ChannelInfo chan = channels[args[0]];
-                    if (chan.Mode_n && (!info.Channels.Contains(chan)) /*TODO: banned user cannot send even without Mode_n set*/)
-                    {
-                        SendCannotSendToChannel(info, chan.Name);
-                        return;
-                    }
-                    if (!chan.Mode_m || (chan.Mode_m && info.Channels.Contains(chan) &&
-                                        (chan.User[info.Nick].Mode_v || chan.User[info.Nick].Mode_h || chan.User[info.Nick].Mode_o)))
-                    {
-                        foreach (UserPerChannelInfo upci in chan.User.Values)
-                        {
-                            if (upci.Info.Nick != info.Nick)
-                            {
-                                SendNotice(info, upci.Info, chan.Name, args[1]);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        SendCannotSendToChannel(info, chan.Name);
-                    }
+                    //ChannelInfo chan = channels[args[0]];
+                    //if (chan.Mode_n && (!info.Channels.Contains(chan)) /*TODO: banned user cannot send even without Mode_n set*/)
+                    //{
+                    //    SendCannotSendToChannel(info, chan.Name);
+                    //    return;
+                    //}
+                    //if (!chan.Mode_m || (chan.Mode_m && info.Channels.Contains(chan) &&
+                    //                    (chan.User[info.Nick].Mode_v || chan.User[info.Nick].Mode_h || chan.User[info.Nick].Mode_o)))
+                    //{
+                    //    foreach (UserPerChannelInfo upci in chan.User.Values)
+                    //    {
+                    //        if (upci.Info.Nick != info.Nick)
+                    //        {
+                    //            SendNotice(info, upci.Info, chan.Name, args[1]);
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    SendCannotSendToChannel(info, chan.Name);
+                    //}
                 }
                 else
                 {
@@ -3042,10 +3025,10 @@ namespace IrcD
             {
                 SendAwayMsg(info, user);
             }
-            if (user.Mode_O || user.Mode_o)
-            {
-                SendWhoIsOperator(info, user);
-            }
+            //if (user.Mode_O || user.Mode_o)
+            //{
+            //    SendWhoIsOperator(info, user);
+            //}
             SendWhoIsIdle(info, user);
             SendEndOfWhoIs(info, user);
         }

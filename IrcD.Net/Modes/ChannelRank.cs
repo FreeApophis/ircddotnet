@@ -32,10 +32,22 @@ namespace IrcD.Modes
             }
         }
 
-        public ChannelRank(char mode, char prefix)
+        public ChannelRank(char mode, char prefix, int importance)
             : base(mode)
         {
             this.prefix = prefix;
-        }        
+            this.importance = importance;
+        }
+
+        private readonly int importance;
+
+        public int Importance
+        {
+            get
+            {
+                return importance;
+            }
+        }
+
     }
 }

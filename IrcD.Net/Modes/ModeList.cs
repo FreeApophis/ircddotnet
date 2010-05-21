@@ -30,8 +30,6 @@ namespace IrcD.Modes
             Add(element.Char, element);
         }
 
-
-
         public override string ToString()
         {
             var modes = new StringBuilder();
@@ -43,10 +41,5 @@ namespace IrcD.Modes
 
             return modes.ToString();
         }
-    }
-
-    public class RankList : ModeList<ChannelRank>
-    {
-
     }
 }

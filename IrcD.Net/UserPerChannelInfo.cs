@@ -19,95 +19,59 @@
  */
 
 
+using System;
+using System.Text;
+using IrcD.Modes;
+
 namespace IrcD
 {
-    class UserPerChannelInfo
+    public class UserPerChannelInfo : InfoBase
     {
-        public UserPerChannelInfo(UserInfo info)
-        {
-            this.info = info;
-        }
+        private readonly UserInfo userInfo;
 
-        private UserInfo info;
-
-        public UserInfo Info
+        public UserInfo UserInfo
         {
             get
             {
-                return info;
+                return userInfo;
             }
         }
 
-        public string NickPrefix
+        private readonly ChannelInfo channelInfo;
+
+        public ChannelInfo ChannelInfo
         {
             get
             {
-                if (mode_o)
-                {
-                    return "@";
-                }
-                if (mode_h)
-                {
-                    return "%";
-                }
-                if (mode_v)
-                {
-                    return "+";
-                }
-                return "";
+                return channelInfo;
             }
         }
 
-        private bool mode_v;
+        public UserPerChannelInfo(UserInfo userInfo, ChannelInfo channelInfo)
+            : base(userInfo.IrcDaemon)
+        {
+            this.userInfo = userInfo;
+            this.channelInfo = channelInfo;
+        }
+
+
+        private readonly RankList modes = new RankList();
+
+        public RankList Modes
+        {
+            get
+            {
+                return modes;
+            }
+        }
 
         /// <summary>
-        /// Is User Voiced
+        /// This method just delegates the work to 
         /// </summary>
-        public bool Mode_v
-        {
-            get
-            {
-                return mode_v;
-            }
-            set
-            {
-                mode_v = value;
-            }
-        }
-
-        private bool mode_h;
-
-        /// <summary>
-        /// Is User Half-Op
-        /// </summary>
-        public bool Mode_h
-        {
-            get
-            {
-                return mode_h;
-            }
-            set
-            {
-                mode_h = value;
-            }
-        }
-
-
-        private bool mode_o;
-
-        /// <summary>
-        /// Is User Op
-        /// </summary>
-        public bool Mode_o
-        {
-            get
-            {
-                return mode_o;
-            }
-            set
-            {
-                mode_o = value;
-            }
+        /// <param name="line"></param>
+        public override void WriteLine(StringBuilder line)
+        {           
+            userInfo.WriteLine(line);
         }
     }
 }
