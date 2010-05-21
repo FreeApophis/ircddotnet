@@ -24,6 +24,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using IrcD.Commands;
 using IrcD.Modes;
 using IrcD.Modes.ChannelModes;
 using IrcD.Modes.ChannelRanks;
@@ -48,7 +49,15 @@ namespace IrcD
         private readonly Dictionary<Socket, UserInfo> sockets = new Dictionary<Socket, UserInfo>();
         private readonly Dictionary<string, ChannelInfo> channels = new Dictionary<string, ChannelInfo>();
         private readonly Dictionary<string, Socket> nicks = new Dictionary<string, Socket>();
-        private readonly Dictionary<string, CommandDelegate> commands = new Dictionary<string, CommandDelegate>(StringComparer.CurrentCultureIgnoreCase);
+
+        private readonly CommandList commands = new CommandList();
+        public dynamic Commands
+        {
+            get
+            {
+                return commands;
+            }
+        }
 
         // Supported
         private readonly ModeList<ChannelRank> supportedRanks = new ModeList<ChannelRank>();
@@ -88,18 +97,21 @@ namespace IrcD
 
             serverCreated = DateTime.Now;
 
-            AddRfcCommands();
-            // RFC 2812 - optional
-            AddRfcOptCommands();
-            // Nonstandard IRC Commands
-            AddNonRfcCommands();
+            // Add Commands
+            AddCommands();
             // Add Modes
             AddModes();
+        }
+
+        private void AddCommands()
+        {
+            commands.Add(new Ping(this));
         }
 
         private void AddModes()
         {
             supportedRanks.Add(new ModeVoice());
+            supportedRanks.Add(new ModeHalfOp());
             supportedRanks.Add(new ModeOp());
 
             supportedChannelModes.Add(new ModeBan());
@@ -114,67 +126,6 @@ namespace IrcD
             supportedUserModes.Add(new ModeInvisible());
             supportedUserModes.Add(new ModeRestricted());
         }
-
-        void AddNonRfcCommands()
-        {
-            commands.Add("KNOCK", knockDelegate);
-        }
-
-
-        void AddRfcOptCommands()
-        {
-            commands.Add("AWAY", AwayDelegate);
-            commands.Add("REHASH", rehashDelegate);
-            commands.Add("DIE", dieDelegate);
-            commands.Add("RESTART", restartDelegate);
-            commands.Add("SUMMON", summonDelegate);
-            commands.Add("USERS", usersDelegate);
-            commands.Add("WALLOPS", wallopsDelegate);
-            commands.Add("USERHOST", userhostDelegate);
-            commands.Add("ISON", IsonDelegate);
-        }
-
-
-        void AddRfcCommands()
-        {
-            commands.Add("PASS", PassDelegate);
-            commands.Add("NICK", NickDelegate);
-            commands.Add("USER", UserDelegate);
-            commands.Add("OPER", OperDelegate);
-            commands.Add("MODE", ModeDelegate); /* both user and channel - the RFC Splits the description */
-            commands.Add("SERVICE", ServiceDelegate);
-            commands.Add("QUIT", QuitDelegate);
-            commands.Add("SQUIT", SquitDelegate);
-            commands.Add("JOIN", JoinDelegate);
-            commands.Add("PART", PartDelegate);
-            commands.Add("TOPIC", TopicDelegate);
-            commands.Add("NAMES", NamesDelegate);
-            commands.Add("LIST", ListDelegate);
-            commands.Add("INVITE", InviteDelegate);
-            commands.Add("KICK", KickDelegate);
-            commands.Add("PRIVMSG", PrivmsgDelegate);
-            commands.Add("NOTICE", NoticeDelegate);
-            commands.Add("MOTD", MOTDDelegate);
-            commands.Add("LUSERS", LusersDelegate);
-            commands.Add("VERSION", VersionDelegate);
-            commands.Add("STATS", StatsDelegate);
-            commands.Add("LINKS", LinksDelegate);
-            commands.Add("TIME", TimeDelegate);
-            commands.Add("CONNECT", ConnectDelegate);
-            commands.Add("TRACE", TraceDelegate);
-            commands.Add("ADMIN", AdminDelegate);
-            commands.Add("INFO", InfoDelegate);
-            commands.Add("SERVLIST", ServlistDelegate);
-            commands.Add("SQUERY", SqueryDelegate);
-            commands.Add("WHO", WhoDelegate);
-            commands.Add("WHOIS", WhoisDelegate);
-            commands.Add("WHOWAS", WhowasDelegate);
-            commands.Add("KILL", KillDelegate);
-            commands.Add("PING", PingDelegate);
-            commands.Add("PONG", PongDelegate);
-            commands.Add("ERROR", ErrorDelegate);
-        }
-
 
         public void MainLoop()
         {
@@ -227,11 +178,26 @@ namespace IrcD
                         Logger.Log("Trace: " + e.StackTrace);
                     }
                 }
+                // pinger
+                foreach (var user in sockets.Where(s => s.Value.Registered))
+                {
+                    var interval = DateTime.Now.AddMinutes(-1);
+                    if (user.Value.LastAction < interval && user.Value.LastPing < interval)
+                    {
+
+                        Commands.Ping();
+                    }
+                }
+
             }
         }
 
         public void Parser(string line, Socket sock, UserInfo info)
         {
+
+#if DEBUG
+            Logger.Log(line);
+#endif
 
             string prefix = null;
             string command = null;
@@ -304,39 +270,7 @@ namespace IrcD
             if (command == null)
                 return;
 
-            CommandDelegate commandHandler;
-            if (commands.TryGetValue(command, out commandHandler))
-            {
-                commandHandler.Invoke(info, args);
-            }
-            else
-            {
-#if DEBUG
-                Logger.Log("Command " + command + "is not yet implemented");
-#endif
-
-                if (info.Registered)
-                {
-                    // we only inform the client about invalid commands if he is already successfully registered
-                    // we dont want to make "wrong protocol ping-pong"
-                    SendUnknownCommand(info, command);
-                }
-
-            }
-
-#if DEBUG
-            Logger.Log(line);
-            var parsedLine = new StringBuilder();
-            parsedLine.Append("[" + info.Usermask + "]-[" + command + "]");
-
-            foreach (string arg in args)
-            {
-                parsedLine.Append("-<" + arg + ">");
-            }
-
-            Logger.Log(parsedLine.ToString());
-
-#endif
+            commands.Handle(command, info, args);
         }
 
         #region Helper Methods
@@ -1890,15 +1824,6 @@ namespace IrcD
             receiver.WriteLine(commandSB);
         }
 
-        internal void SendPing(UserInfo receiver)
-        {
-            commandSB.Length = 0;
-            commandSB.Append(ServerPrefix);
-            commandSB.Append(" PING ");
-            commandSB.Append(ServerCrLf);
-            receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
-        }
-
         internal void SendPong(UserInfo receiver)
         {
             commandSB.Length = 0;
@@ -3051,17 +2976,6 @@ namespace IrcD
                 return;
             }
 
-        }
-
-        private void PingDelegate(UserInfo info, List<string> args)
-        {
-            if (!info.Registered)
-            {
-                SendNotRegistered(info);
-                return;
-            }
-
-            SendPong(info);
         }
 
         private void PongDelegate(UserInfo info, List<string> args)

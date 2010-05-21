@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
+using IrcD.Utils;
 
 namespace IrcD
 {
@@ -31,13 +32,17 @@ namespace IrcD
         public UserInfo(IrcDaemon ircDaemon, Socket socket, string host, bool isAcceptSocket, bool passAccepted)
             : base(ircDaemon)
         {
+            AwayMsg = null;
+            Realname = null;
+            IsService = false;
+            Registered = false;
+            PassAccepted = passAccepted;
             this.host = host;
             this.isAcceptSocket = isAcceptSocket;
-            this.passAccepted = passAccepted;
             this.socket = socket;
         }
 
-        private Socket socket;
+        private readonly Socket socket;
 
         internal Socket Socket
         {
@@ -47,7 +52,7 @@ namespace IrcD
             }
         }
 
-        private bool isAcceptSocket;
+        private readonly bool isAcceptSocket;
 
         public bool IsAcceptSocket
         {
@@ -57,47 +62,11 @@ namespace IrcD
             }
         }
 
-        private bool passAccepted;
+        public bool PassAccepted { get; internal set; }
 
-        public bool PassAccepted
-        {
-            get
-            {
-                return passAccepted;
-            }
-            internal set
-            {
-                passAccepted = value;
-            }
-        }
+        public bool Registered { get; internal set; }
 
-        private bool registered = false;
-
-        public bool Registered
-        {
-            get
-            {
-                return registered;
-            }
-            internal set
-            {
-                registered = value;
-            }
-        }
-
-        private bool isService = false;
-
-        public bool IsService
-        {
-            get
-            {
-                return isService;
-            }
-            set
-            {
-                isService = value;
-            }
-        }
+        public bool IsService { get; set; }
 
         private string nick = null;
 
@@ -113,23 +82,10 @@ namespace IrcD
             }
         }
 
-        private string realname = null;
-
-        public string Realname
-        {
-            get
-            {
-                return realname;
-            }
-            internal set
-            {
-                realname = value;
-            }
-        }
+        public string Realname { get; internal set; }
 
 
-
-        private string user = null;
+        private string user;
 
         public string User
         {
@@ -143,7 +99,7 @@ namespace IrcD
             }
         }
 
-        private string host;
+        private readonly string host;
 
         public string Host
         {
@@ -169,19 +125,7 @@ namespace IrcD
             }
         }
 
-        private string awayMsg = null;
-
-        public string AwayMsg
-        {
-            get
-            {
-                return awayMsg;
-            }
-            set
-            {
-                awayMsg = value;
-            }
-        }
+        public string AwayMsg { get; set; }
 
         private DateTime lastAction = DateTime.Now;
 
@@ -197,7 +141,19 @@ namespace IrcD
             }
         }
 
-
+        private DateTime lastPing = DateTime.Now;
+        
+        public DateTime LastPing
+        {
+            get
+            {
+                return lastPing;
+            }
+            set
+            {
+                lastPing = value;
+            }
+        }
         public string ModeString
         {
             get
@@ -220,8 +176,9 @@ namespace IrcD
 
         public override void WriteLine(StringBuilder line)
         {
-            line.Append(IrcDaemon.ServerCrLf);
+            Logger.Log(line.ToString());
 
+            line.Append(IrcDaemon.ServerCrLf);
             socket.Send(Encoding.UTF8.GetBytes(line.ToString()));
         }
     }

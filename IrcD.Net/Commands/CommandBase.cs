@@ -18,23 +18,33 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Data.SQLite;
+using System.Collections.Generic;
+using System.Text;
 
-namespace IrcD.Database
+namespace IrcD.Commands
 {
-	/// <summary>
-	/// Description of DatabaseCommon.
-	/// </summary>
-	public class DatabaseCommon
-	{	
-		private static readonly SQLiteConnection SqLiteConnection = new SQLiteConnection("Data Source=ircd.db;FailIfMissing=true;");
-		
-		private static Main db;
-		
-		public static Main Db {
-			get {
-                return db = db ?? new Main(SqLiteConnection);
-			}
-		}		
-	}
+    public abstract class CommandBase
+    {
+        protected CommandBase(IrcDaemon ircDaemon, string name)
+        {
+            IrcDaemon = ircDaemon;
+            this.name = name;
+        }
+
+        protected IrcDaemon IrcDaemon;
+        protected StringBuilder Command;
+
+        private readonly string name;
+
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+        }
+
+        public abstract void Handle(UserInfo info, List<string> args);
+        public abstract void Send(InfoBase receiver, object[] args);
+    }
 }

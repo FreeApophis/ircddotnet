@@ -18,23 +18,34 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Data.SQLite;
-
-namespace IrcD.Database
+using System.Collections.Generic;
+namespace IrcD.Commands
 {
-	/// <summary>
-	/// Description of DatabaseCommon.
-	/// </summary>
-	public class DatabaseCommon
-	{	
-		private static readonly SQLiteConnection SqLiteConnection = new SQLiteConnection("Data Source=ircd.db;FailIfMissing=true;");
-		
-		private static Main db;
-		
-		public static Main Db {
-			get {
-                return db = db ?? new Main(SqLiteConnection);
-			}
-		}		
-	}
+    public class Ping : CommandBase
+    {
+        public Ping(IrcDaemon ircDaemon)
+            : base(ircDaemon, "PING")
+        { }
+
+        public override void Handle(UserInfo info, List<string> args)
+        {
+            if (!info.Registered)
+            {
+                //    SendNotRegistered(info);
+                return;
+            }
+
+            IrcDaemon.Commands.Pong();
+        }
+
+        public override void Send(InfoBase receiver, object[] args)
+        {
+            Command.Length = 0;
+            Command.Append(IrcDaemon.ServerPrefix);
+            Command.Append(" PING ");
+
+            receiver.WriteLine(Command);
+        }
+
+    }
 }

@@ -57,6 +57,7 @@
     <Reference Include="DbLinq.Sqlite">
       <HintPath>lib\DbLinq.Sqlite.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -76,9 +77,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChannelInfo.cs" />
+    <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\CommandList.cs" />
+    <Compile Include="Commands\Ping.cs" />
     <Compile Include="Database\DatabaseCommon.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
-    <Compile Include="Enums\IrcMode.cs" />
+    <Compile Include="IrcMode.cs" />
     <Compile Include="InfoBase.cs" />
     <Compile Include="IrcDaemon.cs" />
     <Compile Include="IrcServer.cs" />
@@ -114,9 +118,7 @@
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\WildCard.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
