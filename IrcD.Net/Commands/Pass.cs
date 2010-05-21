@@ -22,31 +22,19 @@ using System.Collections.Generic;
 
 namespace IrcD.Commands
 {
-    public class Ping : CommandBase
+    public class Pass : CommandBase
     {
-        public Ping(IrcDaemon ircDaemon)
-            : base(ircDaemon, "PING")
+        public Pass(IrcDaemon ircDaemon)
+            : base(ircDaemon, "PASS")
         { }
 
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                //    SendNotRegistered(info);
-                return;
-            }
-
-            IrcDaemon.Commands.Pong();
         }
 
         public override void Send(InfoBase receiver, object[] args)
         {
-            Command.Length = 0;
-            Command.Append(IrcDaemon.ServerPrefix);
-            Command.Append(" PING ");
-
             receiver.WriteLine(Command);
         }
-
     }
 }

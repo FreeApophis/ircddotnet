@@ -79,6 +79,9 @@
     <Compile Include="ChannelInfo.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\CommandList.cs" />
+    <Compile Include="Commands\Pass.cs" />
+    <Compile Include="Commands\User.cs" />
+    <Compile Include="Commands\Knock.cs" />
     <Compile Include="Commands\Ping.cs" />
     <Compile Include="Database\DatabaseCommon.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
