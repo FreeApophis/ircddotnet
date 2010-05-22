@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using IrcD.Utils;
@@ -142,7 +143,7 @@ namespace IrcD
         }
 
         private DateTime lastPing = DateTime.Now;
-        
+
         public DateTime LastPing
         {
             get
@@ -162,12 +163,21 @@ namespace IrcD
             }
         }
 
-        private readonly List<UserPerChannelInfo> channels = new List<UserPerChannelInfo>();
+        private readonly List<UserPerChannelInfo> userPerChannelInfos = new List<UserPerChannelInfo>();
 
-        public List<UserPerChannelInfo> Channels
+        public IEnumerable<UserPerChannelInfo> UserPerChannelInfos
         {
-            get { return channels; }
+            get { return userPerChannelInfos; }
         }
+
+        public IEnumerable<ChannelInfo> Channels
+        {
+            get
+            {
+                return userPerChannelInfos.Select(upci => upci.ChannelInfo);
+            }
+        }
+
 
         public override string ToString()
         {

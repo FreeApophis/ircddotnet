@@ -30,7 +30,7 @@ namespace IrcD.Commands
 
     public class CommandList : DynamicObject
     {
-        private readonly Dictionary<string, CommandBase> commandList = new Dictionary<string, CommandBase>();
+        private readonly Dictionary<string, CommandBase> commandList = new Dictionary<string, CommandBase>(StringComparer.OrdinalIgnoreCase);
 
         public void Add(CommandBase command)
         {

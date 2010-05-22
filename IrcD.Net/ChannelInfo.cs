@@ -45,13 +45,21 @@ namespace IrcD
 
         public string Topic { get; set; }
 
-        private readonly Dictionary<string, UserPerChannelInfo> users = new Dictionary<string, UserPerChannelInfo>();
+        private readonly Dictionary<string, UserPerChannelInfo> userPerChannelInfos = new Dictionary<string, UserPerChannelInfo>();
 
-        public Dictionary<string, UserPerChannelInfo> Users
+        public Dictionary<string, UserPerChannelInfo> UserPerChannelInfos
         {
             get
             {
-                return users;
+                return userPerChannelInfos;
+            }
+        }
+
+        public IEnumerable<UserInfo> Users
+        {
+            get
+            {
+                return userPerChannelInfos.Select(upci => upci.Value.UserInfo);
             }
         }
 
@@ -67,7 +75,7 @@ namespace IrcD
 
         public override void WriteLine(StringBuilder line)
         {
-            foreach (var user in users.Select(u => u.Value.UserInfo))
+            foreach (var user in Users)
             {
                 user.WriteLine(line);
             }
