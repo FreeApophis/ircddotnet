@@ -153,8 +153,6 @@
     <Compile Include="Modes\UserModeList.cs" />
     <Compile Include="Modes\UserModes\ModeInvisible.cs" />
     <Compile Include="Modes\UserModes\ModeRestricted.cs" />
-    <Compile Include="ServerReplies\NumericErrorReplies.cs" />
-    <Compile Include="ServerReplies\NumericServerReplies.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerReplies\ReplyCode.cs" />

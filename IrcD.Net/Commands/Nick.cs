@@ -18,6 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 
 namespace IrcD.Commands
@@ -30,11 +31,57 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.PassAccepted)
+            {
+                IrcDaemon.Replies.SendPasswordMismatch(info);
+                return;
+            }
+            if (args.Count < 1)
+            {
+                IrcDaemon.Replies.SendNoNicknameGiven(info);
+                return;
+            }
+            if (IrcDaemon.Nicks.ContainsKey(args[0]))
+            {
+                IrcDaemon.Replies.SendNicknameInUse(info, args[0]);
+                return;
+            }
+            if (!UserInfo.ValidNick(args[0]))
+            {
+                IrcDaemon.Replies.SendErroneousNickname(info, args[0]);
+                return;
+            }
+
+            // NICK command valid after this point
+            if (info.Nick != null)
+            {
+                //TODO: that doesn't look right (what about channels)
+                IrcDaemon.Nicks.Remove(info.Nick);
+            }
+
+            IrcDaemon.Nicks.Add(args[0], info.Socket);
+
+            foreach (var channelInfo in info.Channels)
+            {
+                Send(info, channelInfo, args[0]);
+            }
+
+            info.Nick = args[0];
+
+            if ((!info.Registered) && (info.User != null))
+            {
+                info.Registered = true;
+                IrcDaemon.Replies.RegisterComplete(info);
+            }
         }
 
-        public override void Send(InfoBase receiver, object[] args)
+
+
+
+        public override void Send(InfoBase receiver, params object[] args)
         {
             receiver.WriteLine(Command);
+            throw new NotImplementedException();
         }
     }
 }

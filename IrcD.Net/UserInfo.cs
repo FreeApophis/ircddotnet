@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using IrcD.Modes;
 using IrcD.Utils;
 
 namespace IrcD
@@ -167,7 +168,10 @@ namespace IrcD
 
         public IEnumerable<UserPerChannelInfo> UserPerChannelInfos
         {
-            get { return userPerChannelInfos; }
+            get
+            {
+                return userPerChannelInfos;
+            }
         }
 
         public IEnumerable<ChannelInfo> Channels
@@ -175,6 +179,16 @@ namespace IrcD
             get
             {
                 return userPerChannelInfos.Select(upci => upci.ChannelInfo);
+            }
+        }
+
+        private readonly UserModeList mode = new UserModeList();
+
+        public UserModeList Mode
+        {
+            get
+            {
+                return mode;
             }
         }
 
@@ -190,6 +204,17 @@ namespace IrcD
 
             line.Append(IrcDaemon.ServerCrLf);
             socket.Send(Encoding.UTF8.GetBytes(line.ToString()));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nick"></param>
+        /// <returns></returns>
+        public static bool ValidNick(string nick)
+        {
+            // TODO: implement nick check
+            return true;
         }
     }
 }

@@ -45,6 +45,6 @@ namespace IrcD.Commands
         }
 
         public abstract void Handle(UserInfo info, List<string> args);
-        public abstract void Send(InfoBase receiver, object[] args);
+        public abstract void Send(InfoBase receiver, params object[] args);
     }
 }

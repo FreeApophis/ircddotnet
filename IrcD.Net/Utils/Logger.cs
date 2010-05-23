@@ -30,7 +30,7 @@ namespace IrcD.Utils
         {
             var stackTrace = new StackTrace();
             var callerFrame = stackTrace.GetFrame(1);
-            var location = callerFrame.GetFileName() + " on Line " + callerFrame.GetFileLineNumber();
+            var location = callerFrame.ToString();
             var entity = new Log { Level = level, Message = message, Location = location, Time = DateTime.Now };
 
             DatabaseCommon.Db.Logs.InsertOnSubmit(entity);

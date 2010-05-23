@@ -38,16 +38,50 @@ namespace IrcD
 
     public class IrcDaemon
     {
-
-        const int MaxBufferSize = 2048;
-
         public const string ServerCrLf = "\r\n";
         const char PrefixCharacter = ':';
+        const int MaxBufferSize = 2048;
 
+        // Main Datastructures
         private readonly Dictionary<Socket, UserInfo> sockets = new Dictionary<Socket, UserInfo>();
         private readonly Dictionary<string, ChannelInfo> channels = new Dictionary<string, ChannelInfo>();
         private readonly Dictionary<string, Socket> nicks = new Dictionary<string, Socket>();
+        public Dictionary<string, Socket> Nicks
+        {
+            get
+            {
+                return nicks;
+            }
+        }
 
+        #region Modes
+        private readonly RankList supportedRanks = new RankList();
+        public dynamic SupportedRanks
+        {
+            get
+            {
+                return supportedRanks;
+            }
+        }
+        private readonly ChannelModeList supportedChannelModes = new ChannelModeList();
+        public dynamic SupportedChannelModes
+        {
+            get
+            {
+                return supportedChannelModes;
+            }
+        }
+        private readonly UserModeList supportedUserModes = new UserModeList();
+        public dynamic SupportedUserModes
+        {
+            get
+            {
+                return supportedUserModes;
+            }
+        }
+        #endregion
+
+        // Protocol Messages
         private readonly CommandList commands = new CommandList();
         public dynamic Commands
         {
@@ -57,10 +91,14 @@ namespace IrcD
             }
         }
 
-        // Supported
-        private readonly ModeList<ChannelRank> supportedRanks = new ModeList<ChannelRank>();
-        private readonly ModeList<ChannelMode> supportedChannelModes = new ModeList<ChannelMode>();
-        private readonly ModeList<UserMode> supportedUserModes = new ModeList<UserMode>();
+        private readonly ServerReplies.ServerReplies replies;
+        public ServerReplies.ServerReplies Replies
+        {
+            get
+            {
+                return replies;
+            }
+        }
 
         private bool connected = true;
         private byte[] buffer = new byte[MaxBufferSize];
@@ -86,12 +124,17 @@ namespace IrcD
         }
 
         private readonly DateTime serverCreated;
-
-
+        public DateTime ServerCreated
+        {
+            get
+            {
+                return serverCreated;
+            }
+        }
 
         public IrcDaemon()
         {
-
+            replies = new ServerReplies.ServerReplies(this);
             serverCreated = DateTime.Now;
 
             // Add Commands
@@ -111,7 +154,6 @@ namespace IrcD
             commands.Add(new Invite(this));
             commands.Add(new IsOn(this));
             commands.Add(new Join(this));
-            commands.Add(new Kill(this));
             commands.Add(new Kick(this));
             commands.Add(new Kill(this));
             commands.Add(new Knock(this));
@@ -222,14 +264,12 @@ namespace IrcD
                     }
                 }
                 // pinger
-                foreach (var user in sockets.Where(s => s.Value.Registered))
+                foreach (var user in from user in sockets.Where(s => s.Value.Registered)
+                                     let interval = DateTime.Now.AddMinutes(-1)
+                                     where user.Value.LastAction < interval && user.Value.LastPing < interval
+                                     select user.Value)
                 {
-                    var interval = DateTime.Now.AddMinutes(-1);
-                    if (user.Value.LastAction < interval && user.Value.LastPing < interval)
-                    {
-
-                        Commands.Ping();
-                    }
+                    Commands.Ping(user);
                 }
 
             }
@@ -317,17 +357,6 @@ namespace IrcD
         }
 
         #region Helper Methods
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="nick"></param>
-        /// <returns></returns>
-        private bool ValidNick(string nick)
-        {
-            // TODO: implement nick check
-            return true;
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -449,29 +478,6 @@ namespace IrcD
             }
 
             return changemodes;
-        }
-
-        /// <summary>
-        /// Send the messages after registering complete
-        /// </summary>
-        /// <param name="info"></param>
-        private void RegisterComplete(UserInfo info)
-        {
-            //SendWelcome(info);
-            //SendYourHost(info);
-            //SendCreated(info);
-            //SendMyInfo(info);
-            //SendISupport(info);
-            //if (Options.MOTD.Count == 0)
-            //{
-            //    SendNoMotd(info);
-            //}
-            //else
-            //{
-            //    SendMotdStart(info);
-            //    SendMotd(info);
-            //    SendMotdEnd(info);
-            //}
         }
 
         /// <summary>
@@ -612,87 +618,6 @@ namespace IrcD
         //        return;
         //    }
         //    SendPasswordMismatch(info);
-        //}
-
-        //internal void NickDelegate(UserInfo info, List<string> args)
-        //{
-        //    if (!info.PassAccepted)
-        //    {
-        //        SendPasswordMismatch(info);
-        //        return;
-        //    }
-        //    if (args.Count < 1)
-        //    {
-        //        SendNoNicknameGiven(info);
-        //        return;
-        //    }
-        //    if (nicks.ContainsKey(args[0]))
-        //    {
-        //        SendNicknameInUse(info, args[0]);
-        //        return;
-        //    }
-        //    if (!ValidNick(args[0]))
-        //    {
-        //        SendErroneousNickname(info, args[0]);
-        //        return;
-        //    }
-        //    // NICK command valid after this point
-        //    if (info.Nick != null)
-        //    {
-        //        nicks.Remove(info.Nick);
-        //    }
-
-        //    nicks.Add(args[0], info.Socket);
-
-        //    foreach (var channelInfo in info.Channels.Select(channel => channel.ChannelInfo))
-        //    {
-        //        SendNick(info, channelInfo, args[0]);
-        //    }
-
-        //    info.Nick = args[0];
-
-        //    if ((!info.Registered) && (info.User != null))
-        //    {
-        //        info.Registered = true;
-        //        RegisterComplete(info);
-        //    }
-        //}
-
-        //internal void UserDelegate(UserInfo info, List<string> args)
-        //{
-        //    if (!info.PassAccepted)
-        //    {
-        //        SendPasswordMismatch(info);
-        //        return;
-        //    }
-        //    if (info.User != null)
-        //    {
-        //        SendAlreadyRegistered(info);
-        //        return;
-        //    }
-        //    if (args.Count < 4)
-        //    {
-        //        SendNeedMoreParams(info);
-        //        return;
-        //    }
-
-        //    int flags;
-        //    int.TryParse(args[1], out flags);
-
-        //    //TODO: new Modes
-        //    //info.Mode_i = ((flags & 8) > 0);
-        //    //info.Mode_w = ((flags & 4) > 0);
-
-        //    info.User = args[0];
-
-        //    info.Realname = args[3];
-
-        //    if (info.Nick != null)
-        //    {
-        //        info.Registered = true;
-        //        // *** send welcome ***
-        //        RegisterComplete(info);
-        //    }
         //}
 
         //internal void OperDelegate(UserInfo info, List<string> args)

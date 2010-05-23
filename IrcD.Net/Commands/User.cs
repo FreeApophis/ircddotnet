@@ -18,6 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 
 namespace IrcD.Commands
@@ -30,11 +31,43 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+
+            if (!info.PassAccepted)
+            {
+                IrcDaemon.Replies.SendPasswordMismatch(info);
+                return;
+            }
+            if (info.User != null)
+            {
+                IrcDaemon.Replies.SendAlreadyRegistered(info);
+                return;
+            }
+            if (args.Count < 4)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+
+            int flags;
+            int.TryParse(args[1], out flags);
+
+            //TODO: new Modes
+            //info.Mode_i = ((flags & 8) > 0);
+            //info.Mode_w = ((flags & 4) > 0);
+
+            info.User = args[0];
+            info.Realname = args[3];
+
+            if (info.Nick == null) return;
+
+            info.Registered = true;
+            IrcDaemon.Replies.RegisterComplete(info);
         }
 
         public override void Send(InfoBase receiver, object[] args)
         {
             receiver.WriteLine(Command);
+            throw new NotImplementedException();
         }
     }
 }
