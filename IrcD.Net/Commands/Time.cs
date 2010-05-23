@@ -18,6 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 
 namespace IrcD.Commands
@@ -30,11 +31,16 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            base.Handle(info, args);
+
+            //TODO: Parse Server Argument
+            IrcDaemon.Replies.SendTimeReply(info);
         }
 
         public override void Send(InfoBase receiver, object[] args)
         {
             receiver.WriteLine(Command);
+            throw new NotImplementedException();
         }
     }
 }

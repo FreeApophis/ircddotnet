@@ -80,5 +80,17 @@ namespace IrcD
                 user.WriteLine(line);
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <returns></returns>
+        public static bool ValidChannel(string channel)
+        {
+            // TODO: implement channel check
+            //return !string.IsNullOrEmpty(channel) &&  Options.ChannelPrefixes.Contains(channel[0]);
+            return true;
+        }
     }
 }

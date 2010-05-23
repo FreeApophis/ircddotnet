@@ -44,7 +44,16 @@ namespace IrcD.Commands
             }
         }
 
-        public abstract void Handle(UserInfo info, List<string> args);
-        public abstract void Send(InfoBase receiver, params object[] args);
+        public virtual void Handle(UserInfo info, List<string> args)
+        {
+            if (info.Registered) return;
+            IrcDaemon.Replies.SendNotRegistered(info);
+        }
+
+        public virtual void Send(InfoBase receiver, params object[] args)
+        {
+            Command.Length = 0;
+            Command.Append(IrcDaemon.ServerPrefix);
+        }
     }
 }

@@ -124,8 +124,13 @@
     <Compile Include="Commands\User.cs" />
     <Compile Include="Commands\Knock.cs" />
     <Compile Include="Commands\Ping.cs" />
+    <Compile Include="Database\Channel.cs" />
     <Compile Include="Database\DatabaseCommon.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
+    <Compile Include="Database\Log.cs" />
+    <Compile Include="Database\Nick.cs" />
+    <Compile Include="Database\Setting.cs" />
+    <Compile Include="Database\User.cs" />
     <Compile Include="IrcMode.cs" />
     <Compile Include="InfoBase.cs" />
     <Compile Include="IrcDaemon.cs" />

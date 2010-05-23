@@ -18,31 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
-
-namespace IrcD.Commands
+namespace IrcD.Database
 {
-    public class Ping : CommandBase
+    partial class Log
     {
-        public Ping(IrcDaemon ircDaemon)
-            : base(ircDaemon, "PING")
-        { }
-
-        public override void Handle(UserInfo info, List<string> args)
-        {
-            base.Handle(info, args);
-
-            IrcDaemon.Commands.Pong();
-        }
-
-        public override void Send(InfoBase receiver, object[] args)
-        {
-            base.Send(receiver, args);
-
-            Command.Append(" PING ");
-
-            receiver.WriteLine(Command);
-        }
 
     }
 }

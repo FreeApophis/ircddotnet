@@ -1,4 +1,4 @@
-#region Auto-generated classes for main database on 2010-05-19 16:31:56Z
+#region Auto-generated classes for main database on 2010-05-23 16:37:08Z
 
 //
 //  ____  _     __  __      _        _
@@ -7,7 +7,7 @@
 // | |_| | |_) | |  | |  __/ || (_| | |
 // |____/|_.__/|_|  |_|\___|\__\__,_|_|
 //
-// Auto-generated from main on 2010-05-19 16:31:56Z
+// Auto-generated from main on 2010-05-23 16:37:08Z
 // Please visit http://linq.to/db for more information
 
 #endregion
@@ -81,6 +81,8 @@ namespace IrcD.Database
 
 		public Table<Channel> Channels { get { return GetTable<Channel>(); } }
 		public Table<Log> Logs { get { return GetTable<Log>(); } }
+		public Table<Nick> Nicks { get { return GetTable<Nick>(); } }
+		public Table<Service> Services { get { return GetTable<Service>(); } }
 		public Table<Setting> Settings { get { return GetTable<Setting>(); } }
 		public Table<User> Users { get { return GetTable<User>(); } }
 
@@ -380,6 +382,216 @@ namespace IrcD.Database
 
 	}
 
+	[Table(Name = "main.Nick")]
+	public partial class Nick : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		#region INotifyPropertyChanging handling
+
+		public event PropertyChangingEventHandler PropertyChanging;
+
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+		protected virtual void SendPropertyChanging()
+		{
+			if (PropertyChanging != null)
+			{
+				PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+
+		#endregion
+
+		#region INotifyPropertyChanged handling
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void SendPropertyChanged(string propertyName)
+		{
+			if (PropertyChanged != null)
+			{
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+
+		#endregion
+
+		#region Extensibility Method Definitions
+
+		partial void OnCreated();
+		partial void OnIDChanged();
+		partial void OnIDChanging(int? value);
+		partial void OnNick1Changed();
+		partial void OnNick1Changing(string value);
+
+		#endregion
+
+		#region int? ID
+
+		private int? _id;
+		[DebuggerNonUserCode]
+		[Column(Storage = "_id", Name = "ID", DbType = "INTEGER", IsPrimaryKey = true, IsDbGenerated = true, AutoSync = AutoSync.Never)]
+		public int? ID
+		{
+			get
+			{
+				return _id;
+			}
+			set
+			{
+				if (value != _id)
+				{
+					OnIDChanging(value);
+					SendPropertyChanging();
+					_id = value;
+					SendPropertyChanged("ID");
+					OnIDChanged();
+				}
+			}
+		}
+
+		#endregion
+
+		#region string Nick1
+
+		private string _nick1;
+		[DebuggerNonUserCode]
+		[Column(Storage = "_nick1", Name = "Nick", DbType = "VARCHAR(255)", AutoSync = AutoSync.Never)]
+		public string Nick1
+		{
+			get
+			{
+				return _nick1;
+			}
+			set
+			{
+				if (value != _nick1)
+				{
+					OnNick1Changing(value);
+					SendPropertyChanging();
+					_nick1 = value;
+					SendPropertyChanged("Nick1");
+					OnNick1Changed();
+				}
+			}
+		}
+
+		#endregion
+
+		#region ctor
+
+		public Nick()
+		{
+			OnCreated();
+		}
+
+		#endregion
+
+	}
+
+	[Table(Name = "main.Service")]
+	public partial class Service : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		#region INotifyPropertyChanging handling
+
+		public event PropertyChangingEventHandler PropertyChanging;
+
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs("");
+		protected virtual void SendPropertyChanging()
+		{
+			if (PropertyChanging != null)
+			{
+				PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+
+		#endregion
+
+		#region INotifyPropertyChanged handling
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void SendPropertyChanged(string propertyName)
+		{
+			if (PropertyChanged != null)
+			{
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+
+		#endregion
+
+		#region Extensibility Method Definitions
+
+		partial void OnCreated();
+		partial void OnIDChanged();
+		partial void OnIDChanging(int? value);
+		partial void OnUserIDChanged();
+		partial void OnUserIDChanging(int value);
+
+		#endregion
+
+		#region int? ID
+
+		private int? _id;
+		[DebuggerNonUserCode]
+		[Column(Storage = "_id", Name = "ID", DbType = "INTEGER", IsPrimaryKey = true, IsDbGenerated = true, AutoSync = AutoSync.Never)]
+		public int? ID
+		{
+			get
+			{
+				return _id;
+			}
+			set
+			{
+				if (value != _id)
+				{
+					OnIDChanging(value);
+					SendPropertyChanging();
+					_id = value;
+					SendPropertyChanged("ID");
+					OnIDChanged();
+				}
+			}
+		}
+
+		#endregion
+
+		#region int UserID
+
+		private int _userID;
+		[DebuggerNonUserCode]
+		[Column(Storage = "_userID", Name = "UserID", DbType = "INTEGER", AutoSync = AutoSync.Never, CanBeNull = false)]
+		public int UserID
+		{
+			get
+			{
+				return _userID;
+			}
+			set
+			{
+				if (value != _userID)
+				{
+					OnUserIDChanging(value);
+					SendPropertyChanging();
+					_userID = value;
+					SendPropertyChanged("UserID");
+					OnUserIDChanged();
+				}
+			}
+		}
+
+		#endregion
+
+		#region ctor
+
+		public Service()
+		{
+			OnCreated();
+		}
+
+		#endregion
+
+	}
+
 	[Table(Name = "main.Setting")]
 	public partial class Setting : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -548,8 +760,70 @@ namespace IrcD.Database
 		#region Extensibility Method Definitions
 
 		partial void OnCreated();
+		partial void OnAwayMessageChanged();
+		partial void OnAwayMessageChanging(int? value);
+		partial void OnHostChanged();
+		partial void OnHostChanging(string value);
 		partial void OnIDChanged();
 		partial void OnIDChanging(int value);
+		partial void OnNickIDChanged();
+		partial void OnNickIDChanging(int value);
+		partial void OnRealNameChanged();
+		partial void OnRealNameChanging(string value);
+		partial void OnUser1Changed();
+		partial void OnUser1Changing(string value);
+
+		#endregion
+
+		#region int? AwayMessage
+
+		private int? _awayMessage;
+		[DebuggerNonUserCode]
+		[Column(Storage = "_awayMessage", Name = "AwayMessage", DbType = "INTEGER", AutoSync = AutoSync.Never)]
+		public int? AwayMessage
+		{
+			get
+			{
+				return _awayMessage;
+			}
+			set
+			{
+				if (value != _awayMessage)
+				{
+					OnAwayMessageChanging(value);
+					SendPropertyChanging();
+					_awayMessage = value;
+					SendPropertyChanged("AwayMessage");
+					OnAwayMessageChanged();
+				}
+			}
+		}
+
+		#endregion
+
+		#region string Host
+
+		private string _host;
+		[DebuggerNonUserCode]
+		[Column(Storage = "_host", Name = "Host", DbType = "VARCHAR(255)", AutoSync = AutoSync.Never, CanBeNull = false)]
+		public string Host
+		{
+			get
+			{
+				return _host;
+			}
+			set
+			{
+				if (value != _host)
+				{
+					OnHostChanging(value);
+					SendPropertyChanging();
+					_host = value;
+					SendPropertyChanged("Host");
+					OnHostChanged();
+				}
+			}
+		}
 
 		#endregion
 
@@ -573,6 +847,84 @@ namespace IrcD.Database
 					_id = value;
 					SendPropertyChanged("ID");
 					OnIDChanged();
+				}
+			}
+		}
+
+		#endregion
+
+		#region int NickID
+
+		private int _nickID;
+		[DebuggerNonUserCode]
+		[Column(Storage = "_nickID", Name = "NickID", DbType = "INTEGER", AutoSync = AutoSync.Never, CanBeNull = false)]
+		public int NickID
+		{
+			get
+			{
+				return _nickID;
+			}
+			set
+			{
+				if (value != _nickID)
+				{
+					OnNickIDChanging(value);
+					SendPropertyChanging();
+					_nickID = value;
+					SendPropertyChanged("NickID");
+					OnNickIDChanged();
+				}
+			}
+		}
+
+		#endregion
+
+		#region string RealName
+
+		private string _realName;
+		[DebuggerNonUserCode]
+		[Column(Storage = "_realName", Name = "RealName", DbType = "VARCHAR(255)", AutoSync = AutoSync.Never, CanBeNull = false)]
+		public string RealName
+		{
+			get
+			{
+				return _realName;
+			}
+			set
+			{
+				if (value != _realName)
+				{
+					OnRealNameChanging(value);
+					SendPropertyChanging();
+					_realName = value;
+					SendPropertyChanged("RealName");
+					OnRealNameChanged();
+				}
+			}
+		}
+
+		#endregion
+
+		#region string User1
+
+		private string _user1;
+		[DebuggerNonUserCode]
+		[Column(Storage = "_user1", Name = "User", DbType = "VARCHAR(255)", AutoSync = AutoSync.Never, CanBeNull = false)]
+		public string User1
+		{
+			get
+			{
+				return _user1;
+			}
+			set
+			{
+				if (value != _user1)
+				{
+					OnUser1Changing(value);
+					SendPropertyChanging();
+					_user1 = value;
+					SendPropertyChanged("User1");
+					OnUser1Changed();
 				}
 			}
 		}
