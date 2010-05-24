@@ -22,5 +22,6 @@ namespace IrcD.Database
 {
     partial class User
     {
+
     }
 }

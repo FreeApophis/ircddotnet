@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using IrcD.Database;
 using IrcD.Modes;
 using IrcD.Utils;
 
@@ -34,12 +35,12 @@ namespace IrcD
         public UserInfo(IrcDaemon ircDaemon, Socket socket, string host, bool isAcceptSocket, bool passAccepted)
             : base(ircDaemon)
         {
-            AwayMsg = null;
-            Realname = null;
+            //AwayMsg = null;
+            //Realname = null;
             IsService = false;
             Registered = false;
             PassAccepted = passAccepted;
-            this.host = host;
+            //this.host = host;
             this.isAcceptSocket = isAcceptSocket;
             this.socket = socket;
         }
@@ -70,52 +71,14 @@ namespace IrcD
 
         public bool IsService { get; set; }
 
-        private string nick = null;
-
-        public string Nick
-        {
-            get
-            {
-                return nick;
-            }
-            internal set
-            {
-                nick = value;
-            }
-        }
-
-        public string Realname { get; internal set; }
-
-
-        private string user;
-
-        public string User
-        {
-            get
-            {
-                return user;
-            }
-            internal set
-            {
-                user = value;
-            }
-        }
-
-        private readonly string host;
-
-        public string Host
-        {
-            get
-            {
-                return host;
-            }
-        }
+        private User data;
 
         public string Usermask
         {
             get
-            {
-                return nick + "!" + user + "@" + host;
+           {
+                //return nick + "!" + user + "@" + host;
+               return 
             }
         }
 
@@ -126,8 +89,6 @@ namespace IrcD
                 return ":" + Usermask;
             }
         }
-
-        public string AwayMsg { get; set; }
 
         private DateTime lastAction = DateTime.Now;
 

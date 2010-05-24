@@ -128,6 +128,7 @@
     <Compile Include="Database\DatabaseCommon.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Database\Log.cs" />
+    <Compile Include="Database\Main.cs" />
     <Compile Include="Database\Nick.cs" />
     <Compile Include="Database\Setting.cs" />
     <Compile Include="Database\User.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Modes\ChannelRanks\ModeVoice.cs" />
     <Compile Include="Modes\ChannelRank.cs" />
     <Compile Include="Modes\Mode.cs" />
+    <Compile Include="Modes\ModeFactory.cs" />
     <Compile Include="Modes\ModeList.cs" />
     <Compile Include="Modes\RankList.cs" />
     <Compile Include="Modes\UserMode.cs" />
