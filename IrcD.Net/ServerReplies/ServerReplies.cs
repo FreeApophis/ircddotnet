@@ -62,7 +62,8 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.AppendFormat(NumericFormat, (int)code);
             response.Append(" ");
-            response.Append(info.Nick);
+            // TODO: does not exist anymore
+            //response.Append(info.NickName);
         }
 
         /// <summary>
@@ -181,10 +182,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Away);
 
-            response.Append(" ");
-            response.Append(awayUser.Nick);
+            //TODO:
+            response.Append(" ");            
+            //response.Append(awayUser.Nick);
             response.Append(" :");
-            response.Append(awayUser.AwayMsg);
+            //response.Append(awayUser.AwayMsg);
 
             info.WriteLine(response);
         }
@@ -244,14 +246,15 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoIsUser);
 
+            //TODO:
             response.Append(" ");
-            response.Append(who.Nick);
+            //response.Append(who.Nick);
             response.Append(" ");
-            response.Append(who.User);
+            //response.Append(who.User);
             response.Append(" ");
-            response.Append(who.Host);
+            //response.Append(who.Host);
             response.Append(" * :");
-            response.Append(who.Realname);
+            //response.Append(who.Realname);
 
             info.WriteLine(response);
         }
@@ -265,8 +268,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoIsServer);
 
+            //TODO:
             response.Append(" ");
-            response.Append(who.Nick);
+            //response.Append(who.Nick);
             response.Append(" ");
             response.Append(ircDaemon.Options.ServerName); // TODO: when doing multiple IRC Server
             response.Append(" :");
@@ -284,8 +288,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoIsOperator);
 
+            //TODO:
             response.Append(" ");
-            response.Append(who.Nick);
+            //response.Append(who.Nick);
             response.Append(" :is an IRC operator");
 
             info.WriteLine(response);
@@ -301,7 +306,8 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.WhoIsIdle);
 
             response.Append(" ");
-            response.Append(who.Nick);
+            //TODO:
+            //response.Append(who.Nick);
             response.Append(" ");
             response.Append((DateTime.Now - who.LastAction).TotalSeconds);
             response.Append(" :seconds idle");
@@ -319,7 +325,8 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.EndOfWhoIs);
 
             response.Append(" ");
-            response.Append(who.Nick);
+            //TODO:
+            //response.Append(who.Nick);
             response.Append(" ");
             response.Append(" :End of WHOIS list");
 
@@ -336,7 +343,8 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.WhoIsChannels);
 
             response.Append(" ");
-            response.Append(who.Nick);
+            //TODO:
+            //response.Append(who.Nick);
             response.Append(" :");
             foreach (var chan in who.Channels)
             {
@@ -432,7 +440,8 @@ namespace IrcD.ServerReplies
             {
                 // TODO: Split at max length
                 response.Append(upci.Modes.NickPrefix);
-                response.Append(upci.UserInfo.Nick);
+                //TODO:
+                //response.Append(upci.UserInfo.Nick);
                 response.Append(" ");
             }
 
@@ -522,8 +531,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.YouAreService);
 
+            //TODO:
             response.Append(" :You are service ");
-            response.Append(info.Nick);
+            //response.Append(info.Nick);
 
             info.WriteLine(response);
         }

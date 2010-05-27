@@ -71,14 +71,14 @@ namespace IrcD
 
         public bool IsService { get; set; }
 
-        private User data;
+        private User user;
+        private Nick nick;
 
         public string Usermask
         {
             get
-           {
-                //return nick + "!" + user + "@" + host;
-               return 
+            {
+                return nick.Name + "!" + user.Name + "@" + user.Host;
             }
         }
 
@@ -176,6 +176,22 @@ namespace IrcD
         {
             // TODO: implement nick check
             return true;
+        }
+
+        internal bool UserExists
+        {
+            get
+            {
+                return user != null;
+            }
+        }
+
+        public object NickExists
+        {
+            get
+            {
+                return nick != null;
+            }
         }
     }
 }

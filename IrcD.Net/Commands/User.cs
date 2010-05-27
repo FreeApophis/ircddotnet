@@ -37,7 +37,7 @@ namespace IrcD.Commands
                 IrcDaemon.Replies.SendPasswordMismatch(info);
                 return;
             }
-            if (info.User != null)
+            if (info.UserExists)
             {
                 IrcDaemon.Replies.SendAlreadyRegistered(info);
                 return;
@@ -55,13 +55,15 @@ namespace IrcD.Commands
             //info.Mode_i = ((flags & 8) > 0);
             //info.Mode_w = ((flags & 4) > 0);
 
-            info.User = args[0];
-            info.Realname = args[3];
+            // TODO Set user
+            //info.User = args[0];
+            //info.Realname = args[3];
 
-            if (info.Nick == null) return;
-
-            info.Registered = true;
-            IrcDaemon.Replies.RegisterComplete(info);
+            if (info.UserExists)
+            {
+                info.Registered = true;
+                IrcDaemon.Replies.RegisterComplete(info);
+            }
         }
 
         public override void Send(InfoBase receiver, object[] args)

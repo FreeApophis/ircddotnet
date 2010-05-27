@@ -53,10 +53,10 @@ namespace IrcD.Commands
             }
 
             // NICK command valid after this point
-            if (info.Nick != null)
+            if (info.NickExists != null)
             {
                 //TODO: that doesn't look right (what about channels)
-                IrcDaemon.Nicks.Remove(info.Nick);
+                //IrcDaemon.Nicks.Remove(info.Nick);
             }
 
             IrcDaemon.Nicks.Add(args[0], info.Socket);
@@ -66,13 +66,13 @@ namespace IrcD.Commands
                 Send(info, channelInfo, args[0]);
             }
 
-            info.Nick = args[0];
+            // TODO: set nick
+            //info.Nick = args[0];
 
-            if ((!info.Registered) && (info.User != null))
-            {
-                info.Registered = true;
-                IrcDaemon.Replies.RegisterComplete(info);
-            }
+            if ((info.Registered) || (!info.UserExists)) return;
+
+            info.Registered = true;
+            IrcDaemon.Replies.RegisterComplete(info);
         }
 
 

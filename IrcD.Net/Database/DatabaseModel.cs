@@ -5,7 +5,7 @@
 // | |_| | |_) | |  | |  __/ || (_| | |
 // |____/|_.__/|_|  |_|\___|\__\__,_|_|
 //
-// Auto-generated from main on 2010-05-28 01:16:45Z.
+// Auto-generated from main on 2010-05-28 01:25:36Z.
 // Please visit http://code.google.com/p/dblinq2007/ for more information.
 //
 namespace IrcD.Database
@@ -418,7 +418,7 @@ namespace IrcD.Database
 		
 		private System.Nullable<int> _id;
 		
-		private string _nick1;
+		private string _name;
 		
 		#region Extensibility Method Declarations
 		partial void OnCreated();
@@ -427,9 +427,9 @@ namespace IrcD.Database
 		
 		partial void OnIDChanging(System.Nullable<int> value);
 		
-		partial void OnNick1Changed();
+		partial void OnNameChanged();
 		
-		partial void OnNick1Changing(string value);
+		partial void OnNameChanging(string value);
 		#endregion
 		
 		
@@ -459,24 +459,24 @@ namespace IrcD.Database
 			}
 		}
 		
-		[Column(Storage="_nick1", Name="Nick", DbType="VARCHAR(255)", AutoSync=AutoSync.Never)]
+		[Column(Storage="_name", Name="Name", DbType="VARCHAR(255)", AutoSync=AutoSync.Never)]
 		[DebuggerNonUserCode()]
-		public string Nick1
+		public string Name
 		{
 			get
 			{
-				return this._nick1;
+				return this._name;
 			}
 			set
 			{
-				if (((_nick1 == value) 
+				if (((_name == value) 
 							== false))
 				{
-					this.OnNick1Changing(value);
+					this.OnNameChanging(value);
 					this.SendPropertyChanging();
-					this._nick1 = value;
-					this.SendPropertyChanged("Nick1");
-					this.OnNick1Changed();
+					this._name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
 				}
 			}
 		}
@@ -729,13 +729,13 @@ namespace IrcD.Database
 		
 		private string _host;
 		
-		private int _id;
+		private System.Nullable<int> _id;
 		
-		private int _nickID;
+		private string _name;
+		
+		private System.Nullable<int> _nickID;
 		
 		private string _realName;
-		
-		private string _user1;
 		
 		#region Extensibility Method Declarations
 		partial void OnCreated();
@@ -750,19 +750,19 @@ namespace IrcD.Database
 		
 		partial void OnIDChanged();
 		
-		partial void OnIDChanging(int value);
+		partial void OnIDChanging(System.Nullable<int> value);
+		
+		partial void OnNameChanged();
+		
+		partial void OnNameChanging(string value);
 		
 		partial void OnNickIDChanged();
 		
-		partial void OnNickIDChanging(int value);
+		partial void OnNickIDChanging(System.Nullable<int> value);
 		
 		partial void OnRealNameChanged();
 		
 		partial void OnRealNameChanging(string value);
-		
-		partial void OnUser1Changed();
-		
-		partial void OnUser1Changing(string value);
 		#endregion
 		
 		
@@ -792,7 +792,7 @@ namespace IrcD.Database
 			}
 		}
 		
-		[Column(Storage="_host", Name="Host", DbType="VARCHAR(255)", AutoSync=AutoSync.Never, CanBeNull=false)]
+		[Column(Storage="_host", Name="Host", DbType="VARCHAR(255)", AutoSync=AutoSync.Never)]
 		[DebuggerNonUserCode()]
 		public string Host
 		{
@@ -814,9 +814,9 @@ namespace IrcD.Database
 			}
 		}
 		
-		[Column(Storage="_id", Name="ID", DbType="INTEGER", IsPrimaryKey=true, IsDbGenerated=true, AutoSync=AutoSync.Never, CanBeNull=false)]
+		[Column(Storage="_id", Name="ID", DbType="INTEGER", IsPrimaryKey=true, IsDbGenerated=true, AutoSync=AutoSync.Never)]
 		[DebuggerNonUserCode()]
-		public int ID
+		public System.Nullable<int> ID
 		{
 			get
 			{
@@ -835,9 +835,31 @@ namespace IrcD.Database
 			}
 		}
 		
-		[Column(Storage="_nickID", Name="NickID", DbType="INTEGER", AutoSync=AutoSync.Never, CanBeNull=false)]
+		[Column(Storage="_name", Name="Name", DbType="VARCHAR(255)", AutoSync=AutoSync.Never)]
 		[DebuggerNonUserCode()]
-		public int NickID
+		public string Name
+		{
+			get
+			{
+				return this._name;
+			}
+			set
+			{
+				if (((_name == value) 
+							== false))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_nickID", Name="NickID", DbType="INTEGER", AutoSync=AutoSync.Never)]
+		[DebuggerNonUserCode()]
+		public System.Nullable<int> NickID
 		{
 			get
 			{
@@ -856,7 +878,7 @@ namespace IrcD.Database
 			}
 		}
 		
-		[Column(Storage="_realName", Name="RealName", DbType="VARCHAR(255)", AutoSync=AutoSync.Never, CanBeNull=false)]
+		[Column(Storage="_realName", Name="RealName", DbType="VARCHAR(255)", AutoSync=AutoSync.Never)]
 		[DebuggerNonUserCode()]
 		public string RealName
 		{
@@ -874,28 +896,6 @@ namespace IrcD.Database
 					this._realName = value;
 					this.SendPropertyChanged("RealName");
 					this.OnRealNameChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_user1", Name="User", DbType="VARCHAR(255)", AutoSync=AutoSync.Never, CanBeNull=false)]
-		[DebuggerNonUserCode()]
-		public string User1
-		{
-			get
-			{
-				return this._user1;
-			}
-			set
-			{
-				if (((_user1 == value) 
-							== false))
-				{
-					this.OnUser1Changing(value);
-					this.SendPropertyChanging();
-					this._user1 = value;
-					this.SendPropertyChanged("User1");
-					this.OnUser1Changed();
 				}
 			}
 		}
