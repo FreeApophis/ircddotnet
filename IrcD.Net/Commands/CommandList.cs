@@ -28,8 +28,14 @@ namespace IrcD.Commands
 
     public class CommandList
     {
-        private readonly Dictionary<string, CommandBase> commandList = new Dictionary<string, CommandBase>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, CommandBase> commandList;
+        private readonly IrcDaemon ircDaemon;
 
+        public CommandList(IrcDaemon ircDaemon)
+        {
+            commandList = new Dictionary<string, CommandBase>(StringComparer.OrdinalIgnoreCase);
+            this.ircDaemon = ircDaemon;
+        }
         public void Add(CommandBase command)
         {
             commandList.Add(command.Name, command);
@@ -53,8 +59,8 @@ namespace IrcD.Commands
                 {
                     // we only inform the client about invalid commands if he is already successfully registered
                     // we dont want to make "wrong protocol ping-pong"
-                    //TODO: 
-                    //SendUnknownCommand(info, command);
+                    ircDaemon.Replies.SendUnknownCommand(info, command);
+                    info.LastAlive = DateTime.Now;
                 }
 
             }

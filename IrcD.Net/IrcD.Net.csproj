@@ -175,4 +175,7 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>xcopy ..\..\ircd.db  . /y</PreBuildEvent>
+  </PropertyGroup>
 </Project>

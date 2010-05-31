@@ -44,10 +44,6 @@ namespace IrcD.Commands
             }
         }
 
-        public virtual void Handle(UserInfo info, List<string> args)
-        {
-            if (info.Registered) return;
-            IrcDaemon.Replies.SendNotRegistered(info);
-        }
+        public abstract void Handle(UserInfo info, List<string> args);
     }
 }

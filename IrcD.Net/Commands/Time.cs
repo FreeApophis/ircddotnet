@@ -31,7 +31,11 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
-            base.Handle(info, args);
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
 
             //TODO: Parse Server Argument
             IrcDaemon.Replies.SendTimeReply(info);

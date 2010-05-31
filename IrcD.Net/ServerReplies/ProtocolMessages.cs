@@ -132,20 +132,23 @@ namespace IrcD.ServerReplies
             receiver.WriteLine(command);
         }
 
-        public void Ping(UserInfo sender, InfoBase receiver, params object[] args)
+        public void Ping(InfoBase receiver)
         {
-            BuildMessageHeader(sender);
-
+            command.Length = 0;
             command.Append(" PING ");
+            command.Append(ircDaemon.ServerPrefix);
 
             receiver.WriteLine(command);
         }
 
-        public void Pong(UserInfo sender, InfoBase receiver, params object[] args)
+        public void Pong(InfoBase receiver, string parameter)
         {
-            BuildMessageHeader(sender);
-
+            command.Length = 0;
+            command.Append(ircDaemon.ServerPrefix);
             command.Append(" PONG ");
+            command.Append(ircDaemon.ServerPrefix);
+            command.Append(" ");
+            command.Append(parameter);
 
             receiver.WriteLine(command);
         }

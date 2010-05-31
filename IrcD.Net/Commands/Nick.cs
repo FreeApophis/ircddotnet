@@ -53,23 +53,25 @@ namespace IrcD.Commands
             }
 
             // NICK command valid after this point
-            if (info.NickExists)
+
+            if (!info.NickExists)
             {
-                info.Rename(args[0]);
+                //First Nick Command
+                IrcDaemon.Nicks.Add(args[0], info.Socket);
+                info.InitNick(args[0]);
+                return;
             }
 
-            //First Nick Command
-            IrcDaemon.Nicks.Add(args[0], info.Socket);
-
+            // Announce nick change to itself
+            IrcDaemon.Send.Nick(info, info, args[0]);
+            
+            // Announce nick change to all channels it is in
             foreach (var channelInfo in info.Channels)
             {
                 IrcDaemon.Send.Nick(info, channelInfo, args[0]);
             }
-
-            if (!info.NickExists)
-            {
-                info.InitNick(args[0]);
-            }
+            
+            info.Rename(args[0]);
         }
     }
 }

@@ -136,7 +136,7 @@ namespace IrcD.ServerReplies
         /// <param name="info"></param>
         public void SendISupport(UserInfo info)
         {
-            BuildMessageHeader(info, ReplyCode.MyInfo);
+            BuildMessageHeader(info, ReplyCode.ISupport);
 
             // TODO: features supported by server
 

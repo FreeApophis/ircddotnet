@@ -26,12 +26,11 @@ namespace IrcD.Utils
 {
     class Logger
     {
-        public static void Log(string message, int level = 4)
+        public static void Log(string message, int level = 4, string location = null)
         {
             var stackTrace = new StackTrace();
             var callerFrame = stackTrace.GetFrame(1);
-            var location = callerFrame.ToString();
-            var entity = new Log { Level = level, Message = message, Location = location, Time = DateTime.Now };
+            var entity = new Log { Level = level, Message = message, Location = location ?? callerFrame.ToString(), Time = DateTime.Now };
 
             DatabaseCommon.Db.Logs.InsertOnSubmit(entity);
             DatabaseCommon.Db.SubmitChanges();

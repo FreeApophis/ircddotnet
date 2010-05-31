@@ -129,6 +129,10 @@ namespace IrcD
         {
             get
             {
+                if (string.IsNullOrEmpty(Options.ServerName))
+                {
+                    return PrefixCharacter + "ircd.net";
+                }
                 return PrefixCharacter + Options.ServerName;
             }
         }
@@ -145,7 +149,7 @@ namespace IrcD
         public IrcDaemon()
         {
             // The Protocol Objects 
-            commands = new CommandList();
+            commands = new CommandList(this);
             replies = new ServerReplies.ServerReplies(this);
             protocolMessages = new ProtocolMessages(this);
             serverCreated = DateTime.Now;
@@ -276,13 +280,22 @@ namespace IrcD
                         Logger.Log("Trace: " + e.StackTrace);
                     }
                 }
-                // pinger
+
+                // Pinger : we only ping if necessary
                 foreach (var user in from user in sockets.Where(s => s.Value.Registered)
                                      let interval = DateTime.Now.AddMinutes(-1)
-                                     where user.Value.LastAction < interval && user.Value.LastPing < interval
+                                     where user.Value.LastAction < interval && user.Value.LastAlive < interval
                                      select user.Value)
                 {
-                    //Send.Ping(user);
+                    if (user.LastAlive < DateTime.Now.AddMinutes(-5))
+                    {
+                        // Ping Timeout (5 Minutes without any life sign)
+                        user.Remove();
+                    }
+                    else
+                    {
+                        Send.Ping(user);
+                    }
                 }
 
             }
@@ -292,7 +305,7 @@ namespace IrcD
         {
 
 #if DEBUG
-            Logger.Log(line);
+            Logger.Log(line, location: "IN:");
 #endif
 
             string prefix = null;

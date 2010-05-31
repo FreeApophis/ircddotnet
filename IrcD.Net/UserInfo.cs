@@ -132,6 +132,11 @@ namespace IrcD
 
         public void Rename(string newNick)
         {
+            // Update Global Nick-Dictionary
+            IrcDaemon.Nicks.Remove(Nick);
+            IrcDaemon.Nicks.Add(newNick, socket);
+
+            // Update Channel Nicklists
             foreach (var channel in Channels)
             {
                 var channelInfo = channel.UserPerChannelInfos[Nick];
@@ -187,17 +192,17 @@ namespace IrcD
             }
         }
 
-        private DateTime lastPing = DateTime.Now;
+        private DateTime lastAlive = DateTime.Now;
 
-        public DateTime LastPing
+        public DateTime LastAlive
         {
             get
             {
-                return lastPing;
+                return lastAlive;
             }
             set
             {
-                lastPing = value;
+                lastAlive = value;
             }
         }
         public string ModeString
@@ -244,7 +249,7 @@ namespace IrcD
 
         public override void WriteLine(StringBuilder line)
         {
-            Logger.Log(line.ToString());
+            Logger.Log(line.ToString(), location: "OUT:");
 
             line.Append(IrcDaemon.ServerCrLf);
             socket.Send(Encoding.UTF8.GetBytes(line.ToString()));
@@ -259,6 +264,12 @@ namespace IrcD
         {
             // TODO: implement nick check
             return true;
+        }
+
+        // Cleanly Quit a user, in any case, Connection dropped, QuitMesssage, all traces of 'this' mus be removed.
+        public void Remove()
+        {            
+            // TODO: Implement cleanup
         }
     }
 }
