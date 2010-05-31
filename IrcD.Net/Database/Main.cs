@@ -23,5 +23,9 @@ namespace IrcD.Database
     partial class Main
     {
 
+        public override string ToString()
+        {
+            return "Database";
+        }
     }
 }

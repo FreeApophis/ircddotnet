@@ -36,11 +36,5 @@ namespace IrcD.Commands
             //TODO: Parse Server Argument
             IrcDaemon.Replies.SendTimeReply(info);
         }
-
-        public override void Send(InfoBase receiver, object[] args)
-        {
-            receiver.WriteLine(Command);
-            throw new NotImplementedException();
-        }
     }
 }

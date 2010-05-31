@@ -18,13 +18,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+
 namespace IrcD.Modes.ChannelModes
 {
-    class ModeBan : ChannelMode
+    class ModeBan : ChannelMode, IParameterListA
     {
         public ModeBan()
             : base('b')
         {
+        }
+
+        public IEnumerable<string> Parameter
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
     }
 }

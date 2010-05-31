@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using IrcD.Database;
 using IrcD.Modes;
 using IrcD.Utils;
 
@@ -35,12 +34,11 @@ namespace IrcD
         public UserInfo(IrcDaemon ircDaemon, Socket socket, string host, bool isAcceptSocket, bool passAccepted)
             : base(ircDaemon)
         {
-            //AwayMsg = null;
-            //Realname = null;
             IsService = false;
             Registered = false;
             PassAccepted = passAccepted;
-            //this.host = host;
+            Host = host;
+
             this.isAcceptSocket = isAcceptSocket;
             this.socket = socket;
         }
@@ -71,14 +69,55 @@ namespace IrcD
 
         public bool IsService { get; set; }
 
-        private User user;
-        private Nick nick;
+        public string User { get; private set; }
+        public string Nick { get; private set; }
+        public string RealName { get; private set; }
+        public string Host { get; private set; }
+
+
+        public void InitNick(string nick)
+        {
+            Nick = nick;
+        }
+
+        public void InitUser(string user, string realname)
+        {
+            User = user;
+            RealName = realname;
+        }
+
+        internal bool UserExists
+        {
+            get
+            {
+                return User != null;
+            }
+        }
+
+        public bool NickExists
+        {
+            get
+            {
+                return Nick != null;
+            }
+        }
+
+        public void Rename(string newNick)
+        {
+            foreach (var channel in Channels)
+            {
+                var channelInfo = channel.UserPerChannelInfos[Nick];
+                channel.UserPerChannelInfos.Remove(Nick);
+                channel.UserPerChannelInfos.Add(newNick, channelInfo);
+            }
+
+        }
 
         public string Usermask
         {
             get
             {
-                return nick.Name + "!" + user.Name + "@" + user.Host;
+                return Nick + "!" + User + "@" + Host;
             }
         }
 
@@ -121,7 +160,7 @@ namespace IrcD
         {
             get
             {
-                return "TODO";
+                return mode.ToString();
             }
         }
 
@@ -176,22 +215,6 @@ namespace IrcD
         {
             // TODO: implement nick check
             return true;
-        }
-
-        internal bool UserExists
-        {
-            get
-            {
-                return user != null;
-            }
-        }
-
-        public object NickExists
-        {
-            get
-            {
-                return nick != null;
-            }
         }
     }
 }

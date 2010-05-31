@@ -49,11 +49,5 @@ namespace IrcD.Commands
             if (info.Registered) return;
             IrcDaemon.Replies.SendNotRegistered(info);
         }
-
-        public virtual void Send(InfoBase receiver, params object[] args)
-        {
-            Command.Length = 0;
-            Command.Append(IrcDaemon.ServerPrefix);
-        }
     }
 }

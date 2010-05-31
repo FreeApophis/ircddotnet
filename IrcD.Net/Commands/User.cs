@@ -55,21 +55,13 @@ namespace IrcD.Commands
             //info.Mode_i = ((flags & 8) > 0);
             //info.Mode_w = ((flags & 4) > 0);
 
-            // TODO Set user
-            //info.User = args[0];
-            //info.Realname = args[3];
+            info.InitUser(args[0], args[3]);
 
             if (info.UserExists)
             {
                 info.Registered = true;
                 IrcDaemon.Replies.RegisterComplete(info);
             }
-        }
-
-        public override void Send(InfoBase receiver, object[] args)
-        {
-            receiver.WriteLine(Command);
-            throw new NotImplementedException();
         }
     }
 }

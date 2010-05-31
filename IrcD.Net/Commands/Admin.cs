@@ -32,10 +32,5 @@ namespace IrcD.Commands
         public override void Handle(UserInfo info, List<string> args)
         {
         }
-
-        public override void Send(InfoBase receiver, object[] args)
-        {
-            receiver.WriteLine(Command);
-        }
     }
 }

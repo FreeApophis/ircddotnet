@@ -53,35 +53,25 @@ namespace IrcD.Commands
             }
 
             // NICK command valid after this point
-            if (info.NickExists != null)
+            if (info.NickExists)
             {
-                //TODO: that doesn't look right (what about channels)
-                //IrcDaemon.Nicks.Remove(info.Nick);
+                info.Rename(args[0]);
             }
 
+            //First Nick Command
             IrcDaemon.Nicks.Add(args[0], info.Socket);
 
             foreach (var channelInfo in info.Channels)
             {
-                Send(info, channelInfo, args[0]);
+                IrcDaemon.Send.Nick(info, channelInfo, args[0]);
             }
 
-            // TODO: set nick
-            //info.Nick = args[0];
+            info.InitNick(args[0]);
 
             if ((info.Registered) || (!info.UserExists)) return;
 
             info.Registered = true;
             IrcDaemon.Replies.RegisterComplete(info);
-        }
-
-
-
-
-        public override void Send(InfoBase receiver, params object[] args)
-        {
-            receiver.WriteLine(Command);
-            throw new NotImplementedException();
         }
     }
 }

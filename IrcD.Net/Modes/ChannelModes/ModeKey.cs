@@ -20,11 +20,25 @@
 
 namespace IrcD.Modes.ChannelModes
 {
-    class ModeKey : ChannelMode
+    class ModeKey : ChannelMode, IParameterB
     {
         public ModeKey()
             : base('k')
         {
+        }
+
+        private string key;
+
+        public string Parameter
+        {
+            get
+            {
+                return key;
+            }
+            set
+            {
+                key = value;
+            }
         }
     }
 }

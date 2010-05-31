@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {
@@ -30,11 +31,22 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
-        }
-
-        public override void Send(InfoBase receiver, object[] args)
-        {
-            receiver.WriteLine(Command);
+            if (info.PassAccepted)
+            {
+                IrcDaemon.Replies.SendAlreadyRegistered(info);
+                return;
+            }
+            if (args.Count < 1)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+            if (args[0] == IrcDaemon.Options.ServerPass)
+            {
+                info.PassAccepted = true;
+                return;
+            }
+            IrcDaemon.Replies.SendPasswordMismatch(info);
         }
     }
 }

@@ -5,7 +5,7 @@
 // | |_| | |_) | |  | |  __/ || (_| | |
 // |____/|_.__/|_|  |_|\___|\__\__,_|_|
 //
-// Auto-generated from main on 2010-05-28 01:25:36Z.
+// Auto-generated from main on 2010-05-30 20:37:40Z.
 // Please visit http://code.google.com/p/dblinq2007/ for more information.
 //
 namespace IrcD.Database
@@ -65,22 +65,6 @@ namespace IrcD.Database
 			}
 		}
 		
-		public Table<Nick> Nicks
-		{
-			get
-			{
-				return this.GetTable<Nick>();
-			}
-		}
-		
-		public Table<Service> Services
-		{
-			get
-			{
-				return this.GetTable<Service>();
-			}
-		}
-		
 		public Table<Setting> Settings
 		{
 			get
@@ -89,11 +73,11 @@ namespace IrcD.Database
 			}
 		}
 		
-		public Table<User> Users
+		public Table<WhoWa> WhoWas
 		{
 			get
 			{
-				return this.GetTable<User>();
+				return this.GetTable<WhoWa>();
 			}
 		}
 	}
@@ -146,12 +130,18 @@ namespace IrcD.Database
 		
 		private static System.ComponentModel.PropertyChangingEventArgs emptyChangingEventArgs = new System.ComponentModel.PropertyChangingEventArgs("");
 		
+		private System.Nullable<System.DateTime> _created;
+		
 		private System.Nullable<int> _id;
 		
 		private string _name;
 		
 		#region Extensibility Method Declarations
 		partial void OnCreated();
+		
+		partial void OnCreatedChanged();
+		
+		partial void OnCreatedChanging(System.Nullable<System.DateTime> value);
 		
 		partial void OnIDChanged();
 		
@@ -166,6 +156,27 @@ namespace IrcD.Database
 		public Channel()
 		{
 			this.OnCreated();
+		}
+		
+		[Column(Storage="_created", Name="Created", DbType="TIMESTAMP", AutoSync=AutoSync.Never)]
+		[DebuggerNonUserCode()]
+		public System.Nullable<System.DateTime> Created
+		{
+			get
+			{
+				return this._created;
+			}
+			set
+			{
+				if ((_created != value))
+				{
+					this.OnCreatedChanging(value);
+					this.SendPropertyChanging();
+					this._created = value;
+					this.SendPropertyChanged("Created");
+					this.OnCreatedChanged();
+				}
+			}
 		}
 		
 		[Column(Storage="_id", Name="ID", DbType="INTEGER", IsPrimaryKey=true, IsDbGenerated=true, AutoSync=AutoSync.Never)]
@@ -189,7 +200,7 @@ namespace IrcD.Database
 			}
 		}
 		
-		[Column(Storage="_name", Name="Name", DbType="VARCHAR(255)", AutoSync=AutoSync.Never, CanBeNull=false)]
+		[Column(Storage="_name", Name="Name", DbType="VARCHAR(255)", AutoSync=AutoSync.Never)]
 		[DebuggerNonUserCode()]
 		public string Name
 		{
@@ -410,193 +421,6 @@ namespace IrcD.Database
 		}
 	}
 	
-	[Table(Name="main.Nick")]
-	public partial class Nick : System.ComponentModel.INotifyPropertyChanging, System.ComponentModel.INotifyPropertyChanged
-	{
-		
-		private static System.ComponentModel.PropertyChangingEventArgs emptyChangingEventArgs = new System.ComponentModel.PropertyChangingEventArgs("");
-		
-		private System.Nullable<int> _id;
-		
-		private string _name;
-		
-		#region Extensibility Method Declarations
-		partial void OnCreated();
-		
-		partial void OnIDChanged();
-		
-		partial void OnIDChanging(System.Nullable<int> value);
-		
-		partial void OnNameChanged();
-		
-		partial void OnNameChanging(string value);
-		#endregion
-		
-		
-		public Nick()
-		{
-			this.OnCreated();
-		}
-		
-		[Column(Storage="_id", Name="ID", DbType="INTEGER", IsPrimaryKey=true, IsDbGenerated=true, AutoSync=AutoSync.Never)]
-		[DebuggerNonUserCode()]
-		public System.Nullable<int> ID
-		{
-			get
-			{
-				return this._id;
-			}
-			set
-			{
-				if ((_id != value))
-				{
-					this.OnIDChanging(value);
-					this.SendPropertyChanging();
-					this._id = value;
-					this.SendPropertyChanged("ID");
-					this.OnIDChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_name", Name="Name", DbType="VARCHAR(255)", AutoSync=AutoSync.Never)]
-		[DebuggerNonUserCode()]
-		public string Name
-		{
-			get
-			{
-				return this._name;
-			}
-			set
-			{
-				if (((_name == value) 
-							== false))
-				{
-					this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
-			}
-		}
-		
-		public event System.ComponentModel.PropertyChangingEventHandler PropertyChanging;
-		
-		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			System.ComponentModel.PropertyChangingEventHandler h = this.PropertyChanging;
-			if ((h != null))
-			{
-				h(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(string propertyName)
-		{
-			System.ComponentModel.PropertyChangedEventHandler h = this.PropertyChanged;
-			if ((h != null))
-			{
-				h(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[Table(Name="main.Service")]
-	public partial class Service : System.ComponentModel.INotifyPropertyChanging, System.ComponentModel.INotifyPropertyChanged
-	{
-		
-		private static System.ComponentModel.PropertyChangingEventArgs emptyChangingEventArgs = new System.ComponentModel.PropertyChangingEventArgs("");
-		
-		private System.Nullable<int> _id;
-		
-		private int _userID;
-		
-		#region Extensibility Method Declarations
-		partial void OnCreated();
-		
-		partial void OnIDChanged();
-		
-		partial void OnIDChanging(System.Nullable<int> value);
-		
-		partial void OnUserIDChanged();
-		
-		partial void OnUserIDChanging(int value);
-		#endregion
-		
-		
-		public Service()
-		{
-			this.OnCreated();
-		}
-		
-		[Column(Storage="_id", Name="ID", DbType="INTEGER", IsPrimaryKey=true, IsDbGenerated=true, AutoSync=AutoSync.Never)]
-		[DebuggerNonUserCode()]
-		public System.Nullable<int> ID
-		{
-			get
-			{
-				return this._id;
-			}
-			set
-			{
-				if ((_id != value))
-				{
-					this.OnIDChanging(value);
-					this.SendPropertyChanging();
-					this._id = value;
-					this.SendPropertyChanged("ID");
-					this.OnIDChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_userID", Name="UserID", DbType="INTEGER", AutoSync=AutoSync.Never, CanBeNull=false)]
-		[DebuggerNonUserCode()]
-		public int UserID
-		{
-			get
-			{
-				return this._userID;
-			}
-			set
-			{
-				if ((_userID != value))
-				{
-					this.OnUserIDChanging(value);
-					this.SendPropertyChanging();
-					this._userID = value;
-					this.SendPropertyChanged("UserID");
-					this.OnUserIDChanged();
-				}
-			}
-		}
-		
-		public event System.ComponentModel.PropertyChangingEventHandler PropertyChanging;
-		
-		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			System.ComponentModel.PropertyChangingEventHandler h = this.PropertyChanging;
-			if ((h != null))
-			{
-				h(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(string propertyName)
-		{
-			System.ComponentModel.PropertyChangedEventHandler h = this.PropertyChanged;
-			if ((h != null))
-			{
-				h(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
 	[Table(Name="main.Setting")]
 	public partial class Setting : System.ComponentModel.INotifyPropertyChanging, System.ComponentModel.INotifyPropertyChanged
 	{
@@ -719,30 +543,30 @@ namespace IrcD.Database
 		}
 	}
 	
-	[Table(Name="main.User")]
-	public partial class User : System.ComponentModel.INotifyPropertyChanging, System.ComponentModel.INotifyPropertyChanged
+	[Table(Name="main.WhoWas")]
+	public partial class WhoWa : System.ComponentModel.INotifyPropertyChanging, System.ComponentModel.INotifyPropertyChanged
 	{
 		
 		private static System.ComponentModel.PropertyChangingEventArgs emptyChangingEventArgs = new System.ComponentModel.PropertyChangingEventArgs("");
 		
-		private System.Nullable<int> _awayMessage;
+		private System.Nullable<System.DateTime> _created;
 		
 		private string _host;
 		
 		private System.Nullable<int> _id;
 		
-		private string _name;
-		
-		private System.Nullable<int> _nickID;
+		private string _nick;
 		
 		private string _realName;
+		
+		private string _user;
 		
 		#region Extensibility Method Declarations
 		partial void OnCreated();
 		
-		partial void OnAwayMessageChanged();
+		partial void OnCreatedChanged();
 		
-		partial void OnAwayMessageChanging(System.Nullable<int> value);
+		partial void OnCreatedChanging(System.Nullable<System.DateTime> value);
 		
 		partial void OnHostChanged();
 		
@@ -752,42 +576,42 @@ namespace IrcD.Database
 		
 		partial void OnIDChanging(System.Nullable<int> value);
 		
-		partial void OnNameChanged();
+		partial void OnNickChanged();
 		
-		partial void OnNameChanging(string value);
-		
-		partial void OnNickIDChanged();
-		
-		partial void OnNickIDChanging(System.Nullable<int> value);
+		partial void OnNickChanging(string value);
 		
 		partial void OnRealNameChanged();
 		
 		partial void OnRealNameChanging(string value);
+		
+		partial void OnUserChanged();
+		
+		partial void OnUserChanging(string value);
 		#endregion
 		
 		
-		public User()
+		public WhoWa()
 		{
 			this.OnCreated();
 		}
 		
-		[Column(Storage="_awayMessage", Name="AwayMessage", DbType="INTEGER", AutoSync=AutoSync.Never)]
+		[Column(Storage="_created", Name="Created", DbType="TIMESTAMP", AutoSync=AutoSync.Never)]
 		[DebuggerNonUserCode()]
-		public System.Nullable<int> AwayMessage
+		public System.Nullable<System.DateTime> Created
 		{
 			get
 			{
-				return this._awayMessage;
+				return this._created;
 			}
 			set
 			{
-				if ((_awayMessage != value))
+				if ((_created != value))
 				{
-					this.OnAwayMessageChanging(value);
+					this.OnCreatedChanging(value);
 					this.SendPropertyChanging();
-					this._awayMessage = value;
-					this.SendPropertyChanged("AwayMessage");
-					this.OnAwayMessageChanged();
+					this._created = value;
+					this.SendPropertyChanged("Created");
+					this.OnCreatedChanged();
 				}
 			}
 		}
@@ -835,45 +659,24 @@ namespace IrcD.Database
 			}
 		}
 		
-		[Column(Storage="_name", Name="Name", DbType="VARCHAR(255)", AutoSync=AutoSync.Never)]
+		[Column(Storage="_nick", Name="Nick", DbType="VARCHAR(255)", AutoSync=AutoSync.Never)]
 		[DebuggerNonUserCode()]
-		public string Name
+		public string Nick
 		{
 			get
 			{
-				return this._name;
+				return this._nick;
 			}
 			set
 			{
-				if (((_name == value) 
+				if (((_nick == value) 
 							== false))
 				{
-					this.OnNameChanging(value);
+					this.OnNickChanging(value);
 					this.SendPropertyChanging();
-					this._name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_nickID", Name="NickID", DbType="INTEGER", AutoSync=AutoSync.Never)]
-		[DebuggerNonUserCode()]
-		public System.Nullable<int> NickID
-		{
-			get
-			{
-				return this._nickID;
-			}
-			set
-			{
-				if ((_nickID != value))
-				{
-					this.OnNickIDChanging(value);
-					this.SendPropertyChanging();
-					this._nickID = value;
-					this.SendPropertyChanged("NickID");
-					this.OnNickIDChanged();
+					this._nick = value;
+					this.SendPropertyChanged("Nick");
+					this.OnNickChanged();
 				}
 			}
 		}
@@ -896,6 +699,28 @@ namespace IrcD.Database
 					this._realName = value;
 					this.SendPropertyChanged("RealName");
 					this.OnRealNameChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_user", Name="User", DbType="VARCHAR(255)", AutoSync=AutoSync.Never)]
+		[DebuggerNonUserCode()]
+		public string User
+		{
+			get
+			{
+				return this._user;
+			}
+			set
+			{
+				if (((_user == value) 
+							== false))
+				{
+					this.OnUserChanging(value);
+					this.SendPropertyChanging();
+					this._user = value;
+					this.SendPropertyChanged("User");
+					this.OnUserChanged();
 				}
 			}
 		}

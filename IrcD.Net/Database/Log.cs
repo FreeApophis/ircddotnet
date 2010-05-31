@@ -22,6 +22,9 @@ namespace IrcD.Database
 {
     partial class Log
     {
-
+        public override string ToString()
+        {
+            return _id + ":" + _level + "@" + _time + " in " + _location + ":" + _message;
+        }
     }
 }

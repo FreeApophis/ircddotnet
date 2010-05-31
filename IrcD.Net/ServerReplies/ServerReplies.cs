@@ -62,8 +62,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.AppendFormat(NumericFormat, (int)code);
             response.Append(" ");
-            // TODO: does not exist anymore
-            //response.Append(info.NickName);
+            response.Append(info.Nick);
         }
 
         /// <summary>
@@ -140,6 +139,11 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.MyInfo);
 
             // TODO: features supported by server
+
+            response.Append(" PREFIX=");
+            response.Append(info.IrcDaemon.SupportedRanks.ToPrefixList());
+            response.Append(" CHANMODES=");
+            response.Append(info.IrcDaemon.SupportedChannelModes.ToParameterList());
             response.Append(" :are supported by this server");
 
             info.WriteLine(response);
@@ -183,7 +187,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.Away);
 
             //TODO:
-            response.Append(" ");            
+            response.Append(" ");
             //response.Append(awayUser.Nick);
             response.Append(" :");
             //response.Append(awayUser.AwayMsg);
@@ -599,7 +603,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(channel);
             response.Append(" :No such channel");
-            
+
             info.WriteLine(response);
         }
 
@@ -615,7 +619,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(channel);
             response.Append(" :Cannot send to channel");
-            
+
             info.WriteLine(response);
         }
 
@@ -631,7 +635,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(channel);
             response.Append(" :You have joined too many channels");
-            
+
             info.WriteLine(response);
         }
 
@@ -660,7 +664,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.ErrorNoTextToSend);
 
             response.Append(" :No text to send");
-            
+
             info.WriteLine(response);
         }
 
@@ -676,7 +680,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(command);
             response.Append(" :Unknown command");
-            
+
             info.WriteLine(response);
         }
 
@@ -746,7 +750,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(channel);
             response.Append(" :You're not on that channel");
-            
+
             info.WriteLine(response);
         }
 
@@ -759,7 +763,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.ErrorSummonDisabled);
 
             response.Append(" :SUMMON has been disabled");
-            
+
             info.WriteLine(response);
         }
 
@@ -772,7 +776,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.ErrorUsersDisabled);
 
             response.Append(" :USERS has been disabled");
-            
+
             info.WriteLine(response);
         }
 
@@ -785,7 +789,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.ErrorNotRegistered);
 
             response.Append(" :You have not registered");
-            
+
             info.WriteLine(response);
         }
 
@@ -824,7 +828,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.ErrorNoPermissionForHost);
 
             response.Append(" :Your host isn't among the privileged");
-            
+
             info.WriteLine(response);
         }
 
@@ -850,7 +854,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.ErrorYouAreBannedCreep);
 
             response.Append(" :You are banned from this server");
-            
+
             info.WriteLine(response);
         }
 
@@ -879,7 +883,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(chan.Name);
             response.Append(" :Cannot join channel (+l)");
-            
+
             info.WriteLine(response);
         }
 
@@ -895,7 +899,7 @@ namespace IrcD.ServerReplies
 
             response.Append(" ");
             response.Append(mode);
-            response.Append(" :is unknown mode char to me for ");            
+            response.Append(" :is unknown mode char to me for ");
             response.Append(chan.Name);
 
             info.WriteLine(response);
@@ -913,7 +917,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(chan.Name);
             response.Append(" :Cannot join channel (+i)");
-            
+
             info.WriteLine(response);
         }
         /// <summary>
@@ -928,7 +932,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(chan.Name);
             response.Append(" :Cannot join channel (+b)");
-            
+
             info.WriteLine(response);
         }
 
@@ -944,7 +948,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(chan.Name);
             response.Append(" :Cannot join channel (+k)");
-            
+
             info.WriteLine(response);
         }
 
@@ -960,7 +964,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(chan.Name);
             response.Append(" :Bad Channel Mask");
-            
+
             info.WriteLine(response);
         }
 
@@ -976,7 +980,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(chan.Name);
             response.Append(" :Channel doesn't support modes");
-            
+
             info.WriteLine(response);
         }
 
@@ -1008,7 +1012,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.ErrorNoPrivileges);
 
             response.Append(" :Permission Denied- You're not an IRC operator");
-            
+
             info.WriteLine(response);
         }
 
@@ -1024,7 +1028,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(chan.Name);
             response.Append(" :You're not channel operator");
-            
+
             info.WriteLine(response);
         }
 
@@ -1037,7 +1041,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.ErrorCannotKillServer);
 
             response.Append(" :You can't kill a server!");
-            
+
             info.WriteLine(response);
         }
 
@@ -1050,7 +1054,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.ErrorRestricted);
 
             response.Append(" :Your connection is restricted!");
-            
+
             info.WriteLine(response);
         }
 
@@ -1063,7 +1067,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.ErrorUniqueOpPrivilegesNeeded);
 
             response.Append(" :You're not the original channel operator");
-            
+
             info.WriteLine(response);
         }
 
@@ -1089,7 +1093,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.ErrorUserModeUnknownFlag);
 
             response.Append(" :Unknown MODE flag");
-            
+
             info.WriteLine(response);
         }
 
@@ -1102,7 +1106,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.ErrorUsersDoNotMatch);
 
             response.Append(" :Cannot change mode for other users");
-            
+
             info.WriteLine(response);
         }
 

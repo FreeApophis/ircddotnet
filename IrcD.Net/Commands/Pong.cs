@@ -32,13 +32,6 @@ namespace IrcD.Commands
         {
         }
 
-        public override void Send(InfoBase receiver, params object[] args)
-        {
-            base.Send(receiver, args);
 
-            Command.Append(" PONG ");
-
-            receiver.WriteLine(Command);
-        }
     }
 }

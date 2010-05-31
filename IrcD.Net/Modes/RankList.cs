@@ -19,11 +19,31 @@
  */
 
 using System.Linq;
+using System.Text;
 
 namespace IrcD.Modes
 {
     public class RankList : ModeList<ChannelRank>
     {
+        public string ToPrefixList()
+        {
+            var ranks = new StringBuilder();
+            
+            ranks.Append("(");
+            foreach (var rank in Values.OrderByDescending(rank => rank.Importance))
+            {
+                ranks.Append(rank.Char);
+            }
+            ranks.Append(")");
+
+            foreach (var rank in Values.OrderByDescending(rank => rank.Importance))
+            {
+                ranks.Append(rank.Prefix);
+            }
+
+            return ranks.ToString();
+        }
+
         public char NickPrefix
         {
             get

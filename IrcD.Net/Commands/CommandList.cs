@@ -28,7 +28,7 @@ using IrcD.Utils;
 namespace IrcD.Commands
 {
 
-    public class CommandList : DynamicObject
+    public class CommandList
     {
         private readonly Dictionary<string, CommandBase> commandList = new Dictionary<string, CommandBase>(StringComparer.OrdinalIgnoreCase);
 
@@ -73,26 +73,6 @@ namespace IrcD.Commands
             Logger.Log(parsedLine.ToString());
 
 #endif
-        }
-
-        public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
-        {
-            try
-            {
-                CommandBase command;
-
-                if (commandList.TryGetValue(binder.Name, out command))
-                {
-                    command.Send((InfoBase)args[0], args.Skip(1).ToArray());
-                }
-                result = null;
-                return true;
-            }
-            catch (Exception)
-            {
-                result = null;
-                return false;
-            }
         }
     }
 }

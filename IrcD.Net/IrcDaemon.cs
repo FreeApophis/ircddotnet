@@ -29,6 +29,7 @@ using IrcD.Modes;
 using IrcD.Modes.ChannelModes;
 using IrcD.Modes.ChannelRanks;
 using IrcD.Modes.UserModes;
+using IrcD.ServerReplies;
 using IrcD.Utils;
 using Mode = IrcD.Commands.Mode;
 using Version = IrcD.Commands.Version;
@@ -56,7 +57,7 @@ namespace IrcD
 
         #region Modes
         private readonly RankList supportedRanks = new RankList();
-        public dynamic SupportedRanks
+        public RankList SupportedRanks
         {
             get
             {
@@ -64,7 +65,7 @@ namespace IrcD
             }
         }
         private readonly ChannelModeList supportedChannelModes = new ChannelModeList();
-        public dynamic SupportedChannelModes
+        public ChannelModeList SupportedChannelModes
         {
             get
             {
@@ -72,7 +73,7 @@ namespace IrcD
             }
         }
         private readonly UserModeList supportedUserModes = new UserModeList();
-        public dynamic SupportedUserModes
+        public UserModeList SupportedUserModes
         {
             get
             {
@@ -83,11 +84,20 @@ namespace IrcD
 
         // Protocol Messages
         private readonly CommandList commands = new CommandList();
-        public dynamic Commands
+        public CommandList Commands
         {
             get
             {
                 return commands;
+            }
+        }
+
+        private ProtocolMessages protocolMessages;
+        public ProtocolMessages Send
+        {
+            get
+            {
+                return protocolMessages;
             }
         }
 
@@ -135,6 +145,7 @@ namespace IrcD
         public IrcDaemon()
         {
             replies = new ServerReplies.ServerReplies(this);
+            protocolMessages = new ProtocolMessages(this);
             serverCreated = DateTime.Now;
 
             // Add Commands
@@ -253,7 +264,7 @@ namespace IrcD
                             catch (SocketException e)
                             {
                                 Logger.Log("ERROR: " + e.Message + "(CODE:" + e.ErrorCode + ")");
-                                Commands.Quit(sockets[s], new List<string> { "Socket reset by peer" });
+                                //Send.Quit(sockets[s], new List<string> { "Socket reset by peer" });
                             }
                         }
                     }
@@ -269,7 +280,7 @@ namespace IrcD
                                      where user.Value.LastAction < interval && user.Value.LastPing < interval
                                      select user.Value)
                 {
-                    Commands.Ping(user);
+                    //Send.Ping(user);
                 }
 
             }
@@ -382,117 +393,10 @@ namespace IrcD
         }
         #endregion
 
-        //#region Server Messages
-        //internal void SendNick(UserInfo sender, InfoBase receiver, string newnick)
-        //{
-        //    commandSB.Length = 0;
-        //    commandSB.Append(sender.Prefix);
-        //    commandSB.Append(" NICK ");
-        //    commandSB.Append(newnick);
-        //    receiver.WriteLine(commandSB);
-        //}
 
-        //internal void SendJoin(UserInfo sender, UserInfo receiver, ChannelInfo chan)
-        //{
-        //    commandSB.Length = 0;
-        //    commandSB.Append(sender.Prefix);
-        //    commandSB.Append(" JOIN ");
-        //    commandSB.Append(chan.Name);
-        //    commandSB.Append(ServerCrLf);
-        //    receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
-        //}
-
-        //internal void SendPart(UserInfo sender, UserInfo receiver, ChannelInfo chan, string message)
-        //{
-        //    commandSB.Length = 0;
-        //    commandSB.Append(sender.Prefix);
-        //    commandSB.Append(" PART ");
-        //    commandSB.Append(chan.Name);
-        //    commandSB.Append(" :");
-        //    commandSB.Append(message);
-        //    commandSB.Append(ServerCrLf);
-        //    receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
-        //}
-
-        //internal void SendTopic(UserInfo sender, UserInfo receiver, string chan, string newtopic)
-        //{
-        //    commandSB.Length = 0;
-        //    commandSB.Append(sender.Prefix);
-        //    commandSB.Append(" TOPIC ");
-        //    commandSB.Append(chan);
-        //    commandSB.Append(" :");
-        //    commandSB.Append(newtopic);
-        //    commandSB.Append(ServerCrLf);
-        //    receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
-        //}
-
-        //internal void SendMode(UserInfo sender, UserInfo receiver, string target, string modestring)
-        //{
-        //    commandSB.Length = 0;
-        //    commandSB.Append(sender.Prefix);
-        //    commandSB.Append(" MODE ");
-        //    commandSB.Append(target);
-        //    commandSB.Append(" ");
-        //    commandSB.Append(modestring);
-        //    commandSB.Append(ServerCrLf);
-        //    receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
-        //}
-
-
-        //internal void SendPrivMsg(UserInfo sender, UserInfo receiver, string target, string message)
-        //{
-        //    commandSB.Length = 0;
-        //    commandSB.Append(sender.Prefix);
-        //    commandSB.Append(" PRIVMSG ");
-        //    commandSB.Append(target);
-        //    commandSB.Append(" :");
-        //    commandSB.Append(message);
-        //    commandSB.Append(ServerCrLf);
-        //    receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
-        //}
-
-        //internal void SendNotice(UserInfo sender, UserInfo receiver, string target, string message)
-        //{
-        //    commandSB.Length = 0;
-        //    commandSB.Append(sender.Prefix);
-        //    commandSB.Append(" NOTICE ");
-        //    commandSB.Append(target);
-        //    commandSB.Append(" :");
-        //    commandSB.Append(message);
-        //    commandSB.Append(ServerCrLf);
-        //    receiver.Socket.Send(Encoding.UTF8.GetBytes(commandSB.ToString()));
-        //}
-
-        //internal void SendQuit(UserInfo sender, InfoBase receiver, string message)
-        //{
-        //    commandSB.Length = 0;
-        //    commandSB.Append(sender.Prefix);
-        //    commandSB.Append(" QUIT :");
-        //    commandSB.Append(message);
-
-        //    receiver.WriteLine(commandSB);
-        //}
 
         //#region Command Delegates - RF2812 - required
-        //internal void PassDelegate(UserInfo info, List<string> args)
-        //{
-        //    if (info.PassAccepted)
-        //    {
-        //        SendAlreadyRegistered(info);
-        //        return;
-        //    }
-        //    if (args.Count < 1)
-        //    {
-        //        SendNeedMoreParams(info);
-        //        return;
-        //    }
-        //    if (args[0] == Options.ServerPass)
-        //    {
-        //        info.PassAccepted = true;
-        //        return;
-        //    }
-        //    SendPasswordMismatch(info);
-        //}
+
 
         //internal void OperDelegate(UserInfo info, List<string> args)
         //{

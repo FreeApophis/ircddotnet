@@ -18,14 +18,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
+
 namespace IrcD.Modes.ChannelModes
 {
-    public class ModeLimit : ChannelMode
+    public class ModeLimit : ChannelMode, IParameterC
     {
         public ModeLimit() :
             base('l')
         {
 
+        }
+
+        public string Parameter
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
     }
 }

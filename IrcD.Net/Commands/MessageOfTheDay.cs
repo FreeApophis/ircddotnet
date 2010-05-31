@@ -46,11 +46,5 @@ namespace IrcD.Commands
                 IrcDaemon.Replies.SendMotdEnd(info);
             }
         }
-
-        public override void Send(InfoBase receiver, object[] args)
-        {
-            receiver.WriteLine(Command);
-            throw new NotImplementedException();
-        }
     }
 }

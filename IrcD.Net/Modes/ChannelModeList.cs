@@ -18,10 +18,39 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Linq;
+using System.Text;
+using IrcD.Modes.ChannelModes;
+
 namespace IrcD.Modes
 {
     public class ChannelModeList : ModeList<ChannelMode>
     {
+        public string ToParameterList()
+        {
+            var modes = new StringBuilder();
 
+            foreach (var mode in Values.Where(m => m is IParameterListA))
+            {
+                modes.Append(mode.Char);
+            }
+            modes.Append(',');
+            foreach (var mode in Values.Where(m => m is IParameterB))
+            {
+                modes.Append(mode.Char);
+            }
+            modes.Append(',');
+            foreach (var mode in Values.Where(m => m is IParameterC))
+            {
+                modes.Append(mode.Char);
+            }
+            modes.Append(',');
+            foreach (var mode in Values.Where(m => !(m is IParameterListA) && !(m is IParameterB) && !(m is IParameterC)))
+            {
+                modes.Append(mode.Char);
+            }
+            
+            return modes.ToString();
+        }
     }
 }

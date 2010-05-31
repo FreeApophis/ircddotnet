@@ -32,17 +32,8 @@ namespace IrcD.Commands
         {
             base.Handle(info, args);
 
-            IrcDaemon.Commands.Pong();
+            // TODO
+            //IrcDaemon.Send.Pong();
         }
-
-        public override void Send(InfoBase receiver, object[] args)
-        {
-            base.Send(receiver, args);
-
-            Command.Append(" PING ");
-
-            receiver.WriteLine(Command);
-        }
-
     }
 }
