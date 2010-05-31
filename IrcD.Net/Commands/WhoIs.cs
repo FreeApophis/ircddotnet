@@ -33,3 +33,40 @@ namespace IrcD.Commands
         }
     }
 }
+
+//private void WhoisDelegate(UserInfo info, List<string> args)
+//{
+//    if (!info.Registered)
+//    {
+//        SendNotRegistered(info);
+//        return;
+//    }
+//    if (args.Count < 1)
+//    {
+//        SendNeedMoreParams(info);
+//        return;
+//    }
+//    if (!nicks.ContainsKey(args[0]))
+//    {
+//        SendNoSuchNick(info, args[0]);
+//        return;
+//    }
+
+//    UserInfo user = sockets[nicks[args[0]]];
+//    SendWhoIsUser(info, user);
+//    if (user.Channels.Count > 0)
+//    {
+//        SendWhoIsChannels(info, user);
+//    }
+//    SendWhoIsServer(info, user);
+//    if (user.AwayMsg != null)
+//    {
+//        SendAwayMsg(info, user);
+//    }
+//    //if (user.Mode_O || user.Mode_o)
+//    //{
+//    //    SendWhoIsOperator(info, user);
+//    //}
+//    SendWhoIsIdle(info, user);
+//    SendEndOfWhoIs(info, user);
+//}

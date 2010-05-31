@@ -20,8 +20,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
 using System.Text;
 using IrcD.Utils;
 
@@ -65,7 +63,7 @@ namespace IrcD.Commands
             var parsedLine = new StringBuilder();
             parsedLine.Append("[" + info.Usermask + "]-[" + command + "]");
 
-            foreach (string arg in args)
+            foreach (var arg in args)
             {
                 parsedLine.Append("-<" + arg + ">");
             }

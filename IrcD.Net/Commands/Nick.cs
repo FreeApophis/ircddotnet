@@ -66,12 +66,10 @@ namespace IrcD.Commands
                 IrcDaemon.Send.Nick(info, channelInfo, args[0]);
             }
 
-            info.InitNick(args[0]);
-
-            if ((info.Registered) || (!info.UserExists)) return;
-
-            info.Registered = true;
-            IrcDaemon.Replies.RegisterComplete(info);
+            if (!info.NickExists)
+            {
+                info.InitNick(args[0]);
+            }
         }
     }
 }

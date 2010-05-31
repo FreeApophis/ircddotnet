@@ -33,3 +33,25 @@ namespace IrcD.Commands
         }
     }
 }
+
+//private void IsonDelegate(UserInfo info, List<string> args)
+//{
+//    if (!info.Registered)
+//    {
+//        SendNotRegistered(info);
+//        return;
+//    }
+//    if (args.Count < 1)
+//    {
+//        SendNeedMoreParams(info);
+//        return;
+//    }
+
+//    var nickList = new List<string>();
+//    foreach (string nick in args)
+//    {
+//        if (nicks.ContainsKey(nick))
+//            nickList.Add(nick);
+//    }
+//    SendIsOn(info, nickList);
+//}

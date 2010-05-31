@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using IrcD.Commands;
+using IrcD.Database;
 using IrcD.Modes;
 using IrcD.Utils;
 
@@ -77,14 +79,40 @@ namespace IrcD
 
         public void InitNick(string nick)
         {
+            if (NickExists)
+            {
+                throw new AlreadyCalledException();
+            }
+
             Nick = nick;
+
+            if (!UserExists) return;
+
+            RegisterComplete();
         }
 
         public void InitUser(string user, string realname)
         {
+            if (UserExists)
+            {
+                throw new AlreadyCalledException();
+            }
+
             User = user;
             RealName = realname;
+
+            if (!NickExists) return;
+
+            RegisterComplete();
         }
+
+        private void RegisterComplete()
+        {
+            Registered = true;
+            IrcDaemon.Replies.RegisterComplete(this);
+            LogUser();
+        }
+
 
         internal bool UserExists
         {
@@ -111,6 +139,22 @@ namespace IrcD
                 channel.UserPerChannelInfos.Add(newNick, channelInfo);
             }
 
+            Nick = newNick;
+            LogUser();
+        }
+
+        private void LogUser()
+        {
+            var userLog = new UserLog
+            {
+                Host = Host,
+                Nick = Nick,
+                RealName = RealName,
+                User = User
+            };
+
+            DatabaseCommon.Db.UserLogs.InsertOnSubmit(userLog);
+            DatabaseCommon.Db.SubmitChanges();
         }
 
         public string Usermask

@@ -33,3 +33,29 @@ namespace IrcD.Commands
         }
     }
 }
+
+//internal void QuitDelegate(UserInfo info, List<string> args)
+//{
+//    if (!info.Registered)
+//    {
+//        SendNotRegistered(info);
+//        return;
+//    }
+
+//    string message = (args.Count > 0) ? args[0] : "";
+
+//    foreach (ChannelInfo channelInfo in info.Channels.Select(upci => upci.ChannelInfo))
+//    {
+//        SendQuit(info, channelInfo, message);
+//    }
+
+//    foreach (ChannelInfo chaninfo in info.Channels.Select(upci => upci.ChannelInfo))
+//    {
+//        chaninfo.Users.Remove(info.Nick);
+//    }
+
+//    sockets.Remove(info.Socket);
+//    nicks.Remove(info.Nick);
+//    info.Socket.Close();
+
+//}

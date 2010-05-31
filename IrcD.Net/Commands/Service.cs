@@ -33,3 +33,43 @@ namespace IrcD.Commands
         }
     }
 }
+
+//internal void ServiceDelegate(UserInfo info, List<string> args)
+//{
+//    if (!info.Registered)
+//    {
+//        SendNotRegistered(info);
+//        return;
+//    }
+//    if (info.Registered)
+//    {
+//        SendAlreadyRegistered(info);
+//        return;
+//    }
+//    if (args.Count < 6)
+//    {
+//        SendNeedMoreParams(info);
+//        return;
+//    }
+//    if (!ValidNick(args[0]))
+//    {
+//        SendErroneousNickname(info, args[0]);
+//        return;
+//    }
+//    if (nicks.ContainsKey(args[0]))
+//    {
+//        SendNicknameInUse(info, args[0]);
+//        return;
+//    }
+
+//    info.Nick = args[0];
+//    nicks.Add(info.Nick, info.Socket);
+
+//    info.User = "service";
+//    info.IsService = true;
+//    info.Registered = true;
+
+//    SendYouAreService(info);
+//    SendYourHost(info);
+//    SendMyInfo(info);
+//}

@@ -33,3 +33,18 @@ namespace IrcD.Commands
         }
     }
 }
+
+//private void ListDelegate(UserInfo info, List<string> args)
+//{
+//    if (!info.Registered)
+//    {
+//        SendNotRegistered(info);
+//        return;
+//    }
+//    // TODO: special LIST commands / implemented is full list
+//    foreach (ChannelInfo ci in channels.Values)
+//    {
+//        SendListItem(info, ci);
+//    }
+//    SendListEnd(info);
+//}

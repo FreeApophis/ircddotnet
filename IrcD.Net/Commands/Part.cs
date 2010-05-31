@@ -33,3 +33,45 @@ namespace IrcD.Commands
         }
     }
 }
+
+//internal void PartDelegate(UserInfo info, List<string> args)
+//{
+//    if (!info.Registered)
+//    {
+//        SendNotRegistered(info);
+//        return;
+//    }
+//    if (args.Count < 1)
+//    {
+//        SendNeedMoreParams(info);
+//        return;
+//    }
+//    string message = (args.Count > 1) ? args[1] : "";
+
+//    foreach (string ch in GetSubArgument(args[0]))
+//    {
+//        if (channels.ContainsKey(ch))
+//        {
+//            ChannelInfo chan = channels[ch];
+//            //if (info.Channels.Contains(chan))
+//            //{
+//            //    foreach (UserPerChannelInfo upci in chan.User.Values)
+//            //    {
+//            //        SendPart(info, upci.Info, chan, message);
+//            //    }
+//            //    chan.User.Remove(info.Nick);
+//            //    info.Channels.Remove(chan);
+//            //}
+//            //else
+//            //{
+//            //    SendNotOnChannel(info, ch);
+//            //    continue;
+//            //}
+//        }
+//        else
+//        {
+//            SendNoSuchChannel(info, ch);
+//            continue;
+//        }
+//    }
+//}

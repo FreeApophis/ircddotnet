@@ -18,7 +18,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
 
 namespace IrcD.Commands
@@ -56,12 +55,6 @@ namespace IrcD.Commands
             //info.Mode_w = ((flags & 4) > 0);
 
             info.InitUser(args[0], args[3]);
-
-            if (info.UserExists)
-            {
-                info.Registered = true;
-                IrcDaemon.Replies.RegisterComplete(info);
-            }
         }
     }
 }

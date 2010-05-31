@@ -5,7 +5,7 @@
 // | |_| | |_) | |  | |  __/ || (_| | |
 // |____/|_.__/|_|  |_|\___|\__\__,_|_|
 //
-// Auto-generated from main on 2010-05-30 20:37:40Z.
+// Auto-generated from main on 2010-05-31 16:31:13Z.
 // Please visit http://code.google.com/p/dblinq2007/ for more information.
 //
 namespace IrcD.Database
@@ -73,11 +73,11 @@ namespace IrcD.Database
 			}
 		}
 		
-		public Table<WhoWa> WhoWas
+		public Table<UserLog> UserLogs
 		{
 			get
 			{
-				return this.GetTable<WhoWa>();
+				return this.GetTable<UserLog>();
 			}
 		}
 	}
@@ -543,8 +543,8 @@ namespace IrcD.Database
 		}
 	}
 	
-	[Table(Name="main.WhoWas")]
-	public partial class WhoWa : System.ComponentModel.INotifyPropertyChanging, System.ComponentModel.INotifyPropertyChanged
+	[Table(Name="main.UserLog")]
+	public partial class UserLog : System.ComponentModel.INotifyPropertyChanging, System.ComponentModel.INotifyPropertyChanged
 	{
 		
 		private static System.ComponentModel.PropertyChangingEventArgs emptyChangingEventArgs = new System.ComponentModel.PropertyChangingEventArgs("");
@@ -590,7 +590,7 @@ namespace IrcD.Database
 		#endregion
 		
 		
-		public WhoWa()
+		public UserLog()
 		{
 			this.OnCreated();
 		}

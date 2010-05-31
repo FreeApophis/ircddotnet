@@ -33,3 +33,23 @@ namespace IrcD.Commands
         }
     }
 }
+
+//private void AwayDelegate(UserInfo info, List<string> args)
+//{
+//    if (!info.Registered)
+//    {
+//        SendNotRegistered(info);
+//        return;
+//    }
+
+//    if (args.Count == 0)
+//    {
+//        info.AwayMsg = null;
+//        SendUnAway(info);
+//    }
+//    else
+//    {
+//        info.AwayMsg = args[0];
+//        SendNowAway(info);
+//    }
+//}
