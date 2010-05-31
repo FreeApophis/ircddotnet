@@ -18,10 +18,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace IrcD.Database
-{
-    partial class Nick
-    {
+using System;
 
+namespace IrcD
+{
+    /// <summary>
+    /// This Exception is thrown for methods which only should be called once, but are called a second time.
+    /// </summary>
+    public class AlreadyCalledException : Exception
+    {
     }
 }

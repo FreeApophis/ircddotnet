@@ -18,10 +18,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace IrcD.Database
-{
-    partial class User
-    {
+using System.Collections.Generic;
 
+namespace IrcD.Modes.ChannelModes
+{
+    public interface IParameterB
+    {
+        string Parameter { get; set; }
     }
+
+    public interface IParameterC
+    {
+        string Parameter { get; set; }
+    }
+
+    public interface IParameterListA
+    {
+        IEnumerable<string> Parameter { get; set; }
+    }
+
+
 }
