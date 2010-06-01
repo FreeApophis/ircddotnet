@@ -27,5 +27,10 @@ namespace IrcD.Modes.ChannelRanks
         {
 
         }
+
+        public override bool AllowTopic()
+        {
+            return true;
+        }
     }
 }

@@ -169,6 +169,7 @@
     <Compile Include="ServerReplies\ServerReplies.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="UserPerChannelInfo.cs" />
+    <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\WildCard.cs" />
   </ItemGroup>

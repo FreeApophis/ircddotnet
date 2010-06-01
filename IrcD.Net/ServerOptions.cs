@@ -44,7 +44,20 @@ namespace IrcD
 
         public string ServerPass { get; set; }
 
-        public string ServerName { get; set; }
+
+        private string serverName;
+
+        public string ServerName
+        {
+            get
+            {
+                return string.IsNullOrEmpty(serverName) ? "ircd.net" : serverName;
+            }
+            set
+            {
+                serverName = value;
+            }
+        }
 
 
         private int nickLength = 9;
@@ -100,6 +113,20 @@ namespace IrcD
         {
             get { return standardQuitMessage; }
             set { standardQuitMessage = value; }
+        }
+
+        private string networkName;
+
+        public string NetworkName
+        {
+            get
+            {
+                return networkName ?? "apophis.NET";
+            }
+            set
+            {
+                networkName = value;
+            }
         }
     }
 }

@@ -49,5 +49,9 @@ namespace IrcD.Modes
             }
         }
 
+        public virtual bool AllowTopic()
+        {
+            return false;
+        }
     }
 }

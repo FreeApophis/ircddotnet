@@ -18,8 +18,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
@@ -33,7 +33,7 @@ namespace IrcD.Modes.ChannelModes
 
         public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
         {
-            return true;
+            return ircCommand != IrcCommandType.Topic || channel.UserPerChannelInfos[user.Nick].Modes.Any(rank => rank.Value.AllowTopic());
         }
     }
 }

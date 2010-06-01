@@ -144,10 +144,6 @@ namespace IrcD
         {
             get
             {
-                if (string.IsNullOrEmpty(Options.ServerName))
-                {
-                    return PrefixCharacter + "ircd.net";
-                }
                 return PrefixCharacter + Options.ServerName;
             }
         }
@@ -222,18 +218,20 @@ namespace IrcD
             commands.Add(new Who(this));
             commands.Add(new WhoIs(this));
             commands.Add(new WhoWas(this));
-
         }
 
         private void AddModes()
         {
             supportedRanks.Add(new ModeVoice());
-            supportedRanks.Add(new ModeHalfOp());
+            if (Options.IrcMode == IrcMode.Modern)
+                supportedRanks.Add(new ModeHalfOp());
             supportedRanks.Add(new ModeOp());
 
             supportedChannelModes.Add(new ModeBan());
-            supportedChannelModes.Add(new ModeBanException());
-            supportedChannelModes.Add(new ModeColorless());
+            if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
+                supportedChannelModes.Add(new ModeBanException());
+            if (Options.IrcMode == IrcMode.Modern)
+                supportedChannelModes.Add(new ModeColorless());
             supportedChannelModes.Add(new ModeKey());
             supportedChannelModes.Add(new ModeLimit());
             supportedChannelModes.Add(new ModeModerated());

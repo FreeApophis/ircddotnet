@@ -39,6 +39,7 @@ namespace IrcD
             Registered = false;
             PassAccepted = passAccepted;
             Host = host;
+            Created = DateTime.Now;
 
             this.isAcceptSocket = isAcceptSocket;
             this.socket = socket;
@@ -232,6 +233,8 @@ namespace IrcD
             }
         }
 
+        public DateTime Created { get; private set; }
+
         public override string ToString()
         {
             return "TODO";
@@ -270,13 +273,13 @@ namespace IrcD
         public void Remove(string message)
         {
             // Clean up channels
-            foreach(var upci in  UserPerChannelInfos)
+            foreach (var upci in UserPerChannelInfos)
             {
                 IrcDaemon.Send.Quit(this, upci.ChannelInfo, message);
-                
+
                 upci.ChannelInfo.UserPerChannelInfos.Remove(Nick);
             }
-            
+
             UserPerChannelInfos.Clear();
 
             // Clean up server

@@ -28,7 +28,7 @@ namespace IrcD.Modes
         public string ToPrefixList()
         {
             var ranks = new StringBuilder();
-            
+
             ranks.Append("(");
             foreach (var rank in Values.OrderByDescending(rank => rank.Importance))
             {
@@ -44,7 +44,7 @@ namespace IrcD.Modes
             return ranks.ToString();
         }
 
-        public char NickPrefix
+        public char NickPrefixRaw
         {
             get
             {
@@ -53,6 +53,14 @@ namespace IrcD.Modes
                     .Select(rank => rank.Value.Char)
                     .DefaultIfEmpty(' ')
                     .First();
+            }
+        }
+
+        public string NickPrefix
+        {
+            get
+            {
+                return NickPrefixRaw != ' ' ? NickPrefixRaw.ToString() : "";
             }
         }
     }

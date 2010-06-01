@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {
@@ -30,53 +31,47 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+            if (args.Count < 1)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+            if (!IrcDaemon.Channels.ContainsKey(args[0]))
+            {
+                IrcDaemon.Replies.SendNoSuchChannel(info, args[0]);
+                return;
+            }
+            var chan = IrcDaemon.Channels[args[0]];
 
+            if (args.Count == 1)
+            {
+                if (string.IsNullOrEmpty(chan.Topic))
+                {
+                    IrcDaemon.Replies.SendNoTopicReply(info, chan);
+                }
+                else
+                {
+                    IrcDaemon.Replies.SendTopicReply(info, chan);
+                }
+                return;
+            }
+
+            chan.Topic = args[1];
+
+            if (!chan.Modes.HandleEvent(IrcCommandType.Topic, chan, info, args))
+            {
+                return;
+            }
+
+            foreach (var user in chan.Users)
+            {
+                IrcDaemon.Send.Topic(info, user, chan.Name, chan.Topic);
+            }
         }
     }
 }
-
-//internal void TopicDelegate(UserInfo info, List<string> args)
-//{
-//    if (!info.Registered)
-//    {
-//        SendNotRegistered(info);
-//        return;
-//    }
-//    switch (args.Count)
-//    {
-//        case 0:
-//            SendNeedMoreParams(info);
-//            break;
-//        case 1:
-//            if (channels.ContainsKey(args[0]))
-//            {
-//                if (string.IsNullOrEmpty(channels[args[0]].Topic))
-//                {
-//                    SendNoTopicReply(info, channels[args[0]]);
-//                }
-//                else
-//                {
-//                    SendTopicReply(info, channels[args[0]]);
-//                }
-//            }
-//            else
-//            {
-//                SendNoSuchChannel(info, args[0]);
-//            }
-//            break;
-//        case 2:
-//            if (channels.ContainsKey(args[0]))
-//            {
-//                channels[args[0]].Topic = args[1];
-//                foreach (UserPerChannelInfo upci in channels[args[0]].Users.Values)
-//                {
-//                    SendTopic(info, upci.UserInfo, args[0], args[1]);
-//                }
-//            }
-//            break;
-//        default:
-//            // TODO: Protocol error too many params
-//            break;
-
-//    }
-//}

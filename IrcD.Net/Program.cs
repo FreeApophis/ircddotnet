@@ -35,7 +35,7 @@ namespace IrcD
             ircd.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();
             ircd.Options.ServerName = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerName" select setting.Value).SingleOrDefault();
             ircd.Options.MOTD.AddRange(DatabaseCommon.Db.Settings.Where(setting => setting.Key == "MessageOfTheDay").Select(setting => setting.Value));
-
+            ircd.Options.IrcMode = IrcMode.Modern;
             ircd.MainLoop();
         }
     }

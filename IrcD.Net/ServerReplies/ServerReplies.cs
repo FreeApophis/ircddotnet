@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using IrcD.Utils;
 
 namespace IrcD.ServerReplies
 {
@@ -186,11 +187,10 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Away);
 
-            //TODO:
             response.Append(" ");
-            //response.Append(awayUser.Nick);
+            response.Append(awayUser.Nick);
             response.Append(" :");
-            //response.Append(awayUser.AwayMsg);
+            response.Append(awayUser.AwayMessage);
 
             info.WriteLine(response);
         }
@@ -250,15 +250,14 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoIsUser);
 
-            //TODO:
             response.Append(" ");
-            //response.Append(who.Nick);
+            response.Append(who.Nick);
             response.Append(" ");
-            //response.Append(who.User);
+            response.Append(who.User);
             response.Append(" ");
-            //response.Append(who.Host);
+            response.Append(who.Host);
             response.Append(" * :");
-            //response.Append(who.Realname);
+            response.Append(who.RealName);
 
             info.WriteLine(response);
         }
@@ -272,13 +271,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoIsServer);
 
-            //TODO:
             response.Append(" ");
-            //response.Append(who.Nick);
+            response.Append(who.Nick);
             response.Append(" ");
             response.Append(ircDaemon.Options.ServerName); // TODO: when doing multiple IRC Server
             response.Append(" :");
-            response.Append("IRC#Daemon Server Info"); // TODO: ServerInfo?
+            response.Append(ircDaemon.Options.NetworkName); // TODO: ServerInfo?
 
             info.WriteLine(response);
         }
@@ -292,9 +290,8 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoIsOperator);
 
-            //TODO:
             response.Append(" ");
-            //response.Append(who.Nick);
+            response.Append(who.Nick);
             response.Append(" :is an IRC operator");
 
             info.WriteLine(response);
@@ -310,11 +307,21 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.WhoIsIdle);
 
             response.Append(" ");
-            //TODO:
-            //response.Append(who.Nick);
+            response.Append(who.Nick);
             response.Append(" ");
-            response.Append((DateTime.Now - who.LastAction).TotalSeconds);
-            response.Append(" :seconds idle");
+            if (ircDaemon.Options.IrcMode == IrcMode.Modern)
+            {
+                response.Append((int)((DateTime.Now - who.LastAction).TotalSeconds));
+                response.Append(" ");
+                response.Append(info.Created.ToUnixTime());
+                response.Append(" :seconds idle, signon time");
+
+            }
+            else
+            {
+                response.Append((int)((DateTime.Now - who.LastAction).TotalSeconds));
+                response.Append(" :seconds idle");
+            }
 
             info.WriteLine(response);
         }
@@ -329,8 +336,7 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.EndOfWhoIs);
 
             response.Append(" ");
-            //TODO:
-            //response.Append(who.Nick);
+            response.Append(who.Nick);
             response.Append(" ");
             response.Append(" :End of WHOIS list");
 
@@ -344,20 +350,18 @@ namespace IrcD.ServerReplies
         /// <param name="who"></param>
         public void SendWhoIsChannels(UserInfo info, UserInfo who)
         {
+            // TODO: Split at max length
             BuildMessageHeader(info, ReplyCode.WhoIsChannels);
 
             response.Append(" ");
-            //TODO:
-            //response.Append(who.Nick);
+            response.Append(who.Nick);
             response.Append(" :");
-            foreach (var chan in who.Channels)
-            {
-                // TODO: nickprefix (is in UPCI)
-                // TODO: Split at max length
-                response.Append("");
-                response.Append(chan.Name);
-                response.Append(" ");
 
+            foreach (var upci in who.UserPerChannelInfos)
+            {
+                response.Append(upci.Modes.NickPrefix);
+                response.Append(upci.ChannelInfo.Name);
+                response.Append(" ");
             }
 
             info.WriteLine(response);
@@ -444,12 +448,8 @@ namespace IrcD.ServerReplies
 
             foreach (var upci in chan.UserPerChannelInfos.Values)
             {
-                
-                var prefix = upci.Modes.NickPrefix;
-                if (prefix != ' ')
-                {
-                    response.Append(prefix);
-                }
+
+                response.Append(upci.Modes.NickPrefix);
                 response.Append(upci.UserInfo.Nick);
                 response.Append(" ");
             }
@@ -540,9 +540,8 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.YouAreService);
 
-            //TODO:
             response.Append(" :You are service ");
-            //response.Append(info.Nick);
+            response.Append(info.Nick);
 
             info.WriteLine(response);
         }
