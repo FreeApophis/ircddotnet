@@ -51,7 +51,7 @@ namespace IrcD.ServerReplies
             receiver.WriteLine(command);
         }
 
-        internal void Join(UserInfo sender, UserInfo receiver, ChannelInfo chan)
+        internal void Join(UserInfo sender, InfoBase receiver, ChannelInfo chan)
         {
             BuildMessageHeader(sender);
 
@@ -61,7 +61,7 @@ namespace IrcD.ServerReplies
             receiver.WriteLine(command);
         }
 
-        internal void Part(UserInfo sender, UserInfo receiver, ChannelInfo chan, string msg)
+        internal void Part(UserInfo sender, InfoBase receiver, ChannelInfo chan, string msg)
         {
             BuildMessageHeader(sender);
 
@@ -73,7 +73,7 @@ namespace IrcD.ServerReplies
             receiver.WriteLine(command);
         }
 
-        internal void Topic(UserInfo sender, UserInfo receiver, string chan, string newtopic)
+        internal void Topic(UserInfo sender, InfoBase receiver, string chan, string newtopic)
         {
             BuildMessageHeader(sender);
 
@@ -85,7 +85,7 @@ namespace IrcD.ServerReplies
             receiver.WriteLine(command);
         }
 
-        internal void Mode(UserInfo sender, UserInfo receiver, string target, string modestring)
+        internal void Mode(UserInfo sender, InfoBase receiver, string target, string modestring)
         {
             BuildMessageHeader(sender);
 
@@ -98,7 +98,7 @@ namespace IrcD.ServerReplies
         }
 
 
-        internal void PrivateMessage(UserInfo sender, UserInfo receiver, string target, string message)
+        internal void PrivateMessage(UserInfo sender, InfoBase receiver, string target, string message)
         {
             BuildMessageHeader(sender);
 
@@ -107,10 +107,10 @@ namespace IrcD.ServerReplies
             command.Append(" :");
             command.Append(message);
 
-            receiver.WriteLine(command);
+            receiver.WriteLine(command, sender);
         }
 
-        internal void Notice(UserInfo sender, UserInfo receiver, string target, string message)
+        internal void Notice(UserInfo sender, InfoBase receiver, string target, string message)
         {
             BuildMessageHeader(sender);
 

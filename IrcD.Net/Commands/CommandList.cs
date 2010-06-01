@@ -48,6 +48,7 @@ namespace IrcD.Commands
             if (commandList.TryGetValue(command, out commandObject))
             {
                 commandObject.Handle(info, args);
+                info.LastAlive = DateTime.Now;
             }
             else
             {
@@ -60,9 +61,7 @@ namespace IrcD.Commands
                     // we only inform the client about invalid commands if he is already successfully registered
                     // we dont want to make "wrong protocol ping-pong"
                     ircDaemon.Replies.SendUnknownCommand(info, command);
-                    info.LastAlive = DateTime.Now;
                 }
-
             }
 
 #if DEBUG

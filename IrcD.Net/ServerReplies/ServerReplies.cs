@@ -434,18 +434,23 @@ namespace IrcD.ServerReplies
         /// <param name="chan"></param>
         public void SendNamesReply(UserInfo info, ChannelInfo chan)
         {
+            // TODO: Split at max length
             BuildMessageHeader(info, ReplyCode.NamesReply);
-
-            response.Append(" = ");
+            response.Append(" ");
+            response.Append(chan.NamesPrefix);
+            response.Append(" ");
             response.Append(chan.Name);
             response.Append(" :");
 
-            foreach (UserPerChannelInfo upci in chan.UserPerChannelInfos.Values)
+            foreach (var upci in chan.UserPerChannelInfos.Values)
             {
-                // TODO: Split at max length
-                response.Append(upci.Modes.NickPrefix);
-                //TODO:
-                //response.Append(upci.UserInfo.Nick);
+                
+                var prefix = upci.Modes.NickPrefix;
+                if (prefix != ' ')
+                {
+                    response.Append(prefix);
+                }
+                response.Append(upci.UserInfo.Nick);
                 response.Append(" ");
             }
 

@@ -73,11 +73,28 @@ namespace IrcD
             }
         }
 
+        public char NamesPrefix
+        {
+            get
+            {
+                // TODO  "@" is used for secret channels, "*" for private channels, and "=" for others (public channels)
+                return '=';
+            }
+        }
+
         public override void WriteLine(StringBuilder line)
         {
             foreach (var user in Users)
             {
                 user.WriteLine(line);
+            }
+        }
+
+        public override void WriteLine(StringBuilder line, UserInfo exception)
+        {
+            foreach (var user in Users)
+            {
+                user.WriteLine(line, exception);
             }
         }
 
@@ -89,8 +106,8 @@ namespace IrcD
         public static bool ValidChannel(string channel)
         {
             // TODO: implement channel check
-            //return !string.IsNullOrEmpty(channel) &&  Options.ChannelPrefixes.Contains(channel[0]);
-            return true;
+
+            return channel.StartsWith("#");
         }
     }
 }

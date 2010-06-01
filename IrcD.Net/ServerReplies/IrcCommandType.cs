@@ -18,22 +18,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using IrcD.ServerReplies;
 
-namespace IrcD.Modes.ChannelModes
+namespace IrcD.ServerReplies
 {
-    class ModePrivate : ChannelMode
+    public enum IrcCommandType
     {
-        public ModePrivate()
-            : base('p')
-        {
-        }
-
-        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
-        {
-            return true;
-        }
+        Join,
+        PrivateMessage,
+        Notice,
+        List
     }
 }

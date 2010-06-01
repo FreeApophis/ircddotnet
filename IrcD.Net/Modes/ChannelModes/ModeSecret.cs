@@ -18,6 +18,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using IrcD.ServerReplies;
+
 namespace IrcD.Modes.ChannelModes
 {
     class ModeSecret : ChannelMode
@@ -25,6 +28,15 @@ namespace IrcD.Modes.ChannelModes
         public ModeSecret()
             : base('s')
         {
+        }
+
+        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        {
+            if (ircCommand == IrcCommandType.List)
+            {
+                
+            }
+            return true;
         }
     }
 }

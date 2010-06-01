@@ -30,32 +30,14 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+
+            var message = (args.Count > 0) ? args[0] : IrcDaemon.Options.StandardQuitMessage;
+            info.Remove(message);
         }
     }
 }
-
-//internal void QuitDelegate(UserInfo info, List<string> args)
-//{
-//    if (!info.Registered)
-//    {
-//        SendNotRegistered(info);
-//        return;
-//    }
-
-//    string message = (args.Count > 0) ? args[0] : "";
-
-//    foreach (ChannelInfo channelInfo in info.Channels.Select(upci => upci.ChannelInfo))
-//    {
-//        SendQuit(info, channelInfo, message);
-//    }
-
-//    foreach (ChannelInfo chaninfo in info.Channels.Select(upci => upci.ChannelInfo))
-//    {
-//        chaninfo.Users.Remove(info.Nick);
-//    }
-
-//    sockets.Remove(info.Socket);
-//    nicks.Remove(info.Nick);
-//    info.Socket.Close();
-
-//}

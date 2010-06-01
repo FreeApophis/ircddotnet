@@ -18,7 +18,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
+using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {
@@ -30,80 +32,66 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+            if (args.Count < 1)
+            {
+                IrcDaemon.Replies.SendNoRecipient(info, Name);
+                return;
+            }
+            if (args.Count < 2)
+            {
+                IrcDaemon.Replies.SendNoTextToSend(info);
+                return;
+            }
+
+            // TODO: idle timer, which commands reset them?
+            info.LastAction = DateTime.Now;
+            if (ChannelInfo.ValidChannel(args[0]))
+            {
+                if (IrcDaemon.Channels.ContainsKey(args[0]))
+                {
+                    var chan = IrcDaemon.Channels[args[0]];
+
+                    if (!chan.Modes.HandleEvent(IrcCommandType.Notice, chan, info, args))
+                    {
+                        return;
+                    }
+
+                    // Send Channel Message
+                    IrcDaemon.Send.Notice(info, chan, chan.Name, args[1]);
+                }
+                else
+                {
+                    IrcDaemon.Replies.SendCannotSendToChannel(info, args[0]);
+                }
+            }
+            else if (UserInfo.ValidNick(args[0]))
+            {
+                if (IrcDaemon.Nicks.ContainsKey(args[0]))
+                {
+                    var user = IrcDaemon.Nicks[args[0]];
+
+                    if (user.AwayMessage != null)
+                    {
+                        IrcDaemon.Replies.SendAwayMsg(info, user);
+                    }
+
+                    // Send PM
+                    IrcDaemon.Send.Notice(info, user, user.Nick, args[1]);
+                }
+                else
+                {
+                    IrcDaemon.Replies.SendNoSuchNick(info, args[0]);
+                }
+            }
+            else
+            {
+                IrcDaemon.Replies.SendNoSuchNick(info, args[0]);
+            }
         }
     }
 }
-
-//private void NoticeDelegate(UserInfo info, List<string> args)
-//{
-//    if (!info.Registered)
-//    {
-//        SendNotRegistered(info);
-//        return;
-//    }
-//    if (args.Count < 1)
-//    {
-//        SendNoRecipient(info, "NOTICE");
-//        return;
-//    }
-//    if (args.Count < 2)
-//    {
-//        SendNoTextToSend(info);
-//        return;
-//    }
-
-//    // TODO: idle timer, which commands reset them?
-//    info.LastAction = DateTime.Now;
-
-//    if (ValidChannel(args[0]))
-//    {
-//        if (channels.ContainsKey(args[0]))
-//        {
-//            //ChannelInfo chan = channels[args[0]];
-//            //if (chan.Mode_n && (!info.Channels.Contains(chan)) /*TODO: banned user cannot send even without Mode_n set*/)
-//            //{
-//            //    SendCannotSendToChannel(info, chan.Name);
-//            //    return;
-//            //}
-//            //if (!chan.Mode_m || (chan.Mode_m && info.Channels.Contains(chan) &&
-//            //                    (chan.User[info.Nick].Mode_v || chan.User[info.Nick].Mode_h || chan.User[info.Nick].Mode_o)))
-//            //{
-//            //    foreach (UserPerChannelInfo upci in chan.User.Values)
-//            //    {
-//            //        if (upci.Info.Nick != info.Nick)
-//            //        {
-//            //            SendNotice(info, upci.Info, chan.Name, args[1]);
-//            //        }
-//            //    }
-//            //}
-//            //else
-//            //{
-//            //    SendCannotSendToChannel(info, chan.Name);
-//            //}
-//        }
-//        else
-//        {
-//            SendNoSuchChannel(info, args[0]);
-//        }
-//    }
-//    else if (ValidNick(args[0]))
-//    {
-//        if (nicks.ContainsKey(args[0]))
-//        {
-//            UserInfo user = sockets[nicks[args[0]]];
-//            if (user.AwayMsg != null)
-//            {
-//                SendAwayMsg(info, user);
-//            }
-//            SendNotice(info, user, user.Nick, args[1]);
-//        }
-//        else
-//        {
-//            SendNoSuchNick(info, args[0]);
-//        }
-//    }
-//    else
-//    {
-//        SendNoSuchNick(info, args[0]);
-//    }
-//}

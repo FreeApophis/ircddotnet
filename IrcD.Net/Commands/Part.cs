@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IrcD.Commands
 {
@@ -30,48 +31,47 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+            if (args.Count < 1)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+
+            var message = (args.Count > 1) ? args[1] : IrcDaemon.Options.StandardPartMessage;
+
+
+            foreach (string ch in GetSubArgument(args[0]))
+            {
+                if (IrcDaemon.Channels.ContainsKey(ch))
+                {
+                    var chan = IrcDaemon.Channels[ch];
+                    var upci = chan.UserPerChannelInfos[info.Nick];
+
+                    if (info.Channels.Contains(chan))
+                    {
+                        IrcDaemon.Send.Part(info, chan, chan, message);
+
+                        chan.UserPerChannelInfos.Remove(info.Nick);
+                        info.UserPerChannelInfos.Remove(upci);
+                    }
+                    else
+                    {
+                        IrcDaemon.Replies.SendNotOnChannel(info, ch);
+                        continue;
+                    }
+                }
+                else
+                {
+                    IrcDaemon.Replies.SendNoSuchChannel(info, ch);
+                    continue;
+                }
+            }
         }
     }
 }
 
-//internal void PartDelegate(UserInfo info, List<string> args)
-//{
-//    if (!info.Registered)
-//    {
-//        SendNotRegistered(info);
-//        return;
-//    }
-//    if (args.Count < 1)
-//    {
-//        SendNeedMoreParams(info);
-//        return;
-//    }
-//    string message = (args.Count > 1) ? args[1] : "";
-
-//    foreach (string ch in GetSubArgument(args[0]))
-//    {
-//        if (channels.ContainsKey(ch))
-//        {
-//            ChannelInfo chan = channels[ch];
-//            //if (info.Channels.Contains(chan))
-//            //{
-//            //    foreach (UserPerChannelInfo upci in chan.User.Values)
-//            //    {
-//            //        SendPart(info, upci.Info, chan, message);
-//            //    }
-//            //    chan.User.Remove(info.Nick);
-//            //    info.Channels.Remove(chan);
-//            //}
-//            //else
-//            //{
-//            //    SendNotOnChannel(info, ch);
-//            //    continue;
-//            //}
-//        }
-//        else
-//        {
-//            SendNoSuchChannel(info, ch);
-//            continue;
-//        }
-//    }
-//}

@@ -18,13 +18,28 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using IrcD.ServerReplies;
+
 namespace IrcD.Modes
 {
-    public class ChannelMode : Mode
+    public abstract class ChannelMode : Mode
     {
-        public ChannelMode(char mode)
+        protected ChannelMode(char mode)
             : base(mode)
         {
+
         }
+
+        /// <summary>
+        /// This Method is called to check all the modes on a channel, each Mode has the chance to take control over a command.
+        ///  If it takes control it should return false, therefore the other Commands are not checked, and the control flow will interupt.
+        /// </summary>
+        /// <param name="ircCommand">Type of command</param>
+        /// <param name="channel">The Channel the Mode is operating</param>
+        /// <param name="user">The User which uses the Command on the channel</param>
+        /// <returns>Handle Event should return true when the command is allowed to proceed normally. 
+        /// It should return false, if the Mode forbids the further execution of the Command.</returns>
+        public abstract bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args);
     }
 }

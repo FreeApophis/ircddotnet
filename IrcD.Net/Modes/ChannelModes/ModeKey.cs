@@ -18,6 +18,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using System.Linq;
+using IrcD.Commands;
+using IrcD.ServerReplies;
+
 namespace IrcD.Modes.ChannelModes
 {
     class ModeKey : ChannelMode, IParameterB
@@ -39,6 +44,22 @@ namespace IrcD.Modes.ChannelModes
             {
                 key = value;
             }
+        }
+
+        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        {
+            if (ircCommand == IrcCommandType.Join)
+            {
+                var keys = args.Count > 1 ? (IEnumerable<string>)CommandBase.GetSubArgument(args[1]) : new List<string>();
+
+                if (!keys.Any(k => k == key))
+                {
+                    user.IrcDaemon.Replies.SendBadChannelKey(user, channel);
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

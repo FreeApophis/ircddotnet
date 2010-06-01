@@ -162,6 +162,7 @@
     <Compile Include="AlreadyCalledException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerReplies\IrcCommandType.cs" />
     <Compile Include="ServerReplies\ProtocolMessages.cs" />
     <Compile Include="ServerReplies\ReplyCode.cs" />
     <Compile Include="ServerOptions.cs" />

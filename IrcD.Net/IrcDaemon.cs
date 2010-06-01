@@ -45,9 +45,24 @@ namespace IrcD
 
         // Main Datastructures
         private readonly Dictionary<Socket, UserInfo> sockets = new Dictionary<Socket, UserInfo>();
+        public Dictionary<Socket, UserInfo> Sockets
+        {
+            get
+            {
+                return sockets;
+            }
+        }
         private readonly Dictionary<string, ChannelInfo> channels = new Dictionary<string, ChannelInfo>();
-        private readonly Dictionary<string, Socket> nicks = new Dictionary<string, Socket>();
-        public Dictionary<string, Socket> Nicks
+        public Dictionary<string, ChannelInfo> Channels
+        {
+            get
+            {
+                return channels;
+            }
+        }
+
+        private readonly Dictionary<string, UserInfo> nicks = new Dictionary<string, UserInfo>();
+        public Dictionary<string, UserInfo> Nicks
         {
             get
             {
@@ -269,8 +284,9 @@ namespace IrcD
                             }
                             catch (SocketException e)
                             {
-                                Logger.Log("ERROR: " + e.Message + "(CODE:" + e.ErrorCode + ")");
-                                //Send.Quit(sockets[s], new List<string> { "Socket reset by peer" });
+                                Logger.Log("ERROR:  (Socket reset) " + e.Message + "(CODE:" + e.ErrorCode + ")");
+                                sockets[s].Remove("Socket reset by peer (" + e.ErrorCode + ")");
+
                             }
                         }
                     }
@@ -290,10 +306,11 @@ namespace IrcD
                     if (user.LastAlive < DateTime.Now.AddMinutes(-5))
                     {
                         // Ping Timeout (5 Minutes without any life sign)
-                        user.Remove();
+                        user.Remove("Ping Timeout");
                     }
-                    else
+                    else if (user.LastPing < DateTime.Now.AddMinutes(-1))
                     {
+                        user.LastPing = DateTime.Now;
                         Send.Ping(user);
                     }
                 }
@@ -305,7 +322,7 @@ namespace IrcD
         {
 
 #if DEBUG
-            Logger.Log(line, location: "IN:");
+            Logger.Log(line, location: "IN:" + info.Nick);
 #endif
 
             string prefix = null;
@@ -373,6 +390,7 @@ namespace IrcD
             }
             catch (IndexOutOfRangeException)
             {
+                Logger.Log("Invalid Message: " + line);
                 // invalid message
             }
 
@@ -383,12 +401,6 @@ namespace IrcD
         }
 
         #region Helper Methods
-
-        private string[] GetSubArgument(string arg)
-        {
-            return arg.Split(new[] { ',' });
-        }
-
 
         /// <summary>
         /// Check if an IRC Operatur status can be granted upon user and pass

@@ -19,6 +19,10 @@
  */
 
 
+using System;
+using System.Collections.Generic;
+using IrcD.ServerReplies;
+
 namespace IrcD.Modes.ChannelModes
 {
     public class ModeColorless : ChannelMode
@@ -26,6 +30,11 @@ namespace IrcD.Modes.ChannelModes
         public ModeColorless()
             : base('c')
         {
+        }
+
+        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        {
+            return true;
         }
     }
 }

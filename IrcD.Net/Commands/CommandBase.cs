@@ -32,7 +32,6 @@ namespace IrcD.Commands
         }
 
         protected IrcDaemon IrcDaemon;
-        protected StringBuilder Command;
 
         private readonly string name;
 
@@ -45,5 +44,11 @@ namespace IrcD.Commands
         }
 
         public abstract void Handle(UserInfo info, List<string> args);
+
+        public static string[] GetSubArgument(string arg)
+        {
+            return arg.Split(new[] { ',' });
+        }
+
     }
 }

@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using IrcD.Commands;
 using IrcD.Database;
 using IrcD.Modes;
 using IrcD.Utils;
@@ -75,6 +74,7 @@ namespace IrcD
         public string Nick { get; private set; }
         public string RealName { get; private set; }
         public string Host { get; private set; }
+        public string AwayMessage { get; set; }
 
 
         public void InitNick(string nick)
@@ -134,7 +134,7 @@ namespace IrcD
         {
             // Update Global Nick-Dictionary
             IrcDaemon.Nicks.Remove(Nick);
-            IrcDaemon.Nicks.Add(newNick, socket);
+            IrcDaemon.Nicks.Add(newNick, this);
 
             // Update Channel Nicklists
             foreach (var channel in Channels)
@@ -192,19 +192,10 @@ namespace IrcD
             }
         }
 
-        private DateTime lastAlive = DateTime.Now;
+        public DateTime LastAlive { get; set; }
 
-        public DateTime LastAlive
-        {
-            get
-            {
-                return lastAlive;
-            }
-            set
-            {
-                lastAlive = value;
-            }
-        }
+        public DateTime LastPing { get; set; }
+
         public string ModeString
         {
             get
@@ -215,7 +206,7 @@ namespace IrcD
 
         private readonly List<UserPerChannelInfo> userPerChannelInfos = new List<UserPerChannelInfo>();
 
-        public IEnumerable<UserPerChannelInfo> UserPerChannelInfos
+        public List<UserPerChannelInfo> UserPerChannelInfos
         {
             get
             {
@@ -241,7 +232,6 @@ namespace IrcD
             }
         }
 
-
         public override string ToString()
         {
             return "TODO";
@@ -249,10 +239,20 @@ namespace IrcD
 
         public override void WriteLine(StringBuilder line)
         {
-            Logger.Log(line.ToString(), location: "OUT:");
-
+#if DEBUG
+            Logger.Log(line.ToString(), location: "OUT:" + Nick);
+#endif
             line.Append(IrcDaemon.ServerCrLf);
             socket.Send(Encoding.UTF8.GetBytes(line.ToString()));
+        }
+
+        public override void WriteLine(StringBuilder line, UserInfo exception)
+        {
+            if (this != exception)
+            {
+                WriteLine(line);
+            }
+
         }
 
         /// <summary>
@@ -267,9 +267,29 @@ namespace IrcD
         }
 
         // Cleanly Quit a user, in any case, Connection dropped, QuitMesssage, all traces of 'this' mus be removed.
-        public void Remove()
-        {            
-            // TODO: Implement cleanup
+        public void Remove(string message)
+        {
+            // Clean up channels
+            foreach(var upci in  UserPerChannelInfos)
+            {
+                IrcDaemon.Send.Quit(this, upci.ChannelInfo, message);
+                
+                upci.ChannelInfo.UserPerChannelInfos.Remove(Nick);
+            }
+            
+            UserPerChannelInfos.Clear();
+
+            // Clean up server
+
+            IrcDaemon.Nicks.Remove(Nick);
+            IrcDaemon.Sockets.Remove(socket);
+
+            // TODO: do I need to send a quit if I am in no channel?
+
+            // Close connection
+            socket.Close();
+
+            // Ready for destruction 
         }
     }
 }

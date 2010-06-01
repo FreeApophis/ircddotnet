@@ -19,6 +19,7 @@
  */
 
 
+using System;
 using System.Text;
 using IrcD.Modes;
 
@@ -69,8 +70,16 @@ namespace IrcD
         /// </summary>
         /// <param name="line"></param>
         public override void WriteLine(StringBuilder line)
-        {           
+        {
             userInfo.WriteLine(line);
+        }
+
+        public override void WriteLine(StringBuilder line, UserInfo exception)
+        {
+            if (UserInfo != exception)
+            {
+                userInfo.WriteLine(line);
+            }
         }
     }
 }

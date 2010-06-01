@@ -18,6 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using IrcD.ServerReplies;
+
 namespace IrcD.Modes.ChannelModes
 {
     class ModeNoExternal : ChannelMode
@@ -25,6 +29,15 @@ namespace IrcD.Modes.ChannelModes
         public ModeNoExternal()
             : base('n')
         {
+        }
+
+        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        {
+            if (ircCommand == IrcCommandType.PrivateMessage || ircCommand == IrcCommandType.Notice)
+            {
+
+            }
+            return true;
         }
     }
 }

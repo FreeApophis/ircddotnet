@@ -19,6 +19,9 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {
@@ -30,127 +33,90 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+            if (args.Count < 1)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+            if (args[0] == "0")
+            {
+                PartAll(info);
+                return;
+            }
+
+            foreach (var channel in from temp in GetSubArgument(args[0])
+                                    where !info.UserPerChannelInfos.Any(upci => upci.ChannelInfo.Name == temp)
+                                    select temp)
+            {
+                ChannelInfo chan;
+
+                if (IrcDaemon.Channels.ContainsKey(channel))
+                {
+                    chan = IrcDaemon.Channels[channel];
+
+                    if (!chan.Modes.HandleEvent(IrcCommandType.Join, chan, info, args))
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    chan = new ChannelInfo(channel, IrcDaemon);
+                    IrcDaemon.Channels.Add(chan.Name, chan);
+                }
+
+                var chanuser = new UserPerChannelInfo(info, chan);
+                chan.UserPerChannelInfos.Add(info.Nick, chanuser);
+                info.UserPerChannelInfos.Add(chanuser);
+
+                IrcDaemon.Send.Join(info, chan, chan);
+
+                SendTopic(info, chan);
+                IrcDaemon.Replies.SendNamesReply(chanuser.UserInfo, chan);
+                IrcDaemon.Replies.SendEndOfNamesReply(info, chan);
+            }
+        }
+
+        private void PartAll(UserInfo info)
+        {
+            var command = new StringBuilder();
+            var partargs = new List<string>();
+            // this is a part all channels, this is plainly stupid to handle PARTS in a join message.
+            // we won't handle that, we give it to the part handler! YO! why not defining a /part * instead of /join 0
+
+            command.Length = 0; bool first = true;
+            foreach (var ci in info.Channels)
+            {
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    command.Append(",");
+                }
+                command.Append(ci.Name);
+            }
+            partargs.Add(command.ToString());
+            partargs.Add(IrcDaemon.Options.StandardPartMessage);
+            IrcDaemon.Commands.Handle("PART", info, partargs);
+        }
+
+        private void SendTopic(UserInfo info, ChannelInfo chan)
+        {
+            if (string.IsNullOrEmpty(chan.Topic))
+            {
+                IrcDaemon.Replies.SendNoTopicReply(info, chan);
+            }
+            else
+            {
+                IrcDaemon.Replies.SendTopicReply(info, chan);
+            }
         }
     }
 }
-
-//internal void JoinDelegate(UserInfo info, List<string> args)
-//{
-//    if (!info.Registered)
-//    {
-//        SendNotRegistered(info);
-//        return;
-//    }
-//    if (args.Count < 1)
-//    {
-//        SendNeedMoreParams(info);
-//        return;
-//    }
-//    if (args[0] == "0")
-//    {
-//        var partargs = new List<string>();
-//        // this is a part all channels, this is plainly stupid to handle PARTS in a join message.
-//        // we won't handle that, we give it to the part handler! YO! why not defining a /part * instead of /join 0
-//        commandSB.Length = 0; bool first = true;
-//        foreach (ChannelInfo ci in info.Channels.Select(upci => upci.ChannelInfo))
-//        {
-//            if (first)
-//            {
-//                first = false;
-//            }
-//            else
-//            {
-//                commandSB.Append(",");
-//            }
-//            commandSB.Append(ci.Name);
-//        }
-//        partargs.Add(commandSB.ToString());
-//        partargs.Add("Left all channels");
-//        PartDelegate(info, partargs);
-//        return;
-//    }
-
-//    IEnumerable<string> keys;
-//    if (args.Count > 1)
-//    {
-//        keys = GetSubArgument(args[1]);
-//    }
-//    else
-//    {
-//        keys = new List<string>();
-//    }
-
-//    foreach (string ch in GetSubArgument(args[0]))
-//    {
-//        ChannelInfo chan;
-//        if (channels.ContainsKey(ch))
-//        {
-//            chan = channels[ch];
-//            // TODO: new modes
-//            // Check for (+l)
-//            //if ((chan.Mode_l != -1) && (chan.Mode_l <= chan.User.Count))
-//            //{
-//            //    SendChannelIsFull(info, chan);
-//            //    return;
-//            //}
-
-//            // Check for (+k)
-//            //if (!string.IsNullOrEmpty(chan.Mode_k))
-//            //{
-//            //    bool j = false;
-//            //    foreach (string key in keys)
-//            //    {
-//            //        if (key == chan.Mode_k)
-//            //        {
-//            //            j = true;
-//            //        }
-//            //    }
-//            //    if (!j)
-//            //    {
-//            //        SendBadChannelKey(info, chan);
-//            //        return;
-//            //    }
-//            //}
-
-//            // Check for (+i)
-//            //if (chan.Mode_i)
-//            //{
-//            //    // TODO: implement invite
-//            //    SendInviteOnlyChannel(info, chan);
-//            //}
-
-//            // Check for (+b) (TODO)
-//            if (false)
-//            {
-//                SendBannedFromChannel(info, chan);
-//            }
-//        }
-//        else
-//        {
-//            chan = new ChannelInfo(ch, this);
-//            channels.Add(chan.Name, chan);
-//        }
-
-//        var chanuser = new UserPerChannelInfo(info, chan);
-//        chan.Users.Add(info.Nick, chanuser);
-//        info.Channels.Add(chanuser);
-
-//        foreach (UserPerChannelInfo upci in chan.Users.Values)
-//        {
-//            SendJoin(info, upci.UserInfo, chan);
-//        }
-
-
-//        if (string.IsNullOrEmpty(chan.Topic))
-//        {
-//            SendNoTopicReply(info, chan);
-//        }
-//        else
-//        {
-//            SendTopicReply(info, chan);
-//        }
-//        SendNamesReply(chanuser.UserInfo, chan);
-//        SendEndOfNamesReply(info, chan);
-//    }
-
-//}

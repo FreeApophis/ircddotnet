@@ -18,6 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using IrcD.ServerReplies;
+
 namespace IrcD.Modes.ChannelModes
 {
     class ModeModerated : ChannelMode
@@ -25,6 +29,11 @@ namespace IrcD.Modes.ChannelModes
         public ModeModerated()
             : base('m')
         {
+        }
+
+        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        {
+            return true;
         }
     }
 }

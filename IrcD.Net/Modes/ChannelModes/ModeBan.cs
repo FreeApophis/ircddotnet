@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
 {
@@ -34,6 +35,11 @@ namespace IrcD.Modes.ChannelModes
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
+        }
+
+        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        {
+            return true;
         }
     }
 }

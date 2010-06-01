@@ -18,7 +18,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
+using System.Collections.Generic;
+using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
 {
@@ -30,10 +31,35 @@ namespace IrcD.Modes.ChannelModes
 
         }
 
+        private int limit;
+
         public string Parameter
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            get
+            {
+                return limit.ToString();
+            }
+            set
+            {
+                if (int.TryParse(value, out limit))
+                {
+                    limit = 0;
+                }
+            }
+        }
+
+        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        {
+            if (ircCommand == IrcCommandType.Join)
+            {
+
+                if (limit <= channel.UserPerChannelInfos.Count)
+                {
+                    user.IrcDaemon.Replies.SendChannelIsFull(user, channel);
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

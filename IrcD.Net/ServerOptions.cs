@@ -18,6 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 
 namespace IrcD
@@ -28,14 +29,8 @@ namespace IrcD
 
         public int ServerPort
         {
-            get
-            {
-                return serverPort;
-            }
-            set
-            {
-                serverPort = value;
-            }
+            get { return serverPort; }
+            set { serverPort = value; }
         }
 
         private readonly List<char> channelPrefixes = new List<char> { '&', '#', '+', '!' };
@@ -56,28 +51,16 @@ namespace IrcD
 
         public int NickLength
         {
-            get
-            {
-                return nickLength;
-            }
-            set
-            {
-                nickLength = value;
-            }
+            get { return nickLength; }
+            set { nickLength = value; }
         }
 
         private List<string> motd = new List<string>();
 
         public List<string> MOTD
         {
-            get
-            {
-                return motd;
-            }
-            set
-            {
-                motd = value;
-            }
+            get { return motd; }
+            set { motd = value; }
         }
 
         private readonly Dictionary<string, string> oLine = new Dictionary<string, string>();
@@ -97,16 +80,26 @@ namespace IrcD
         /// </summary>
         public bool ClientCompatibilityMode
         {
-            get
-            {
-                return clientCompatibilityMode;
-            }
-            set
-            {
-                clientCompatibilityMode = value;
-            }
+            get { return clientCompatibilityMode; }
+            set { clientCompatibilityMode = value; }
         }
 
         public IrcMode IrcMode { get; set; }
+
+        private string standardPartMessage = "Leaving";
+
+        public string StandardPartMessage
+        {
+            get { return standardPartMessage; }
+            set { standardPartMessage = value; }
+        }
+
+        private string standardQuitMessage = "Quit";
+
+        public string StandardQuitMessage
+        {
+            get { return standardQuitMessage; }
+            set { standardQuitMessage = value; }
+        }
     }
 }

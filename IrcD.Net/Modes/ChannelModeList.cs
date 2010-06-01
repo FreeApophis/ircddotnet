@@ -18,9 +18,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IrcD.Modes.ChannelModes;
+using IrcD.ServerReplies;
 
 namespace IrcD.Modes
 {
@@ -49,8 +51,21 @@ namespace IrcD.Modes
             {
                 modes.Append(mode.Char);
             }
-            
+
             return modes.ToString();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ircCommand"></param>
+        /// <param name="channel"></param>
+        /// <param name="user"></param>
+        /// <param name="args"></param>
+        /// <returns>returns true if all Modes return true and therefore don't stop the execution of the Command</returns>
+        public bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        {
+            return Values.All(mode => mode.HandleEvent(ircCommand, channel, user, args));
         }
     }
 }
