@@ -30,39 +30,36 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+            if (args.Count < 2)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+
+            // TODO: deny certain hosts OPER status
+            if (false)
+            {
+                IrcDaemon.Replies.SendNoOperHost(info);
+                return;
+            }
+
+            if (info.ValidOpLine(args[0], args[1]))
+            {
+                // TODO: new modes
+                //info.Mode_o = true;
+                //info.Mode_O = true;
+                IrcDaemon.Replies.SendYouAreOper(info);
+            }
+            else
+            {
+                IrcDaemon.Replies.SendPasswordMismatch(info);
+            }
         }
     }
 }
 
-//internal void OperDelegate(UserInfo info, List<string> args)
-//{
-//    if (!info.Registered)
-//    {
-//        SendNotRegistered(info);
-//        return;
-//    }
-//    if (args.Count < 2)
-//    {
-//        SendNeedMoreParams(info);
-//        return;
-//    }
-
-//    // TODO: deny certain hosts OPER status
-//    if (false)
-//    {
-//        SendNoOperHost(info);
-//        return;
-//    }
-
-//    if (IsIrcOp(args[0], args[1]))
-//    {
-//        // TODO: new modes
-//        //info.Mode_o = true;
-//        //info.Mode_O = true;
-//        SendYouAreOper(info);
-//    }
-//    else
-//    {
-//        SendPasswordMismatch(info);
-//    }
-//}

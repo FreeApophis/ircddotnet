@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {
@@ -57,7 +58,13 @@ namespace IrcD.Commands
             {
                 IrcDaemon.Replies.SendAwayMsg(info, user);
             }
+
+            if (!info.Modes.HandleEvent(IrcCommandType.Join, info, args))
+            {
+                return;
+            }
             // TODO: User Modes Handle
+
             //if (user.Mode_O || user.Mode_o)
             //{
             //    SendWhoIsOperator(info, user);

@@ -30,31 +30,26 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+
+            if (args.Count < 1)
+            {
+                // TODO: list all visible users
+                return;
+            }
+
+            //TODO: taget parameter
+            foreach (var ch in GetSubArgument(args[0]))
+            {
+                if (IrcDaemon.Channels.ContainsKey(ch))
+                {
+                    IrcDaemon.Replies.SendNamesReply(info, IrcDaemon.Channels[ch]);
+                }
+            }
         }
     }
 }
-
-//internal void NamesDelegate(UserInfo info, List<string> args)
-//{
-//    if (!info.Registered)
-//    {
-//        SendNotRegistered(info);
-//        return;
-//    }
-
-//    if (args.Count < 1)
-//    {
-//        // TODO: list all visible users
-//        return;
-//    }
-
-//    //TODO: taget parameter
-//    foreach (string ch in GetSubArgument(args[0]))
-//    {
-//        if (channels.ContainsKey(ch))
-//        {
-//            SendNamesReply(info, channels[ch]);
-//        }
-//    }
-
-//}

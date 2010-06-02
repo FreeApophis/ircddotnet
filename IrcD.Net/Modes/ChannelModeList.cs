@@ -67,5 +67,142 @@ namespace IrcD.Modes
         {
             return Values.All(mode => mode.HandleEvent(ircCommand, channel, user, args));
         }
+
+        internal void Update(UserInfo info, ChannelInfo chan, IEnumerable<string> args)
+        {
+            // In
+            bool? plus = (args.First().Length == 1) ? (bool?)null : true;
+            var parameterTail = args.Skip(1);
+
+            // Out: this is the final mode message
+            var lastprefix = ' ';
+            var validmode = new StringBuilder();
+            var validparam = new List<string>();
+
+            foreach (var modechar in args.First())
+            {
+                if (modechar == '+' || modechar == '-')
+                {
+                    plus = (modechar == '+');
+                    continue;
+                }
+
+                var cmode = ModeFactory.GetChannelMode(modechar);
+                var crank = ModeFactory.GetChannelRank(modechar);
+
+                if (plus == null)
+                {
+                    var list = cmode as IParameterListA;
+                    if (list != null)
+                    {
+                        ChannelMode channelMode;
+                        if (TryGetValue(cmode.Char, out channelMode))
+                        {
+                            ((IParameterListA)channelMode).SendList(info, chan);
+                        }
+                        else
+                        {
+                            //No list yet, Send empty List
+                            list.SendList(info, chan);
+                        }
+                        return;
+                    }
+                    plus = true;
+                }
+
+                var paramA = cmode as IParameterListA;
+                var paramB = cmode as IParameterB;
+                var paramC = cmode as IParameterC;
+
+                if (paramA != null)
+                {
+
+                }
+                else if (paramB != null)
+                {
+
+                }
+                else if (paramC != null)
+                {
+
+                }
+                else if (cmode != null)
+                {
+                    // Channel Mode without a parameter
+                    if (plus.Value)
+                    {
+                        if (ContainsKey(cmode.Char))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            Add(cmode);
+                            if (lastprefix != '+')
+                            {
+                                validmode.Append(lastprefix = '+');
+                            }
+                            validmode.Append(cmode.Char);
+                        }
+                    }
+                    else
+                    {
+                        if (!ContainsKey(cmode.Char))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            Remove(cmode.Char);
+                            if (lastprefix != '-')
+                            {
+                                validmode.Append(lastprefix = '-');
+                            }
+                            validmode.Append(cmode.Char);
+                        }
+
+                    }
+                }
+                else if (crank != null)
+                {
+                    // Channel Rank (always need a parameter)
+                }
+                else
+                {
+                    info.IrcDaemon.Replies.SendUnknownMode(info, chan, modechar);
+                }
+            }
+
+            // Integrate Parameters into final mode string
+            foreach (var param in validparam)
+            {
+                validmode.Append(" ");
+                validmode.Append(param);
+            }
+            info.IrcDaemon.Send.Mode(info, chan, chan.Name, validmode.ToString());
+        }
+
+        public string ToChannelModeString()
+        {
+            var modes = new StringBuilder("+");
+            var parameters = new StringBuilder();
+
+            foreach (var mode in Values.Where(m => !(m is IParameterListA)).OrderBy(c => c.Char))
+            {
+                modes.Append(mode.Char);
+                if (mode is IParameterB)
+                {
+                    parameters.Append(" ");
+                    parameters.Append(((IParameterB)mode).Parameter);
+                }
+                if (mode is IParameterC)
+                {
+                    parameters.Append(" ");
+                    parameters.Append(((IParameterC)mode).Parameter);
+                }
+            }
+
+            return "" + modes + parameters;
+        }
     }
 }

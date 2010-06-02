@@ -18,10 +18,38 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using IrcD.ServerReplies;
+
 namespace IrcD.Modes
 {
     public class UserModeList : ModeList<UserMode>
     {
+        public bool HandleEvent(IrcCommandType ircCommand, UserInfo user, List<string> args)
+        {
+            return Values.All(mode => mode.HandleEvent(ircCommand, user, args));
+        }
 
+        internal void Update(UserInfo info, IEnumerable<string> args)
+        {
+            bool plus = true;
+            foreach (var modechar in args.First())
+            {
+                if (modechar == '+' || modechar == '-')
+                {
+                    plus = (modechar == '+');
+                    continue;
+                }
+
+                var cmode = ModeFactory.GetUserMode(modechar);
+            }
+        }
+
+        public string ToUserModeString()
+        {
+            return "+" + ToString();
+        }
     }
 }

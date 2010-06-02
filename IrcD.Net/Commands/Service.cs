@@ -30,46 +30,32 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (info.Registered)
+            {
+                IrcDaemon.Replies.SendAlreadyRegistered(info);
+                return;
+            }
+            if (args.Count < 6)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+            if (!UserInfo.ValidNick(args[0]))
+            {
+                IrcDaemon.Replies.SendErroneousNickname(info, args[0]);
+                return;
+            }
+            if (IrcDaemon.Nicks.ContainsKey(args[0]))
+            {
+                IrcDaemon.Replies.SendNicknameInUse(info, args[0]);
+                return;
+            }
+
+            info.IsService = true;
+            info.InitNick(args[0]);
+            info.InitUser("service", "I am a service");
+
+            IrcDaemon.Nicks.Add(info.Nick, info);
         }
     }
 }
-
-//internal void ServiceDelegate(UserInfo info, List<string> args)
-//{
-//    if (!info.Registered)
-//    {
-//        SendNotRegistered(info);
-//        return;
-//    }
-//    if (info.Registered)
-//    {
-//        SendAlreadyRegistered(info);
-//        return;
-//    }
-//    if (args.Count < 6)
-//    {
-//        SendNeedMoreParams(info);
-//        return;
-//    }
-//    if (!ValidNick(args[0]))
-//    {
-//        SendErroneousNickname(info, args[0]);
-//        return;
-//    }
-//    if (nicks.ContainsKey(args[0]))
-//    {
-//        SendNicknameInUse(info, args[0]);
-//        return;
-//    }
-
-//    info.Nick = args[0];
-//    nicks.Add(info.Nick, info.Socket);
-
-//    info.User = "service";
-//    info.IsService = true;
-//    info.Registered = true;
-
-//    SendYouAreService(info);
-//    SendYourHost(info);
-//    SendMyInfo(info);
-//}

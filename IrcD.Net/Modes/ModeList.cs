@@ -19,7 +19,9 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using IrcD.Modes.ChannelModes;
 
 namespace IrcD.Modes
 {
@@ -34,9 +36,9 @@ namespace IrcD.Modes
         {
             var modes = new StringBuilder();
 
-            foreach (var mode in this)
+            foreach (var mode in Values)
             {
-                modes.Append(mode.Value.Char);
+                modes.Append(mode.Char);
             }
 
             return modes.ToString();

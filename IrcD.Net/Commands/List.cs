@@ -30,21 +30,18 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+            
+            // TODO: special List commands (if RfcModern) / filter +s/+p
+            foreach (var ci in IrcDaemon.Channels.Values)
+            {
+                IrcDaemon.Replies.SendListItem(info, ci);
+            }
+            IrcDaemon.Replies.SendListEnd(info);
         }
     }
 }
-
-//private void ListDelegate(UserInfo info, List<string> args)
-//{
-//    if (!info.Registered)
-//    {
-//        SendNotRegistered(info);
-//        return;
-//    }
-//    // TODO: special LIST commands / implemented is full list
-//    foreach (ChannelInfo ci in channels.Values)
-//    {
-//        SendListItem(info, ci);
-//    }
-//    SendListEnd(info);
-//}

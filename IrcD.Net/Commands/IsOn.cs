@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IrcD.Commands
 {
@@ -30,28 +31,19 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+            if (args.Count < 1)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+
+            IrcDaemon.Replies.SendIsOn(info, args.Where(nick => IrcDaemon.Nicks.ContainsKey(nick)));
         }
     }
 }
 
-//private void IsonDelegate(UserInfo info, List<string> args)
-//{
-//    if (!info.Registered)
-//    {
-//        SendNotRegistered(info);
-//        return;
-//    }
-//    if (args.Count < 1)
-//    {
-//        SendNeedMoreParams(info);
-//        return;
-//    }
-
-//    var nickList = new List<string>();
-//    foreach (string nick in args)
-//    {
-//        if (nicks.ContainsKey(nick))
-//            nickList.Add(nick);
-//    }
-//    SendIsOn(info, nickList);
-//}

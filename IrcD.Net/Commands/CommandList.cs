@@ -74,7 +74,6 @@ namespace IrcD.Commands
             }
 
             Logger.Log(parsedLine.ToString());
-
 #endif
         }
     }

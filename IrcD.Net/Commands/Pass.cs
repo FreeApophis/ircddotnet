@@ -19,7 +19,6 @@
  */
 
 using System.Collections.Generic;
-using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {

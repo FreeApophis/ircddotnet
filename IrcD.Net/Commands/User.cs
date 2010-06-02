@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.Modes.UserModes;
 
 namespace IrcD.Commands
 {
@@ -50,9 +51,14 @@ namespace IrcD.Commands
             int flags;
             int.TryParse(args[1], out flags);
 
-            //TODO: new Modes
-            //info.Mode_i = ((flags & 8) > 0);
-            //info.Mode_w = ((flags & 4) > 0);
+            if ((flags & 8) > 0)
+            {
+                info.Modes.Add(new ModeInvisible());
+            }
+            if ((flags & 4) > 0)
+            {
+                info.Modes.Add(new ModeWallops());
+            }
 
             info.InitUser(args[0], args[3]);
         }

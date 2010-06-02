@@ -73,6 +73,14 @@ namespace IrcD
             }
         }
 
+        public string ModeString
+        {
+            get
+            {
+                return modes.ToChannelModeString();
+            }
+        }
+
         public char NamesPrefix
         {
             get

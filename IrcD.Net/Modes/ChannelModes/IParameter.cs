@@ -34,8 +34,8 @@ namespace IrcD.Modes.ChannelModes
 
     public interface IParameterListA
     {
-        IEnumerable<string> Parameter { get; set; }
+        List<string> Parameter { get; }
+
+        void SendList(UserInfo info, ChannelInfo chan);
     }
-
-
 }

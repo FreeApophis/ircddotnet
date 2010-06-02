@@ -25,6 +25,7 @@ using System.Net.Sockets;
 using System.Text;
 using IrcD.Database;
 using IrcD.Modes;
+using IrcD.Modes.UserModes;
 using IrcD.Utils;
 
 namespace IrcD
@@ -110,7 +111,16 @@ namespace IrcD
         private void RegisterComplete()
         {
             Registered = true;
-            IrcDaemon.Replies.RegisterComplete(this);
+            if (IsService)
+            {
+                IrcDaemon.Replies.SendYouAreService(this);
+                IrcDaemon.Replies.SendYourHost(this);
+                IrcDaemon.Replies.SendMyInfo(this);
+            }
+            else
+            {
+                IrcDaemon.Replies.RegisterComplete(this);
+            }
             LogUser();
         }
 
@@ -197,13 +207,6 @@ namespace IrcD
 
         public DateTime LastPing { get; set; }
 
-        public string ModeString
-        {
-            get
-            {
-                return mode.ToString();
-            }
-        }
 
         private readonly List<UserPerChannelInfo> userPerChannelInfos = new List<UserPerChannelInfo>();
 
@@ -223,13 +226,21 @@ namespace IrcD
             }
         }
 
-        private readonly UserModeList mode = new UserModeList();
+        private readonly UserModeList modes = new UserModeList();
 
-        public UserModeList Mode
+        public UserModeList Modes
         {
             get
             {
-                return mode;
+                return modes;
+            }
+        }
+
+        public string ModeString
+        {
+            get
+            {
+                return modes.ToUserModeString();
             }
         }
 
@@ -267,6 +278,23 @@ namespace IrcD
         {
             // TODO: implement nick check
             return true;
+        }
+
+        /// <summary>
+        /// Check if an IRC Operatur status can be granted upon user and pass
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
+        /// <returns></returns>
+        public bool ValidOpLine(string user, string pass)
+        {
+            string realpass;
+            if (IrcDaemon.Options.OLine.TryGetValue(user, out realpass))
+            {
+                if (pass == realpass)
+                    return true;
+            }
+            return false;
         }
 
         // Cleanly Quit a user, in any case, Connection dropped, QuitMesssage, all traces of 'this' mus be removed.

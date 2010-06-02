@@ -30,7 +30,6 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
-
         }
     }
 }

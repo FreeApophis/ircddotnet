@@ -30,26 +30,22 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+
+            if (args.Count == 0)
+            {
+                info.AwayMessage = null;
+                IrcDaemon.Replies.SendUnAway(info);
+            }
+            else
+            {
+                info.AwayMessage = args[0];
+                IrcDaemon.Replies.SendNowAway(info);
+            }
         }
     }
 }
-
-//private void AwayDelegate(UserInfo info, List<string> args)
-//{
-//    if (!info.Registered)
-//    {
-//        SendNotRegistered(info);
-//        return;
-//    }
-
-//    if (args.Count == 0)
-//    {
-//        info.AwayMsg = null;
-//        SendUnAway(info);
-//    }
-//    else
-//    {
-//        info.AwayMsg = args[0];
-//        SendNowAway(info);
-//    }
-//}

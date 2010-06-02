@@ -19,7 +19,6 @@
  */
 
 
-using System;
 using System.Text;
 using IrcD.Modes;
 

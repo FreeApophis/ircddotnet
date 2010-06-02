@@ -18,7 +18,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
 using IrcD.ServerReplies;
 
@@ -31,10 +30,20 @@ namespace IrcD.Modes.ChannelModes
         {
         }
 
-        public IEnumerable<string> Parameter
+
+        private readonly List<string> banList = new List<string>();
+        public List<string> Parameter
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            get { return banList; }
+        }
+
+        public void SendList(UserInfo info, ChannelInfo chan)
+        {
+            foreach (var ban in banList)
+            {
+                info.IrcDaemon.Replies.SendBanList(info, chan, ban);
+            }
+            info.IrcDaemon.Replies.SendEndOfBanList(info, chan);
         }
 
         public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)

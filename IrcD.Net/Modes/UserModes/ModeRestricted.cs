@@ -18,6 +18,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using IrcD.ServerReplies;
+
 namespace IrcD.Modes.UserModes
 {
     public class ModeRestricted : UserMode
@@ -26,6 +29,11 @@ namespace IrcD.Modes.UserModes
             : base('r')
         {
 
+        }
+
+        public override bool HandleEvent(IrcCommandType ircCommand, UserInfo user, List<string> args)
+        {
+            return true;
         }
     }
 }

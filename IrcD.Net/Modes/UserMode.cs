@@ -18,13 +18,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using IrcD.ServerReplies;
+
 namespace IrcD.Modes
 {
-    public class UserMode : Mode
+    public abstract class UserMode : Mode
     {
-        public UserMode(char mode)
+        protected UserMode(char mode)
             : base(mode)
         {
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ircCommand"></param>
+        /// <param name="user"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public abstract bool HandleEvent(IrcCommandType ircCommand, UserInfo user, List<string> args);
     }
 }

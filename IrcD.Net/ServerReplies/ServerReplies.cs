@@ -400,6 +400,23 @@ namespace IrcD.ServerReplies
         }
 
         /// <summary>
+        /// Reply Code 324
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="chan"></param>
+        public void SendChannelModeIs(UserInfo info, ChannelInfo chan)
+        {
+            BuildMessageHeader(info, ReplyCode.ChannelModeIs);
+
+            response.Append(" ");
+            response.Append(chan.Name);
+            response.Append(" ");
+            response.Append(chan.ModeString);
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
         /// Reply Code 331
         /// </summary>
         /// <param name="info"></param>
@@ -432,6 +449,92 @@ namespace IrcD.ServerReplies
         }
 
         /// <summary>
+        /// Reply Code 346
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="chan"></param>
+        /// <param name="mask"></param>
+        public void SendInviteList(UserInfo info, ChannelInfo chan, string mask)
+        {
+            BuildMessageHeader(info, ReplyCode.InviteList);
+
+            response.Append(" ");
+            response.Append(chan.Name);
+            response.Append(" ");
+            response.Append(mask);
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 347
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="chan"></param>
+        public void SendEndOfInviteList(UserInfo info, ChannelInfo chan)
+        {
+            BuildMessageHeader(info, ReplyCode.EndOfInviteList);
+
+
+            response.Append(" ");
+            response.Append(chan.Name);
+            response.Append(" :End of channel invite list");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 348
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="chan"></param>
+        /// <param name="mask"></param>
+        public void SendExceptionList(UserInfo info, ChannelInfo chan, string mask)
+        {
+            BuildMessageHeader(info, ReplyCode.ExceptionList);
+
+            response.Append(" ");
+            response.Append(chan.Name);
+            response.Append(" ");
+            response.Append(mask);
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 349
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="chan"></param>
+        public void SendEndOfExceptionList(UserInfo info, ChannelInfo chan)
+        {
+            BuildMessageHeader(info, ReplyCode.EndOfExceptionList);
+
+            response.Append(" ");
+            response.Append(chan.Name);
+            response.Append(" :End of channel exception list");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 351
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendVersion(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.Version);
+
+            response.Append(" ");
+            response.Append(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+            response.Append(" ");
+            response.Append(ircDaemon.Options.ServerName);
+            response.Append(" :" + System.Reflection.Assembly.GetExecutingAssembly().FullName);
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
         /// Reply Code 353
         /// </summary>
         /// <param name="info"></param>
@@ -448,7 +551,6 @@ namespace IrcD.ServerReplies
 
             foreach (var upci in chan.UserPerChannelInfos.Values)
             {
-
                 response.Append(upci.Modes.NickPrefix);
                 response.Append(upci.UserInfo.Nick);
                 response.Append(" ");
@@ -466,10 +568,43 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.EndOfNames);
 
-
             response.Append(" ");
             response.Append(chan.Name);
             response.Append(" :End of NAMES list");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 367
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="chan"></param>
+        /// <param name="mask"></param>
+        public void SendBanList(UserInfo info, ChannelInfo chan, string mask)
+        {
+            BuildMessageHeader(info, ReplyCode.BanList);
+
+            response.Append(" ");
+            response.Append(chan.Name);
+            response.Append(" ");
+            response.Append(mask);
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 368
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="chan"></param>
+        public void SendEndOfBanList(UserInfo info, ChannelInfo chan)
+        {
+            BuildMessageHeader(info, ReplyCode.EndOfBanList);
+
+            response.Append(" ");
+            response.Append(chan.Name);
+            response.Append(" :End of channel ban list");
 
             info.WriteLine(response);
         }

@@ -239,6 +239,7 @@ namespace IrcD
             supportedChannelModes.Add(new ModePrivate());
 
             supportedUserModes.Add(new ModeInvisible());
+            supportedUserModes.Add(new ModeWallops());
             supportedUserModes.Add(new ModeRestricted());
         }
 
@@ -395,28 +396,13 @@ namespace IrcD
             if (command == null)
                 return;
 
+            FilterArgs(args);
             commands.Handle(command, info, args);
         }
 
-        #region Helper Methods
-
-        /// <summary>
-        /// Check if an IRC Operatur status can be granted upon user and pass
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="pass"></param>
-        /// <returns></returns>
-        private bool IsIrcOp(string user, string pass)
+        private static void FilterArgs(List<string> args)
         {
-            string realpass;
-            if (Options.OLine.TryGetValue(user, out realpass))
-            {
-                if (pass == realpass)
-                    return true;
-            }
-            return false;
+            args.RemoveAll(s => string.IsNullOrWhiteSpace(s));
         }
-        #endregion
-
     }
 }

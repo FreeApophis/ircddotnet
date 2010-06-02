@@ -33,7 +33,6 @@ namespace IrcD.Commands
             if (!info.Registered)
             {
                 IrcDaemon.Replies.SendNotRegistered(info);
-                return;
             }
 
             var message = (args.Count > 0) ? args[0] : IrcDaemon.Options.StandardQuitMessage;
