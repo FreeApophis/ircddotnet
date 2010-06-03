@@ -18,6 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using IrcD.ServerReplies;
 
@@ -41,10 +42,16 @@ namespace IrcD.Modes.ChannelModes
             }
             set
             {
-                if (int.TryParse(value, out limit))
-                {
-                    limit = 0;
-                }
+                SetLimit(value);
+            }
+        }
+
+        private void SetLimit(string value)
+        {
+            int.TryParse(value, out limit);
+            if (limit < 1)
+            {
+                limit = 1;
             }
         }
 
@@ -60,6 +67,11 @@ namespace IrcD.Modes.ChannelModes
                 }
             }
             return true;
+        }
+
+        public void Add(string parameter)
+        {
+            SetLimit(parameter);
         }
     }
 }

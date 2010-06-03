@@ -22,17 +22,22 @@ using System.Collections.Generic;
 
 namespace IrcD.Modes.ChannelModes
 {
-    public interface IParameterB
+    public interface IParameter
+    {
+        void Add(string parameter);
+    }
+
+    public interface IParameterB : IParameter
     {
         string Parameter { get; set; }
     }
 
-    public interface IParameterC
+    public interface IParameterC : IParameter
     {
         string Parameter { get; set; }
     }
 
-    public interface IParameterListA
+    public interface IParameterListA : IParameter
     {
         List<string> Parameter { get; }
 

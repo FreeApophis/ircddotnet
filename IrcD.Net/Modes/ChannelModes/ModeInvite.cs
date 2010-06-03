@@ -18,8 +18,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-using System;
 using System.Collections.Generic;
 using IrcD.ServerReplies;
 
@@ -31,13 +29,8 @@ namespace IrcD.Modes.ChannelModes
             : base('I')
         {
         }
-
-        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
-        {
-            return true;
-        }
-
         private readonly List<string> inviteList = new List<string>();
+
         public List<string> Parameter
         {
             get { return inviteList; }
@@ -47,9 +40,19 @@ namespace IrcD.Modes.ChannelModes
         {
             foreach (var invite in inviteList)
             {
-                info.IrcDaemon.Replies.SendExceptionList(info, chan, invite);
+                info.IrcDaemon.Replies.SendInviteList(info, chan, invite);
             }
-            info.IrcDaemon.Replies.SendEndOfExceptionList(info, chan);
+            info.IrcDaemon.Replies.SendEndOfInviteList(info, chan);
+        }
+
+        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        {
+            return true;
+        }
+
+        public void Add(string parameter)
+        {
+            inviteList.Add(parameter);
         }
     }
 }

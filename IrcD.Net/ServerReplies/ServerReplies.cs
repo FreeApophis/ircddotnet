@@ -877,6 +877,26 @@ namespace IrcD.ServerReplies
             info.WriteLine(response);
         }
 
+
+        /// <summary>
+        /// Reply Code 441
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="channel"></param>
+        /// <param name="nick"></param>
+        public void SendUserNotInChannel(UserInfo info, string channel, string nick)
+        {
+            BuildMessageHeader(info, ReplyCode.ErrorUserNotInChannel);
+
+            response.Append(" ");
+            response.Append(nick);
+            response.Append(" ");
+            response.Append(channel);
+            response.Append(" :They aren't on that channel");
+
+            info.WriteLine(response);
+        }
+
         /// <summary>
         /// Reply Code 442
         /// </summary>

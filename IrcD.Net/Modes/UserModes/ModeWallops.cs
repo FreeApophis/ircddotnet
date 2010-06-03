@@ -23,13 +23,11 @@ using IrcD.ServerReplies;
 
 namespace IrcD.Modes.UserModes
 {
-    public class ModeWallops : UserMode
+    class ModeWallops : UserMode
     {
         public ModeWallops()
             : base('w')
-        {
-
-        }
+        { }
 
         public override bool HandleEvent(IrcCommandType ircCommand, UserInfo user, List<string> args)
         {

@@ -50,6 +50,11 @@ namespace IrcD.Modes.ChannelModes
         {
             return true;
         }
+
+        public void Add(string parameter)
+        {
+            banExceptionList.Add(parameter);
+        }
     }
 }
 

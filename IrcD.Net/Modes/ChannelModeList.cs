@@ -110,32 +110,67 @@ namespace IrcD.Modes
                     plus = true;
                 }
 
-                var paramA = cmode as IParameterListA;
-                var paramB = cmode as IParameterB;
-                var paramC = cmode as IParameterC;
+                var iParam = cmode as IParameter;
 
-                if (paramA != null)
+                if (iParam != null)
                 {
+                    var parameter = parameterTail.FirstOrDefault();
+                    if (parameter != null)
+                    {
+                        parameterTail = parameterTail.Skip(1);
+                        if (plus.Value)
+                        {
+                            if (!ContainsKey(cmode.Char))
+                            {
+                                Add(cmode);
+                            }
+                            ((IParameter)this[cmode.Char]).Add(parameter);
+                            if (lastprefix != '+')
+                            {
+                                validmode.Append(lastprefix = '+');
+                            }
+                            validmode.Append(cmode.Char);
+                            validparam.Add(parameter);
 
-                }
-                else if (paramB != null)
-                {
-
-                }
-                else if (paramC != null)
-                {
-
+                        }
+                        else
+                        {
+                            if (ContainsKey(cmode.Char))
+                            {
+                                var paramA = cmode as IParameterListA;
+                                if (paramA == null)
+                                {
+                                    Remove(cmode.Char);
+                                    if (lastprefix != '-')
+                                    {
+                                        validmode.Append(lastprefix = '-');
+                                    }
+                                    validmode.Append(cmode.Char);
+                                    validparam.Add(parameter);
+                                }
+                                else
+                                {
+                                    if (paramA.Parameter.Any(p => p == parameter))
+                                    {
+                                        paramA.Parameter.RemoveAll(p => p == parameter);
+                                        if (lastprefix != '-')
+                                        {
+                                            validmode.Append(lastprefix = '-');
+                                        }
+                                        validmode.Append(cmode.Char);
+                                        validparam.Add(parameter);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 else if (cmode != null)
                 {
                     // Channel Mode without a parameter
                     if (plus.Value)
                     {
-                        if (ContainsKey(cmode.Char))
-                        {
-                            continue;
-                        }
-                        else
+                        if (!ContainsKey(cmode.Char))
                         {
                             Add(cmode);
                             if (lastprefix != '+')
@@ -147,11 +182,7 @@ namespace IrcD.Modes
                     }
                     else
                     {
-                        if (!ContainsKey(cmode.Char))
-                        {
-                            continue;
-                        }
-                        else
+                        if (ContainsKey(cmode.Char))
                         {
                             Remove(cmode.Char);
                             if (lastprefix != '-')
@@ -160,12 +191,49 @@ namespace IrcD.Modes
                             }
                             validmode.Append(cmode.Char);
                         }
-
                     }
                 }
                 else if (crank != null)
                 {
-                    // Channel Rank (always need a parameter)
+                    var parameter = parameterTail.FirstOrDefault();
+                    if (parameter != null)
+                    {
+                        UserPerChannelInfo upci;
+                        parameterTail = parameterTail.Skip(1);
+                        if (chan.UserPerChannelInfos.TryGetValue(parameter, out upci))
+                        {
+                            if (plus.Value)
+                            {
+                                if (!upci.Modes.ContainsKey(crank.Char))
+                                {
+                                    upci.Modes.Add(crank);
+                                    if (lastprefix != '+')
+                                    {
+                                        validmode.Append(lastprefix = '+');
+                                    }
+                                    validmode.Append(crank.Char);
+                                    validparam.Add(parameter);
+                                }
+                            }
+                            else
+                            {
+                                if (upci.Modes.ContainsKey(crank.Char))
+                                {
+                                    upci.Modes.Remove(crank.Char);
+                                    if (lastprefix != '-')
+                                    {
+                                        validmode.Append(lastprefix = '-');
+                                    }
+                                    validmode.Append(crank.Char);
+                                    validparam.Add(parameter);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            info.IrcDaemon.Replies.SendUserNotInChannel(info, chan.Name, parameter);
+                        }
+                    }
                 }
                 else
                 {
