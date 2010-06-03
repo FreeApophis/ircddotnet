@@ -18,10 +18,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Diagnostics;
-
-#if !UBUNTU
+#if UBUNTU
+using System.IO;
+#else
+using System;
 using IrcD.Database;
 #endif
 
@@ -29,13 +30,18 @@ namespace IrcD.Utils
 {
     class Logger
     {
+#if UBUNTU
+        static readonly TextWriter LogFile = new StreamWriter("ircd.log", true);
+#endif
         public static void Log(string message, int level = 4, string location = null)
         {
             var stackTrace = new StackTrace();
             var callerFrame = stackTrace.GetFrame(1);
-#if !UBUNTU
+#if UBUNTU
+            LogFile.WriteLine(location ?? callerFrame + ": " + message);
+            LogFile.Flush();
+#else
             var entity = new Log { Level = level, Message = message, Location = location ?? callerFrame.ToString(), Time = DateTime.Now };
-
             DatabaseCommon.Db.Logs.InsertOnSubmit(entity);
             DatabaseCommon.Db.SubmitChanges();
 #endif

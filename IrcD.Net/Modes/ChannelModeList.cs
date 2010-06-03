@@ -71,7 +71,7 @@ namespace IrcD.Modes
         internal void Update(UserInfo info, ChannelInfo chan, IEnumerable<string> args)
         {
             // In
-            bool? plus = (args.First().Length == 1) ? (bool?)null : true;
+            var plus = (args.First().Length == 1) ? (bool?)null : true;
             var parameterTail = args.Skip(1);
 
             // Out: this is the final mode message

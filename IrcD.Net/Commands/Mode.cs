@@ -66,7 +66,7 @@ namespace IrcD.Commands
             }
             else if (args[0] == info.Nick)
             {
-                // Modes command without any mode -> query the Mode of the Channel
+                // Modes command without any mode -> query the Mode of the User
                 if (args.Count == 1)
                 {
                     IrcDaemon.Replies.SendUserModeIs(info);

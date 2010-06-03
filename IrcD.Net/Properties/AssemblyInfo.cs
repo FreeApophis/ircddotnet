@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("IRCd.Net")]
-[assembly: AssemblyCopyright("Copyright 2009")]
+[assembly: AssemblyCopyright("Copyright 2009-2010 - Thomas Bruderer - GPL 3")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

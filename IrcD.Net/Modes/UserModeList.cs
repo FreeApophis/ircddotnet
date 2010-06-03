@@ -18,9 +18,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using IrcD.ServerReplies;
 
 namespace IrcD.Modes
@@ -34,7 +34,10 @@ namespace IrcD.Modes
 
         internal void Update(UserInfo info, IEnumerable<string> args)
         {
-            bool plus = true;
+            var plus = true;
+            var lastprefix = ' ';
+            var validmode = new StringBuilder();
+
             foreach (var modechar in args.First())
             {
                 if (modechar == '+' || modechar == '-')
@@ -43,8 +46,37 @@ namespace IrcD.Modes
                     continue;
                 }
 
-                var cmode = ModeFactory.GetUserMode(modechar);
+                var umode = ModeFactory.GetUserMode(modechar);
+                if (umode == null) continue;
+                if (plus)
+                {
+                    if (!ContainsKey(umode.Char))
+                    {
+                        Add(umode);
+
+                        if (lastprefix != '+')
+                        {
+                            validmode.Append(lastprefix = '+');
+                        }
+                        validmode.Append(umode.Char);
+                    }
+                }
+                else
+                {
+                    if (ContainsKey(umode.Char))
+                    {
+                        Remove(umode.Char);
+
+                        if (lastprefix != '-')
+                        {
+                            validmode.Append(lastprefix = '-');
+                        }
+                        validmode.Append(umode.Char);
+                    }
+                }
             }
+
+            info.IrcDaemon.Send.Mode(info, info, info.Nick, validmode.ToString());
         }
 
         public string ToUserModeString()

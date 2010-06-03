@@ -18,6 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using IrcD.Modes.ChannelModes;
 using IrcD.Modes.ChannelRanks;
 using IrcD.Modes.UserModes;
@@ -26,8 +27,23 @@ namespace IrcD.Modes
 {
     class ModeFactory
     {
+        public delegate T Construct<out T>();
+
+        private static readonly Dictionary<char, Construct<ChannelMode>> ChannelFactory = new Dictionary<char, Construct<ChannelMode>>();
+
+        public static T GetConstructor<T>() where T : Mode, new()
+        {
+            return new T();
+        }
+
         public static ChannelMode GetChannelMode(char c)
         {
+            Construct<ChannelMode> channelMode;
+            if (ChannelFactory.TryGetValue(c, out channelMode))
+            {
+                return channelMode.Invoke();
+            }
+
             switch (c)
             {
                 case 'b': return new ModeBan();
@@ -61,6 +77,7 @@ namespace IrcD.Modes
             {
                 case 'i': return new ModeInvisible();
                 case 'r': return new ModeRestricted();
+                case 'w': return new ModeWallops();
                 default: return null;
             }
         }
