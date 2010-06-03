@@ -19,8 +19,11 @@
  */
 
 using System;
-using IrcD.Database;
 using System.Diagnostics;
+
+#if !UBUNTU
+using IrcD.Database;
+#endif
 
 namespace IrcD.Utils
 {
@@ -30,10 +33,12 @@ namespace IrcD.Utils
         {
             var stackTrace = new StackTrace();
             var callerFrame = stackTrace.GetFrame(1);
+#if !UBUNTU
             var entity = new Log { Level = level, Message = message, Location = location ?? callerFrame.ToString(), Time = DateTime.Now };
 
             DatabaseCommon.Db.Logs.InsertOnSubmit(entity);
             DatabaseCommon.Db.SubmitChanges();
+#endif
         }
     }
 }

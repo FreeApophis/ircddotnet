@@ -124,13 +124,14 @@ namespace IrcD.Modes
                             {
                                 Add(cmode);
                             }
-                            ((IParameter)this[cmode.Char]).Add(parameter);
+
                             if (lastprefix != '+')
                             {
                                 validmode.Append(lastprefix = '+');
                             }
                             validmode.Append(cmode.Char);
-                            validparam.Add(parameter);
+
+                            validparam.Add(((IParameter)this[cmode.Char]).Add(parameter));
 
                         }
                         else

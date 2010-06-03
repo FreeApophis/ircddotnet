@@ -23,7 +23,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+#if !UBUNTU
 using IrcD.Database;
+#endif
 using IrcD.Modes;
 using IrcD.Modes.UserModes;
 using IrcD.Utils;
@@ -161,6 +163,7 @@ namespace IrcD
 
         private void LogUser()
         {
+#if !UBUNTU
             var userLog = new UserLog
             {
                 Host = Host,
@@ -171,6 +174,7 @@ namespace IrcD
 
             DatabaseCommon.Db.UserLogs.InsertOnSubmit(userLog);
             DatabaseCommon.Db.SubmitChanges();
+#endif
         }
 
         public string Usermask

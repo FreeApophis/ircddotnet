@@ -48,6 +48,7 @@ namespace IrcD.Commands
                 if (IrcDaemon.Channels.ContainsKey(ch))
                 {
                     IrcDaemon.Replies.SendNamesReply(info, IrcDaemon.Channels[ch]);
+                    IrcDaemon.Replies.SendEndOfNamesReply(info, IrcDaemon.Channels[ch]);
                 }
             }
         }

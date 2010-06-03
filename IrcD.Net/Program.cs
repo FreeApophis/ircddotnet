@@ -20,7 +20,9 @@
 
 using System;
 using System.Linq;
+#if !UBUNTU
 using IrcD.Database;
+#endif
 using IrcD.Modes;
 using IrcD.Modes.ChannelModes;
 
@@ -32,9 +34,11 @@ namespace IrcD
         {
             var ircd = new IrcDaemon();
 
+#if !UBUNTU
             ircd.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();
             ircd.Options.ServerName = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerName" select setting.Value).SingleOrDefault();
             ircd.Options.MOTD.AddRange(DatabaseCommon.Db.Settings.Where(setting => setting.Key == "MessageOfTheDay").Select(setting => setting.Value));
+#endif
             ircd.Options.IrcMode = IrcMode.Modern;
             ircd.MainLoop();
         }

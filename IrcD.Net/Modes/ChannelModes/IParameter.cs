@@ -24,7 +24,7 @@ namespace IrcD.Modes.ChannelModes
 {
     public interface IParameter
     {
-        void Add(string parameter);
+        string Add(string parameter);
     }
 
     public interface IParameterB : IParameter

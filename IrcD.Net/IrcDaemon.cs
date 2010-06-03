@@ -402,7 +402,7 @@ namespace IrcD
 
         private static void FilterArgs(List<string> args)
         {
-            args.RemoveAll(s => string.IsNullOrWhiteSpace(s));
+            args.RemoveAll(s => string.IsNullOrEmpty(s.Trim()));
         }
     }
 }

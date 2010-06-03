@@ -50,9 +50,10 @@ namespace IrcD.Modes.ChannelModes
             return true;
         }
 
-        public void Add(string parameter)
+        public string Add(string parameter)
         {
             inviteList.Add(parameter);
+            return parameter;
         }
     }
 }

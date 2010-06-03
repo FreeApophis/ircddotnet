@@ -50,7 +50,7 @@ namespace IrcD.Modes
             {
                 return this
                     .OrderByDescending(rank => rank.Value.Importance)
-                    .Select(rank => rank.Value.Char)
+                    .Select(rank => rank.Value.Prefix)
                     .DefaultIfEmpty(' ')
                     .First();
             }
