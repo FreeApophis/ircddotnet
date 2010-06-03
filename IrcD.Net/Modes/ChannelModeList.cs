@@ -138,7 +138,7 @@ namespace IrcD.Modes
                         {
                             if (ContainsKey(cmode.Char))
                             {
-                                var paramA = cmode as IParameterListA;
+                                var paramA = this[cmode.Char] as IParameterListA;
                                 if (paramA == null)
                                 {
                                     Remove(cmode.Char);

@@ -168,7 +168,7 @@ namespace IrcD
             // Add Commands
             AddCommands();
             // Add Modes
-            AddModes();
+            SetupModes();
         }
 
         private void AddCommands()
@@ -220,27 +220,31 @@ namespace IrcD
             commands.Add(new WhoWas(this));
         }
 
-        private void AddModes()
+        private void SetupModes()
         {
-            supportedRanks.Add(new ModeVoice());
-            if (Options.IrcMode == IrcMode.Modern)
-                supportedRanks.Add(new ModeHalfOp());
-            supportedRanks.Add(new ModeOp());
-
-            supportedChannelModes.Add(new ModeBan());
+            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeBan>());
             if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
-                supportedChannelModes.Add(new ModeBanException());
+                supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeBanException>());
             if (Options.IrcMode == IrcMode.Modern)
-                supportedChannelModes.Add(new ModeColorless());
-            supportedChannelModes.Add(new ModeKey());
-            supportedChannelModes.Add(new ModeLimit());
-            supportedChannelModes.Add(new ModeModerated());
-            supportedChannelModes.Add(new ModeNoExternal());
-            supportedChannelModes.Add(new ModePrivate());
+                supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeColorless>());
+            if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
+                supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeInvite>());
 
-            supportedUserModes.Add(new ModeInvisible());
-            supportedUserModes.Add(new ModeWallops());
-            supportedUserModes.Add(new ModeRestricted());
+            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeKey>());
+            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeLimit>());
+            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeModerated>());
+            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeNoExternal>());
+            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeSecret>());
+            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModePrivate>());
+            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeTopic>());
+
+            if (Options.IrcMode == IrcMode.Modern) supportedRanks.Add(ModeFactory.AddChannelRank<ModeHalfOp>());
+            supportedRanks.Add(ModeFactory.AddChannelRank<ModeOp>());
+            supportedRanks.Add(ModeFactory.AddChannelRank<ModeVoice>());
+
+            supportedUserModes.Add(ModeFactory.AddUserMode<ModeInvisible>());
+            supportedUserModes.Add(ModeFactory.AddUserMode<ModeRestricted>());
+            supportedUserModes.Add(ModeFactory.AddUserMode<ModeWallops>());
         }
 
         public void MainLoop()
@@ -256,62 +260,70 @@ namespace IrcD
 
             while (connected)
             {
-                var activeSockets = new List<Socket>(sockets.Keys);
-
-                Socket.Select(activeSockets, null, null, 2000000);
-
-                foreach (Socket s in activeSockets)
+                try
                 {
-                    try
+                    var activeSockets = new List<Socket>(sockets.Keys);
+
+                    Socket.Select(activeSockets, null, null, 2000000);
+
+                    foreach (Socket s in activeSockets)
                     {
-                        if (sockets[s].IsAcceptSocket)
+                        try
                         {
-                            Socket temp = s.Accept();
-                            sockets.Add(temp, new UserInfo(this, temp, ((IPEndPoint)temp.RemoteEndPoint).Address.ToString(), false, String.IsNullOrEmpty(Options.ServerPass)));
-                            Logger.Log("Client connected!");
-                        }
-                        else
-                        {
-                            try
+                            if (sockets[s].IsAcceptSocket)
                             {
-                                buffer.Initialize();
-                                int numBytes = s.ReceiveFrom(buffer, ref ep);
-                                foreach (string line in Encoding.UTF8.GetString(buffer, 0, numBytes).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                                Socket temp = s.Accept();
+                                sockets.Add(temp, new UserInfo(this, temp, ((IPEndPoint)temp.RemoteEndPoint).Address.ToString(), false, String.IsNullOrEmpty(Options.ServerPass)));
+                                Logger.Log("Client connected!");
+                            }
+                            else
+                            {
+                                try
                                 {
-                                    Parser(line, s, sockets[s]);
+                                    buffer.Initialize();
+                                    int numBytes = s.ReceiveFrom(buffer, ref ep);
+                                    foreach (string line in Encoding.UTF8.GetString(buffer, 0, numBytes).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        Parser(line, s, sockets[s]);
+                                    }
+                                }
+                                catch (SocketException e)
+                                {
+                                    Logger.Log("ERROR:  (Socket reset) " + e.Message + "(CODE:" + e.ErrorCode + ")");
+                                    sockets[s].Remove("Socket reset by peer (" + e.ErrorCode + ")");
+
                                 }
                             }
-                            catch (SocketException e)
-                            {
-                                Logger.Log("ERROR:  (Socket reset) " + e.Message + "(CODE:" + e.ErrorCode + ")");
-                                sockets[s].Remove("Socket reset by peer (" + e.ErrorCode + ")");
-
-                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Log("Unknown ERROR: " + e.Message);
+                            Logger.Log("Trace: " + e.StackTrace);
                         }
                     }
-                    catch (Exception e)
+
+                    // Pinger : we only ping if necessary
+                    foreach (var user in from user in sockets.Where(s => s.Value.Registered)
+                                         let interval = DateTime.Now.AddMinutes(-1)
+                                         where user.Value.LastAction < interval && user.Value.LastAlive < interval
+                                         select user.Value)
                     {
-                        Logger.Log("Unknown ERROR: " + e.Message);
-                        Logger.Log("Trace: " + e.StackTrace);
+                        if (user.LastAlive < DateTime.Now.AddMinutes(-5))
+                        {
+                            // Ping Timeout (5 Minutes without any life sign)
+                            user.Remove("Ping Timeout");
+                        }
+                        else if (user.LastPing < DateTime.Now.AddMinutes(-1))
+                        {
+                            user.LastPing = DateTime.Now;
+                            Send.Ping(user);
+                        }
                     }
                 }
-
-                // Pinger : we only ping if necessary
-                foreach (var user in from user in sockets.Where(s => s.Value.Registered)
-                                     let interval = DateTime.Now.AddMinutes(-1)
-                                     where user.Value.LastAction < interval && user.Value.LastAlive < interval
-                                     select user.Value)
+                catch (Exception e)
                 {
-                    if (user.LastAlive < DateTime.Now.AddMinutes(-5))
-                    {
-                        // Ping Timeout (5 Minutes without any life sign)
-                        user.Remove("Ping Timeout");
-                    }
-                    else if (user.LastPing < DateTime.Now.AddMinutes(-1))
-                    {
-                        user.LastPing = DateTime.Now;
-                        Send.Ping(user);
-                    }
+                    Logger.Log("Unknown ERROR: " + e.Message);
+                    Logger.Log("Trace: " + e.StackTrace);
                 }
 
             }

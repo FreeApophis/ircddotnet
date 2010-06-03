@@ -30,7 +30,6 @@ namespace IrcD.Modes.ChannelModes
         {
         }
 
-
         private readonly List<string> banList = new List<string>();
         public List<string> Parameter
         {

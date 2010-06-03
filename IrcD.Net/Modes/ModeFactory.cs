@@ -19,67 +19,69 @@
  */
 
 using System.Collections.Generic;
-using IrcD.Modes.ChannelModes;
-using IrcD.Modes.ChannelRanks;
-using IrcD.Modes.UserModes;
 
 namespace IrcD.Modes
 {
     class ModeFactory
     {
-        public delegate T Construct<out T>();
-
-        private static readonly Dictionary<char, Construct<ChannelMode>> ChannelFactory = new Dictionary<char, Construct<ChannelMode>>();
-
         public static T GetConstructor<T>() where T : Mode, new()
         {
             return new T();
         }
 
+        public delegate ChannelMode ConstructChannelMode();
+        public delegate ChannelRank ConstructChannelRank();
+        public delegate UserMode ConstructUserMode();
+
+        #region Channel Mode
+        private static readonly Dictionary<char, ConstructChannelMode> ChannelModeFactory = new Dictionary<char, ConstructChannelMode>();
+
+        public static T AddChannelMode<T>() where T : ChannelMode, new()
+        {
+            var mode = new T();
+            ChannelModeFactory.Add(mode.Char, GetConstructor<T>);
+            return mode;
+        }
+
         public static ChannelMode GetChannelMode(char c)
         {
-            Construct<ChannelMode> channelMode;
-            if (ChannelFactory.TryGetValue(c, out channelMode))
-            {
-                return channelMode.Invoke();
-            }
+            ConstructChannelMode channelMode;
+            return ChannelModeFactory.TryGetValue(c, out channelMode) ? channelMode.Invoke() : null;
+        }
+        #endregion
 
-            switch (c)
-            {
-                case 'b': return new ModeBan();
-                case 'c': return new ModeColorless();
-                case 'e': return new ModeBanException();
-                case 'k': return new ModeKey();
-                case 'l': return new ModeLimit();
-                case 'm': return new ModeModerated();
-                case 'n': return new ModeNoExternal();
-                case 'p': return new ModePrivate();
-                case 's': return new ModeSecret();
-                case 't': return new ModeTopic();
-                default: return null;
-            }
+        #region Channel Rank
+        private static readonly Dictionary<char, ConstructChannelRank> ChannelRankFactory = new Dictionary<char, ConstructChannelRank>();
+
+        public static T AddChannelRank<T>() where T : ChannelRank, new()
+        {
+            var mode = new T();
+            ChannelRankFactory.Add(mode.Char, GetConstructor<T>);
+            return mode;
         }
 
         public static ChannelRank GetChannelRank(char c)
         {
-            switch (c)
-            {
-                case 'v': return new ModeVoice();
-                case 'h': return new ModeHalfOp();
-                case 'o': return new ModeOp();
-                default: return null;
-            }
+            ConstructChannelRank channelRank;
+            return ChannelRankFactory.TryGetValue(c, out channelRank) ? channelRank.Invoke() : null;
+        }
+        #endregion
+
+        #region User Mode
+        private static readonly Dictionary<char, ConstructUserMode> UserModeFactory = new Dictionary<char, ConstructUserMode>();
+
+        public static T AddUserMode<T>() where T : UserMode, new()
+        {
+            var mode = new T();
+            UserModeFactory.Add(mode.Char, GetConstructor<T>);
+            return mode;
         }
 
         public static UserMode GetUserMode(char c)
         {
-            switch (c)
-            {
-                case 'i': return new ModeInvisible();
-                case 'r': return new ModeRestricted();
-                case 'w': return new ModeWallops();
-                default: return null;
-            }
+            ConstructUserMode userMode;
+            return UserModeFactory.TryGetValue(c, out userMode) ? userMode.Invoke() : null;
         }
+        #endregion
     }
 }
