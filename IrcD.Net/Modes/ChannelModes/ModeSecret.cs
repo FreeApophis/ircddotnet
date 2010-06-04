@@ -23,7 +23,7 @@ using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
 {
-    class ModeSecret : ChannelMode
+    public class ModeSecret : ChannelMode
     {
         public ModeSecret()
             : base('s')

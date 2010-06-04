@@ -23,7 +23,7 @@ using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
 {
-    class ModeModerated : ChannelMode
+    public class ModeModerated : ChannelMode
     {
         public ModeModerated()
             : base('m')
@@ -32,6 +32,15 @@ namespace IrcD.Modes.ChannelModes
 
         public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
         {
+            if (ircCommand == IrcCommandType.PrivateMessage || ircCommand == IrcCommandType.Notice)
+            {
+                UserPerChannelInfo upci;
+                if (!channel.UserPerChannelInfos.TryGetValue(user.Nick, out upci) || upci.Modes.Level < 10)
+                {
+                    user.IrcDaemon.Replies.SendCannotSendToChannel(user, channel.Name);
+                    return false;
+                }
+            }
             return true;
         }
     }

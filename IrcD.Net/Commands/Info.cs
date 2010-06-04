@@ -30,7 +30,9 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
-
+            // TODO: Parsing target
+            IrcDaemon.Replies.SendInfo(info);
+            IrcDaemon.Replies.SendEndOfInfo(info);
         }
     }
 }

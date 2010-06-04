@@ -18,13 +18,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
 using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
 {
-    class ModeNoExternal : ChannelMode
+    public class ModeNoExternal : ChannelMode
     {
         public ModeNoExternal()
             : base('n')
@@ -35,7 +34,11 @@ namespace IrcD.Modes.ChannelModes
         {
             if (ircCommand == IrcCommandType.PrivateMessage || ircCommand == IrcCommandType.Notice)
             {
-
+                if (!channel.UserPerChannelInfos.ContainsKey(user.Nick))
+                {
+                    user.IrcDaemon.Replies.SendCannotSendToChannel(user, channel.Name);
+                    return false;
+                }
             }
             return true;
         }

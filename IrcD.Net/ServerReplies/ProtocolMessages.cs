@@ -132,6 +132,35 @@ namespace IrcD.ServerReplies
             receiver.WriteLine(command);
         }
 
+        public void Kick(UserInfo sender, InfoBase receiver, ChannelInfo channel, UserInfo user, string message)
+        {
+            BuildMessageHeader(sender);
+
+            command.Append(" KICK ");
+            command.Append(channel.Name);
+            command.Append(" ");
+            command.Append(user.Nick);
+            command.Append(" :");
+            command.Append(message ?? receiver.IrcDaemon.Options.StandardKickMessage);
+
+            receiver.WriteLine(command);
+        }
+
+        internal void Invite(UserInfo sender, InfoBase receiver, UserInfo invited, string channel)
+        {
+            BuildMessageHeader(sender);
+
+            command.Append(" INVITE ");
+            command.Append(invited.Nick);
+            command.Append(" ");
+            command.Append(channel);
+
+            receiver.WriteLine(command);
+        }
+
+        // PING and PONG are special, the sender is the server! 
+        // BuildMessagHeader() cannot be used
+
         public void Ping(InfoBase receiver)
         {
             command.Length = 0;

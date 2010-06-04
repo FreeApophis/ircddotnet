@@ -368,6 +368,22 @@ namespace IrcD.ServerReplies
         }
 
         /// <summary>
+        /// Reply Code 321
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendListStart(UserInfo info)
+        {
+            if (info.IrcDaemon.Options.IrcMode != IrcMode.Rfc1459)
+                throw new NotSupportedException("This message is only valid in RFC 1459 mode");
+
+            BuildMessageHeader(info, ReplyCode.ListStart);
+
+            response.Append(" Channel :Users Name");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
         /// Reply Code 322
         /// </summary>
         /// <param name="info"></param>
@@ -444,6 +460,37 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(chan.Name);
             response.Append(" :" + chan.Topic);
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 341
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="invited"></param>
+        /// <param name="channel"></param>
+        public void SendInviting(UserInfo info, UserInfo invited, string channel)
+        {
+            BuildMessageHeader(info, ReplyCode.Inviting);
+
+            // The RFC Tells the order should be <channel> <nick> however xchat and the servers I tested say it is: <nick> <channel> 
+            // This is one more ridiculous RFC mistake without any errata.
+
+            if (ircDaemon.Options.IrcMode == IrcMode.Rfc1459 || ircDaemon.Options.IrcMode == IrcMode.Rfc2810)
+            {
+                response.Append(" ");
+                response.Append(channel);
+            }
+
+            response.Append(" ");
+            response.Append(invited.Nick);
+
+            if (ircDaemon.Options.IrcMode == IrcMode.Modern)
+            {
+                response.Append(" ");
+                response.Append(channel);
+            }
 
             info.WriteLine(response);
         }
@@ -610,6 +657,21 @@ namespace IrcD.ServerReplies
         }
 
         /// <summary>
+        /// Reply Code 371
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendInfo(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.Info);
+
+            response.Append(" :");
+            response.Append("TODO");
+
+            info.WriteLine(response);
+        }
+
+
+        /// <summary>
         /// Reply Code 372
         /// </summary>
         /// <param name="info"></param>
@@ -624,6 +686,19 @@ namespace IrcD.ServerReplies
 
                 info.WriteLine(response);
             }
+        }
+
+        /// <summary>
+        /// Reply Code 374
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendEndOfInfo(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.EndOfInfo);
+
+            response.Append(" :End of /INFO list");
+
+            info.WriteLine(response);
         }
 
         /// <summary>
@@ -909,6 +984,25 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(channel);
             response.Append(" :You're not on that channel");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 443
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="invited"></param>
+        /// <param name="channel"></param>
+        public void SendUserOnChannel(UserInfo info, UserInfo invited, ChannelInfo channel)
+        {
+            BuildMessageHeader(info, ReplyCode.ErrorUserOnChannel);
+
+            response.Append(" ");
+            response.Append(invited.Nick);
+            response.Append(" ");
+            response.Append(channel.Name);
+            response.Append(" :is already on channel");
 
             info.WriteLine(response);
         }

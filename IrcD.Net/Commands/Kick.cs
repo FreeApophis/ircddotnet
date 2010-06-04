@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.Utils;
 
 namespace IrcD.Commands
 {
@@ -30,6 +31,60 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+            if (args.Count < 2)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+
+            var message = (args.Count > 2) ? args[2] : null;
+
+
+            foreach (var subarg in GetSubArgument(args[0]).Zip(GetSubArgument(args[1]), (c, n) => new { Channel = c, Nick = n }))
+            {
+
+                if (!IrcDaemon.Channels.ContainsKey(subarg.Channel))
+                {
+                    IrcDaemon.Replies.SendNoSuchChannel(info, args[0]);
+                    continue;
+                }
+
+                var chan = IrcDaemon.Channels[subarg.Channel];
+                UserPerChannelInfo upci;
+
+                if (chan.UserPerChannelInfos.TryGetValue(info.Nick, out upci))
+                {
+                    if (upci.Modes.Level < 30)
+                    {
+                        IrcDaemon.Replies.SendChannelOpPrivilegesNeeded(info, chan);
+                        continue;
+                    }
+                }
+                else
+                {
+                    IrcDaemon.Replies.SendNotOnChannel(info, chan.Name);
+                    continue;
+                }
+
+                UserPerChannelInfo kickUser;
+                if (chan.UserPerChannelInfos.TryGetValue(subarg.Nick, out kickUser))
+                {
+                    IrcDaemon.Send.Kick(info, chan, chan, kickUser.UserInfo, message);
+
+                    chan.UserPerChannelInfos.Remove(kickUser.UserInfo.Nick);
+                    kickUser.UserInfo.UserPerChannelInfos.Remove(kickUser);
+
+                }
+                else
+                {
+                    IrcDaemon.Replies.SendUserNotInChannel(info, subarg.Channel, subarg.Nick);
+                }
+            }
         }
     }
 }

@@ -23,14 +23,9 @@ namespace IrcD.Modes.ChannelRanks
     class ModeOp : ChannelRank
     {
         public ModeOp()
-            : base('o', '@', 30)
+            : base('o', '@', 50)
         {
             
-        }
-        
-        public override bool AllowTopic()
-        {
-            return true;
         }
     }
 }

@@ -23,7 +23,7 @@ using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
 {
-    class ModeBanException : ChannelMode, IParameterListA
+    public class ModeBanException : ChannelMode, IParameterListA
     {
         public ModeBanException()
             : base('e')
@@ -48,6 +48,7 @@ namespace IrcD.Modes.ChannelModes
 
         public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
         {
+            // Handling JOIN is done in the ModeBan class
             return true;
         }
 

@@ -135,6 +135,7 @@
     <Compile Include="IrcServer.cs" />
     <Compile Include="Modes\ChannelMode.cs" />
     <Compile Include="Modes\ChannelModeList.cs" />
+    <Compile Include="Modes\ChannelModes\ModeInviteList.cs" />
     <Compile Include="Modes\ChannelModes\IParameter.cs" />
     <Compile Include="Modes\ChannelModes\ModeBanException.cs" />
     <Compile Include="Modes\ChannelModes\ModeBan.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Modes\RankList.cs" />
     <Compile Include="Modes\UserMode.cs" />
     <Compile Include="Modes\UserModeList.cs" />
+    <Compile Include="Modes\UserModes\ModeAway.cs" />
     <Compile Include="Modes\UserModes\ModeInvisible.cs" />
     <Compile Include="Modes\UserModes\ModeRestricted.cs" />
     <Compile Include="AlreadyCalledException.cs" />
@@ -171,6 +173,7 @@
     <Compile Include="UserInfo.cs" />
     <Compile Include="UserPerChannelInfo.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
+    <Compile Include="Utils\Enumerable.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\WildCard.cs" />
   </ItemGroup>

@@ -19,12 +19,11 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
 using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
 {
-    class ModeTopic : ChannelMode
+    public class ModeTopic : ChannelMode
     {
         public ModeTopic()
             : base('t')
@@ -33,7 +32,21 @@ namespace IrcD.Modes.ChannelModes
 
         public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
         {
-            return ircCommand != IrcCommandType.Topic || channel.UserPerChannelInfos[user.Nick].Modes.Any(rank => rank.Value.AllowTopic());
+            if (ircCommand == IrcCommandType.Topic)
+            {
+                UserPerChannelInfo upci;
+                if (!channel.UserPerChannelInfos.TryGetValue(user.Nick, out upci))
+                {
+                    user.IrcDaemon.Replies.SendNotOnChannel(user, channel.Name);
+                    return false;
+                }
+                if (upci.Modes.Level < 30)
+                {
+                    user.IrcDaemon.Replies.SendChannelOpPrivilegesNeeded(user, channel);
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

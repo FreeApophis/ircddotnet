@@ -27,6 +27,7 @@ namespace IrcD.ServerReplies
         PrivateMessage,
         Notice,
         List,
-        Topic
+        Topic,
+        Invite
     }
 }

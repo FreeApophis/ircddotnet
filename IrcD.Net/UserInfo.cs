@@ -230,6 +230,16 @@ namespace IrcD
             }
         }
 
+        private readonly List<ChannelInfo> invited = new List<ChannelInfo>();
+
+        public List<ChannelInfo> Invited
+        {
+            get
+            {
+                return invited;
+            }
+        }
+
         private readonly UserModeList modes = new UserModeList();
 
         public UserModeList Modes
@@ -252,7 +262,7 @@ namespace IrcD
 
         public override string ToString()
         {
-            return "TODO";
+            return Nick + "!" + User + "@" + Host;
         }
 
         public override void WriteLine(StringBuilder line)
@@ -271,17 +281,6 @@ namespace IrcD
                 WriteLine(line);
             }
 
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="nick"></param>
-        /// <returns></returns>
-        public static bool ValidNick(string nick)
-        {
-            // TODO: implement nick check
-            return true;
         }
 
         /// <summary>

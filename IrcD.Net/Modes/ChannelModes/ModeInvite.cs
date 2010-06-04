@@ -23,37 +23,42 @@ using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
 {
-    class ModeInvite : ChannelMode, IParameterListA
+    public class ModeInvite : ChannelMode
     {
         public ModeInvite()
-            : base('I')
+            : base('i')
         {
-        }
-        private readonly List<string> inviteList = new List<string>();
-
-        public List<string> Parameter
-        {
-            get { return inviteList; }
-        }
-
-        public void SendList(UserInfo info, ChannelInfo chan)
-        {
-            foreach (var invite in inviteList)
-            {
-                info.IrcDaemon.Replies.SendInviteList(info, chan, invite);
-            }
-            info.IrcDaemon.Replies.SendEndOfInviteList(info, chan);
         }
 
         public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
         {
+            if (ircCommand == IrcCommandType.Join)
+            {
+                if (!user.Invited.Contains(channel))
+                {
+                    user.IrcDaemon.Replies.SendInviteOnlyChannel(user, channel);
+                    return false;
+                }
+                user.Invited.Remove(channel);
+            }
+            if (ircCommand == IrcCommandType.Invite)
+            {
+                UserPerChannelInfo upci;
+                if (channel.UserPerChannelInfos.TryGetValue(user.Nick, out upci))
+                {
+                    if (upci.Modes.Level < 30)
+                    {
+                        channel.IrcDaemon.Replies.SendChannelOpPrivilegesNeeded(user, channel);
+                        return false;
+                    }
+                }
+                else
+                {
+                    channel.IrcDaemon.Replies.SendNotOnChannel(user, channel.Name);
+                    return false;
+                }
+            }
             return true;
-        }
-
-        public string Add(string parameter)
-        {
-            inviteList.Add(parameter);
-            return parameter;
         }
     }
 }

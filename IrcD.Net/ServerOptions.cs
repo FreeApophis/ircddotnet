@@ -18,13 +18,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
 
 namespace IrcD
 {
     public class ServerOptions
     {
+
+        internal ServerOptions(IrcMode ircMode)
+        {
+            this.ircMode = ircMode;
+        }
+
         private int serverPort = 6667;
 
         public int ServerPort
@@ -97,8 +102,11 @@ namespace IrcD
             set { clientCompatibilityMode = value; }
         }
 
-        public IrcMode IrcMode { get; set; }
-
+        private readonly IrcMode ircMode;
+        public IrcMode IrcMode
+        {
+            get { return ircMode; }
+        }
         private string standardPartMessage = "Leaving";
 
         public string StandardPartMessage
@@ -115,6 +123,14 @@ namespace IrcD
             set { standardQuitMessage = value; }
         }
 
+        private string standardKickMessage = "Kicked";
+
+        public string StandardKickMessage
+        {
+            get { return standardKickMessage; }
+            set { standardKickMessage = value; }
+        }
+
         private string networkName;
 
         public string NetworkName
@@ -128,5 +144,6 @@ namespace IrcD
                 networkName = value;
             }
         }
+
     }
 }

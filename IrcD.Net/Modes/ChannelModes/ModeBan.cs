@@ -23,7 +23,7 @@ using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
 {
-    class ModeBan : ChannelMode, IParameterListA
+    public class ModeBan : ChannelMode, IParameterListA
     {
         public ModeBan()
             : base('b')

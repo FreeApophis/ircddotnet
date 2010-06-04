@@ -130,7 +130,7 @@ namespace IrcD
         private EndPoint ep = new IPEndPoint(0, 0);
         private EndPoint localEp;
 
-        private readonly ServerOptions options = new ServerOptions();
+        private readonly ServerOptions options;
 
         public ServerOptions Options
         {
@@ -157,8 +157,13 @@ namespace IrcD
             }
         }
 
-        public IrcDaemon()
+        public IrcDaemon(IrcMode ircMode = IrcMode.Modern)
         {
+            // Create Optionobject & Set the proper IRC Protocol Version
+            // The protocol version cannot be changed after construction, 
+            // because the construction methods below use this Option
+            options = new ServerOptions(ircMode);
+
             // The Protocol Objects 
             commands = new CommandList(this);
             replies = new ServerReplies.ServerReplies(this);
@@ -247,7 +252,20 @@ namespace IrcD
             supportedUserModes.Add(ModeFactory.AddUserMode<ModeWallops>());
         }
 
-        public void MainLoop()
+        public void Start()
+        {
+            if (!connected)
+            {
+                MainLoop();
+            }
+        }
+
+        public void Stop()
+        {
+            connected = false;
+        }
+
+        private void MainLoop()
         {
 
             localEp = new IPEndPoint(IPAddress.Any, Options.ServerPort);
@@ -329,7 +347,7 @@ namespace IrcD
             }
         }
 
-        public void Parser(string line, Socket sock, UserInfo info)
+        private void Parser(string line, Socket sock, UserInfo info)
         {
 
 #if DEBUG
@@ -412,9 +430,35 @@ namespace IrcD
             commands.Handle(command, info, args);
         }
 
+
         private static void FilterArgs(List<string> args)
         {
             args.RemoveAll(s => string.IsNullOrEmpty(s.Trim()));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nick"></param>
+        /// <returns></returns>
+        public bool ValidNick(string nick)
+        {
+            if (nick.Length > Options.NickLength)
+                return false;
+            if (Options.IrcMode == IrcMode.Modern)
+            {
+                if (nick.Any(c => c == ' ' || c == ',' || c == '\x7'))
+                    return false;
+            }
+
+            if (Options.IrcMode == IrcMode.Rfc1459 || Options.IrcMode == IrcMode.Rfc2810)
+            {
+                //TODO
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }

@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.Modes.UserModes;
 
 namespace IrcD.Commands
 {
@@ -39,11 +40,19 @@ namespace IrcD.Commands
             if (args.Count == 0)
             {
                 info.AwayMessage = null;
+                if (info.Modes.ContainsKey('a'))
+                {
+                    info.Modes.Remove('a');
+                }
                 IrcDaemon.Replies.SendUnAway(info);
             }
             else
             {
                 info.AwayMessage = args[0];
+                if (info.Modes.GetMode<ModeAway>() == null)
+                {
+                    info.Modes.Add(new ModeAway());
+                }
                 IrcDaemon.Replies.SendNowAway(info);
             }
         }

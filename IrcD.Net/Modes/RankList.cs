@@ -30,13 +30,13 @@ namespace IrcD.Modes
             var ranks = new StringBuilder();
 
             ranks.Append("(");
-            foreach (var rank in Values.OrderByDescending(rank => rank.Importance))
+            foreach (var rank in Values.OrderByDescending(rank => rank.Level))
             {
                 ranks.Append(rank.Char);
             }
             ranks.Append(")");
 
-            foreach (var rank in Values.OrderByDescending(rank => rank.Importance))
+            foreach (var rank in Values.OrderByDescending(rank => rank.Level))
             {
                 ranks.Append(rank.Prefix);
             }
@@ -49,7 +49,7 @@ namespace IrcD.Modes
             get
             {
                 return this
-                    .OrderByDescending(rank => rank.Value.Importance)
+                    .OrderByDescending(rank => rank.Value.Level)
                     .Select(rank => rank.Value.Prefix)
                     .DefaultIfEmpty(' ')
                     .First();
@@ -61,6 +61,18 @@ namespace IrcD.Modes
             get
             {
                 return NickPrefixRaw != ' ' ? NickPrefixRaw.ToString() : "";
+            }
+        }
+
+        public int Level
+        {
+            get
+            {
+                return this
+                    .OrderByDescending(rank => rank.Value.Level)
+                    .Select(rank => rank.Value.Level)
+                    .DefaultIfEmpty(0)
+                    .First();
             }
         }
     }

@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace IrcD.Modes
@@ -28,6 +29,11 @@ namespace IrcD.Modes
         public void Add(TMode element)
         {
             Add(element.Char, element);
+        }
+
+        public T GetMode<T>() where T : TMode
+        {
+            return Values.Where(mode => mode is T).FirstOrDefault() as T;
         }
 
         public override string ToString()

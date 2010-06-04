@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IrcD.Commands
 {
@@ -35,9 +36,12 @@ namespace IrcD.Commands
                 IrcDaemon.Replies.SendNotRegistered(info);
                 return;
             }
-            
-            // TODO: special List commands (if RfcModern) / filter +s/+p
-            foreach (var ci in IrcDaemon.Channels.Values)
+
+            if (info.IrcDaemon.Options.IrcMode == IrcMode.Rfc1459)
+                IrcDaemon.Replies.SendListStart(info);
+
+            // TODO: special List commands (if RfcModern)
+            foreach (var ci in IrcDaemon.Channels.Values.Where(ci => !ci.Modes.IsPrivate() && !ci.Modes.IsSecret()))
             {
                 IrcDaemon.Replies.SendListItem(info, ci);
             }

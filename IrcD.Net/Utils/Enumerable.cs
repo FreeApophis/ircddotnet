@@ -19,27 +19,19 @@
  */
 
 using System;
-using System.Linq;
-#if !UBUNTU
-using IrcD.Database;
-#endif
-using IrcD.Modes;
-using IrcD.Modes.ChannelModes;
+using System.Collections.Generic;
 
-namespace IrcD
+namespace IrcD.Utils
 {
-    class Program
+    static class Enumerable
     {
-        public static void Main(string[] args)
+        public static IEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> func)
         {
-            var ircd = new IrcDaemon(IrcMode.Modern);
+            var ie1 = first.GetEnumerator();
+            var ie2 = second.GetEnumerator();
 
-#if !UBUNTU
-            ircd.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();
-            ircd.Options.ServerName = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerName" select setting.Value).SingleOrDefault();
-            ircd.Options.MOTD.AddRange(DatabaseCommon.Db.Settings.Where(setting => setting.Key == "MessageOfTheDay").Select(setting => setting.Value));
-#endif
-            ircd.Start();
+            while (ie1.MoveNext() && ie2.MoveNext())
+                yield return func(ie1.Current, ie2.Current);
         }
     }
 }

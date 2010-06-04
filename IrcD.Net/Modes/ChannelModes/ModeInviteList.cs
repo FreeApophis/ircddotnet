@@ -19,54 +19,43 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
-using IrcD.Commands;
 using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
 {
-    public class ModeKey : ChannelMode, IParameterB
+    public class ModeInviteList : ChannelMode, IParameterListA
     {
-        public ModeKey()
-            : base('k')
+        public ModeInviteList()
+            : base('I')
         {
         }
 
-        private string key;
+        private readonly List<string> inviteList = new List<string>();
 
-        public string Parameter
+        public List<string> Parameter
         {
-            get
+            get { return inviteList; }
+        }
+
+        public void SendList(UserInfo info, ChannelInfo chan)
+        {
+            foreach (var invite in inviteList)
             {
-                return key;
+                info.IrcDaemon.Replies.SendInviteList(info, chan, invite);
             }
-            set
-            {
-                key = value;
-            }
+            info.IrcDaemon.Replies.SendEndOfInviteList(info, chan);
         }
 
         public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
         {
-            if (ircCommand == IrcCommandType.Join)
-            {
-                var keys = args.Count > 1 ? (IEnumerable<string>)CommandBase.GetSubArgument(args[1]) : new List<string>();
-
-                if (!keys.Any(k => k == key))
-                {
-                    user.IrcDaemon.Replies.SendBadChannelKey(user, channel);
-                    return false;
-                }
-            }
-
+            // Handling JOIN is done in the ModeInvite class
             return true;
         }
 
         public string Add(string parameter)
         {
-            key = parameter;
-            return key;
+            inviteList.Add(parameter);
+            return parameter;
         }
     }
 }
-

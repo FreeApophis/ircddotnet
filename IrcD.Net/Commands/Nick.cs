@@ -45,7 +45,7 @@ namespace IrcD.Commands
                 IrcDaemon.Replies.SendNicknameInUse(info, args[0]);
                 return;
             }
-            if (!UserInfo.ValidNick(args[0]))
+            if (!IrcDaemon.ValidNick(args[0]))
             {
                 IrcDaemon.Replies.SendErroneousNickname(info, args[0]);
                 return;

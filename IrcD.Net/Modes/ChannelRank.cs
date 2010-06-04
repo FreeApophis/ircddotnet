@@ -18,6 +18,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using IrcD.ServerReplies;
+
 namespace IrcD.Modes
 {
     public class ChannelRank : Mode
@@ -32,26 +35,21 @@ namespace IrcD.Modes
             }
         }
 
-        public ChannelRank(char mode, char prefix, int importance)
+        public ChannelRank(char mode, char prefix, int level)
             : base(mode)
         {
             this.prefix = prefix;
-            this.importance = importance;
+            this.level = level;
         }
 
-        private readonly int importance;
+        private readonly int level;
 
-        public int Importance
+        public int Level
         {
             get
             {
-                return importance;
+                return level;
             }
-        }
-
-        public virtual bool AllowTopic()
-        {
-            return false;
         }
     }
 }

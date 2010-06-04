@@ -28,31 +28,14 @@ namespace IrcD.Modes
 {
     public class ChannelModeList : ModeList<ChannelMode>
     {
-        public string ToParameterList()
+        public bool IsSecret()
         {
-            var modes = new StringBuilder();
+            return Values.Any(mode => mode is ModeSecret);
+        }
 
-            foreach (var mode in Values.Where(m => m is IParameterListA))
-            {
-                modes.Append(mode.Char);
-            }
-            modes.Append(',');
-            foreach (var mode in Values.Where(m => m is IParameterB))
-            {
-                modes.Append(mode.Char);
-            }
-            modes.Append(',');
-            foreach (var mode in Values.Where(m => m is IParameterC))
-            {
-                modes.Append(mode.Char);
-            }
-            modes.Append(',');
-            foreach (var mode in Values.Where(m => !(m is IParameterListA) && !(m is IParameterB) && !(m is IParameterC)))
-            {
-                modes.Append(mode.Char);
-            }
-
-            return modes.ToString();
+        public bool IsPrivate()
+        {
+            return Values.Any(mode => mode is ModePrivate);
         }
 
         /// <summary>
@@ -249,6 +232,33 @@ namespace IrcD.Modes
                 validmode.Append(param);
             }
             info.IrcDaemon.Send.Mode(info, chan, chan.Name, validmode.ToString());
+        }
+
+        public string ToParameterList()
+        {
+            var modes = new StringBuilder();
+
+            foreach (var mode in Values.Where(m => m is IParameterListA))
+            {
+                modes.Append(mode.Char);
+            }
+            modes.Append(',');
+            foreach (var mode in Values.Where(m => m is IParameterB))
+            {
+                modes.Append(mode.Char);
+            }
+            modes.Append(',');
+            foreach (var mode in Values.Where(m => m is IParameterC))
+            {
+                modes.Append(mode.Char);
+            }
+            modes.Append(',');
+            foreach (var mode in Values.Where(m => !(m is IParameterListA) && !(m is IParameterB) && !(m is IParameterC)))
+            {
+                modes.Append(mode.Char);
+            }
+
+            return modes.ToString();
         }
 
         public string ToChannelModeString()

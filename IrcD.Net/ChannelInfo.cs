@@ -85,7 +85,10 @@ namespace IrcD
         {
             get
             {
-                // TODO  "@" is used for secret channels, "*" for private channels, and "=" for others (public channels)
+                if (Modes.IsPrivate())
+                    return '*';
+                if (Modes.IsSecret())
+                    return '@';
                 return '=';
             }
         }
@@ -113,9 +116,7 @@ namespace IrcD
         /// <returns></returns>
         public static bool ValidChannel(string channel)
         {
-            // TODO: implement channel check
-
-            return channel.StartsWith("#");
+            return channel.StartsWith("#") && !channel.Any(c => c == ' ' || c == ',' || c == '\x7');
         }
     }
 }

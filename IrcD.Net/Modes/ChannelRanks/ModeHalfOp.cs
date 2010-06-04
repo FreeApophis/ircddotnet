@@ -18,19 +18,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 namespace IrcD.Modes.ChannelRanks
 {
     class ModeHalfOp : ChannelRank
     {
         public ModeHalfOp()
-            : base('h', '%', 20)
+            : base('h', '%', 30)
         {
 
-        }
-
-        public override bool AllowTopic()
-        {
-            return true;
         }
     }
 }

@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {
@@ -30,6 +31,47 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+            if (args.Count < 2)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+
+            UserInfo invited;
+            if (!IrcDaemon.Nicks.TryGetValue(args[0], out invited))
+            {
+                IrcDaemon.Replies.SendNoSuchNick(info, args[0]);
+            }
+
+            var channel = args[1];
+            ChannelInfo chan;
+            if (IrcDaemon.Channels.TryGetValue(channel, out chan))
+            {
+                if (chan.UserPerChannelInfos.ContainsKey(invited.Nick))
+                {
+                    IrcDaemon.Replies.SendUserOnChannel(info, invited, chan);
+                    return;
+                }
+
+                if (!chan.Modes.HandleEvent(IrcCommandType.Invite, chan, info, args))
+                {
+                    return;
+                }
+                
+                if (!invited.Invited.Contains(chan))
+                {
+                    invited.Invited.Add(chan);
+                }
+            }
+
+            IrcDaemon.Replies.SendInviting(info, invited, channel);
+            IrcDaemon.Send.Invite(info, invited, invited, channel);
+
         }
     }
 }

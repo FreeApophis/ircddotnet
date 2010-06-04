@@ -69,7 +69,7 @@ namespace IrcD.Commands
                     IrcDaemon.Replies.SendCannotSendToChannel(info, args[0]);
                 }
             }
-            else if (UserInfo.ValidNick(args[0]))
+            else if (IrcDaemon.ValidNick(args[0]))
             {
                 if (IrcDaemon.Nicks.ContainsKey(args[0]))
                 {

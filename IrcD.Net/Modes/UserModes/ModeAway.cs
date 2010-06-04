@@ -18,28 +18,21 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Linq;
-#if !UBUNTU
-using IrcD.Database;
-#endif
-using IrcD.Modes;
-using IrcD.Modes.ChannelModes;
+using System.Collections.Generic;
+using IrcD.ServerReplies;
 
-namespace IrcD
+namespace IrcD.Modes.UserModes
 {
-    class Program
+    public class ModeAway : UserMode
     {
-        public static void Main(string[] args)
-        {
-            var ircd = new IrcDaemon(IrcMode.Modern);
+        public ModeAway()
+            : base('a')
+        { }
 
-#if !UBUNTU
-            ircd.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();
-            ircd.Options.ServerName = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerName" select setting.Value).SingleOrDefault();
-            ircd.Options.MOTD.AddRange(DatabaseCommon.Db.Settings.Where(setting => setting.Key == "MessageOfTheDay").Select(setting => setting.Value));
-#endif
-            ircd.Start();
+
+        public override bool HandleEvent(IrcCommandType ircCommand, UserInfo user, List<string> args)
+        {
+            return true;
         }
     }
 }
