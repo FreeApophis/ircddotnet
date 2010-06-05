@@ -1,0 +1,331 @@
+'LANGUAGE' command (for the IRC-2 protocol)
+-------------------------------------------
+
+The LANGUAGE command is designed to break the language barrier and create an
+environment where users can use their native language comfortably.
+
+While the LANGUAGE command changes the text reply from the server to whatever
+language selected (if it is available) this is only a tiny portion of what
+the command was designed to do. Depending on your implementation, language
+data could even go far enough to change the MOTD to target people who speak
+a certain language. The command has much more of a purpose than this, though.
+
+One key problem facing large international IRC networks these days is the
+large variety of languages people speak on the network. Many people are often
+curious as to what languages some people are speaking (especially if they
+are stuck in US-ASCII due to previous character set limitations). The LANGUAGE
+command allows a user to set the language they speak, or a list of languages
+they are able to use over the network. This information is subsequently
+available via the 'WHOIS' command anywhere on the network where the LANGUAGE
+command is supported (hopefully network-wide :). Users would be able to
+easily determine if a user can speak their native tongue!
+
+Many IRC networks these days also have some form of 'services', usually a
+channel service and a nickname service at least. These services often have help
+facilities, and are usually only provided in English, or in a few other
+languages via a specific interface. With the LANGUAGE command, this
+information would be available to the services seamlessly (as user LANGUAGE
+information is broadcast over the network) via a common interface.
+
+On networks where 'u-lined' servers (servers who can act as 'arbiters' over
+the network, like services) have control of other functions, implementors
+may wish to allow the LANGUAGE command to be set on behalf of the user. This
+would allow network services to 'remember' the language settings of a
+particular user and restore them upon authentication. Likewise with any
+connections which can be restored using cookies.
+
+Note that there is NO character set information. All languages defined must
+instead be written in the language dictated by the 005 numeric's CHARSET token.
+This decision was made to standardise the transmission of languages. It is
+strongly recommended to use UTF-8, as all languages can be easily
+incorporated with no special character set translation tables and the
+associated overhead necessary. UTF-8 is quickly becoming the default
+transmission method for many internet systems.
+
+
+
+Language codes:
+---------------
+
+  All language codes used with this command, and associated numerics, are
+ in accordance with BCP-0047. This means that they may include codes from
+ ISO-639-1, and/or any IANA assigned tags. There are two additions to this,
+ however.
+
+  Firstly, The language 'i-default' should always be assumed to exist (but 
+ never be listed anywhere), and the server is to know 'i-default' as the
+ specified default language. This can aid simplistic clients, or those who do
+ not read ISUPPORT. This is an IANA assigned tag, and conforms to BCP-0047
+ (for information, see http://www.iana.org/assignments/language-tags).
+ 
+  Secondly, The special language 'none' is also ALWAYS supported, and also
+ not normally listed, especially not in the WHOIS information. It is also a
+ magic keyword which tells the server that no superfluous numeric text should
+ be outputted. Really smart clients can use this to lower bandwidth
+ consumption if they generate their own text for numeric responces or handle
+ their own language code.
+ 
+
+
+005 Numeric (RPL_ISUPPORT) addition:
+------------------------------------
+ 
+      LANGUAGE=[<max langs>],<entry>,<entry>...
+ 
+  This shows that the LANGUAGE command is available for changing the
+ language of the replies, and details the languages available. One language
+ entry should be prefixed by a '*' character to show it is the 'default' to
+ show the client it is the language that server defaults to. Without the '*'
+ prefix, the first language on the list should be presumed the default.
+ Language names are those identical to those defined by BCP-0047, which may
+ include language codes from the ISO-639-1 standard, and/or language codes
+ assigned by the IANA.
+ 
+  The 'max langs' field shows how many langauges may be selected at once. The
+ LANGUAGE command may support more than one language being specified, both to
+ find the best language available but for WHOIS information to show which
+ languages a person can speak. This has been done due to the large number of
+ multilingual IRC users. It also provides alternative languages for bots and
+ IRC servers to respond in. Initially the client should presume only one 
+ language can be set at a time until told otherwise. This field may not exist,
+ if there are a large amount of language codes -- see below.
+ 
+  The two special language codes, 'i-default' and 'none', always exist, and
+ therefore should not be listed here.
+ 
+ eg. LANGUAGE=6,de,*en,fr,i-klingon
+   Show that German, English, French and for the star-trek fans 'klingon' are
+  available. English is the default, and therefore i-default is the same as
+  'en'. Six languages may be selected at once for the WHOIS output.
+  
+  When many too many languages to fit within the line limits of the IRC-2
+ protocol exist, LANGUAGE lines can be broken up, with the second line onwards
+ simply missing the 'max langs' field. If the 'max langs' field is not present
+ on any of the LANGUAGE lines, you may safely presume only one language can be
+ set at a time.
+
+ eg. LANGUAGE=6,en,*tr,de,fr
+     LANGUAGE=,en-scouse,zh,zh-yue
+     
+  Six languages may be selected, from English, Turkish (the default), German,
+ French, English with a scouse accent, Standard Chinese and Cantonese (also
+ Chinese).
+
+
+
+New Numerics
+------------
+
+687 - RPL_YOURLANGUAGEIS
+      <code(s)> :<info>
+      
+       Reply to a LANGUAGE command denoting the language selected by the
+      server. Along with a 'LANGUAGE' reply, this signifies to that client
+      that the server will be using the given language to display future
+      information, and confirms a change (if any). The code(s) are the same as
+      defined in BCP-0047. This should also be sent after the 005 numeric is
+      sent, preferrably before anything else (such as the MOTD).
+
+       There are no restrictions on the 'info' field, other than those imposed
+      by the IRC-2 protocol itself. It is recommended, however, that the
+      information presented in this field can at least inform the client of
+      the primary language they have specified.
+      
+       Note that the codes are returned in order of use. The first is always 
+      the code referring to the most preferred language to receive messages
+      in, going down to the least preferred language. The codes are returned
+      in a comma delimetered list.
+      
+       The 'none' code may be returned here, however 'i-default', if specified
+      by the client using the LANGUAGE command, should return as the real code
+      specifying the default language.
+
+
+688 - RPL_LANGUAGE
+      <code> <revision> <maintainer> <flags> :<name> [ '-' <notes>]
+      
+       A list item for listing languages. The code variable is the
+      language code as described in BCP-0047 assigned language code. The 
+      revision is the version of the language file being used (just a number
+      usually). The maintainer is an e-mail address of the person who 
+      maintains that particular language file for contact with regards to 
+      updates/corrections etc. Note that the maintainer field could also be 
+      used for just a nickname if the author does not wish to be contactable 
+      by e-mail, however that is probably a matter of network policy. 
+
+       The name is given to show the name/variation of the language.
+      The flags are a bunch of case sensitive characters in a row with
+      special meaning. If no flags are set on a language, '*' will be 
+      replaced instead (as with RPL_TIMEONSERVERIS). If there is no known
+      maintainer information, it too will be replaced with a '*'.
+      
+       Optionally, additional information may be appended to the name, such as
+      the language 'x-bork' may wish to include a comment about the language
+      being intended to be humourous, and not a bad sveeeedish joke. Sorry :)
+      
+       Currently the following flags are possible:
+        'd' - Default language and is selected upon connection (optional)
+	'i' - This language may be incomplete (optional)
+        's' - This language is a selected language (optional)
+	'S' - This language is selected as the primary language (required)
+
+      The list is terminated with numeric 666 (command = 'LANGUAGE')
+
+
+690 - RPL_WHOISLANGUAGE
+      <nickname> <language codes> [:speaks these languages]
+
+       This is an optional extra to the WHOIS output, showing what language
+      a user is using. The 'language codes' field is a comma-delimetered list
+      of languages a person can speak (in order of preference, highest
+      first, lowest last).
+      
+       The code 'none' should be suppressed (as it is not useful in this
+      context), and the code 'i-default' should be translated into the real
+      default language for the users' server.
+
+
+981 - ERR_TOOMANYLANGUAGES
+      <max languages> :Too many language codes specified
+      
+       Tell the client it cannot set any more languages. The maximum is given,
+      which is indeed the same number given on the 005 numeric, to remind the
+      client of the limit. The LANGUAGE command may or may not be executed
+      after this numeric, depending on the implementation.
+
+      
+982 - ERR_NOLANGUAGE
+      <language code> :is an unknown language to me
+      
+       Report to the client that the language given was unknown and will not
+      be used, or shown in the WHOIS output. The LANGUAGE command may or may
+      not be executed after this numeric, depending on the implementation.
+      
+       Some implementations may wish to accept languages (so long as the
+      language code is validated somehow) regardless of whether or not the
+      server can provide output in that language or not. The purpose of this
+      would be to allow users to select languages for their WHOIS reply, even
+      if the server cannot 'speak' that language.
+
+
+
+The command itself
+------------------
+
+ The LANGUAGE command is designed to remain simple. There are two forms, one
+with parameters and one without.
+
+ When used without parameters, the LANGUAGE command simply returns a list of
+languages the IRC daemon knows about, that is languages the IRC daemon can
+return text in.
+
+ Note in these examples, lines prefixed with '<' mean the line heads to the
+server, and lines prefixed with '>' mean lines from the server. Please excuse
+the poor spelling in these examples, since I'm trying to stick with US-ASCII
+for this document.
+
+ eg.
+  < LANGUAGE
+  > :server.foo.org 688 pickle en 20010710 someone@foo.org dS :English
+  > :server.foo.org 688 pickle tr 20011201 someone@foo.org * :Turkce
+  > :server.foo.org 688 pickle fr 20010807 somenick s :Francais
+  > :server.foo.org 688 pickle de 20010528 foo!bahbaz@qux.net i :Deutsch
+  > :server.foo.org 666 pickle LANGUAGE :End of LANGUAGE list
+  
+  (note that #666 = RPL_ENDOF_GENERIC)
+  
+ From this reply you can see (using the numerics listed above) that English
+is the default language, and is currently selected. That's why English is used
+for numeric #666. French is also selected.
+
+ Note that the name of the language, the revision and the maintainer fields are
+totally up to your own policies. It is strongly recommended that the name of
+the language be written in its own language (since people who speak the
+language will recognise the name better than if it was all in English, for
+example). The only limitation is that the revision and the maintainer fields
+must be one word.
+
+ The LANGUAGE command is also used to set language(s), naturally. Here I
+will change my selected language from English and French to Turkish and French:
+
+  < LANGUAGE tr,fr
+  > :server.foo.org 687 pickle fr,tr :Turkce
+  
+ The server replies with information set. I can also switch to the default
+language very easily. Here, I want the default language alone:
+
+  < LANGUAGE i-default
+  > :server.foo.org 687 pickle en :English
+  
+ Remember that the default language is English - the "i-default" code simply
+gets translated across neatly.
+
+ I can also turn off replies from the server being in any language if my
+client has its own mechanism for languages. This will only apply to numeric
+replies, as other translations (services, for example) may remain using the
+original setting, or the default setting. Here's how:
+
+  < LANGUAGE none
+  > :server.foo.org 867 pickle none * :
+
+ For information which MUST be displayed (such as server NOTICE data), this
+information will still be sent, but using the default language. However text
+from numerics will always contain an empty text field unless it fits into the
+category I just spoke about. By the way, an empty text field is allowed by
+RFC1459.
+ 
+ What if I wanted the server to send nothing from numerics, but I wanted
+services output and/or important information which can only arrive in text
+form to be in French instead of the default language? Try this:
+
+  < LANGUAGE none,fr
+  > :server.foo.org 867 pickle none,fr * :
+  
+ What about:
+
+  < LANGUAGE foo,fr,de
+  > :server.foo.org 982 pickle foo :
+  > :server.foo.org 867 pickle fr,de * :Francais
+  
+ The server has rejected foo (it is not a valid language). You may implement
+any policies you wish on rejection of languages. If you do intend to accept
+unknown languages you don't have translations for, the follow should occur:
+
+  < LANGUAGE ru,fr,de
+  > :server.foo.org 867 pickle ru,fr,de * :French
+  
+ Notice how the server has not re-ordered the list, but it is now selecting
+French for its text, as it is the first known available language it can use
+for replies. All three languages would appear in WHOIS, in the same order
+again:
+  
+  < WHOIS pickle
+  > :server.foo.org 311 pickle pickle pickle simon.butcher.id.au * :Simon
+  > :server.foo.org 319 pickle pickle :+#chaty
+  > :server.foo.org 312 pickle pickle server.foo.org :Some witty comment here
+  > :server.foo.org 317 pickle 1234 987654321 :temps de ralenti, temps de connexion
+  > :server.foo.org 690 pickle ru,fr,de
+  > :server.foo.org 318 pickle :Fin de liste de WHOIS
+  
+ (Yes, my French sucks! Sorry)
+
+ If I wished to turn off message replies, but still want to announce
+English, French and German:
+
+  < LANGUAGE none,en,fr,de
+  > :server.foo.org 687 pickle none,en,fr,de * :
+  
+ Numeric replies are now neatly turned off. If I WHOIS myself once more:
+
+  < WHOIS pickle
+  > :server.foo.org 311 pickle pickle pickle simonb.alien.net.au * :Simon
+  > :server.foo.org 319 pickle pickle :+#chaty
+  > :server.foo.org 312 pickle pickle server.foo.org :Some witty comment here
+  > :server.foo.org 317 pickle 2345 987654321 :
+  > :server.foo.org 690 pickle en,fr,de
+  > :server.foo.org 318 pickle :
+  
+ The empty replies (apart from a few) show how text is selectively removed. 
+Also note that there is no mention of "none" in the whois information, since
+it's not really a language which is spoken. Well, unless you're a mute -
+they don't count, since they can still IRC! :)

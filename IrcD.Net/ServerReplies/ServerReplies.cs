@@ -826,13 +826,15 @@ namespace IrcD.ServerReplies
         /// </summary>
         /// <param name="info"></param>
         /// <param name="channel"></param>
-        public void SendCannotSendToChannel(UserInfo info, string channel)
+        /// <param name="message"></param>
+        public void SendCannotSendToChannel(UserInfo info, string channel, string message = "Cannot send to channel")
         {
             BuildMessageHeader(info, ReplyCode.ErrorCannotSendToChannel);
 
             response.Append(" ");
             response.Append(channel);
-            response.Append(" :Cannot send to channel");
+            response.Append(" :");
+            response.Append(message);
 
             info.WriteLine(response);
         }

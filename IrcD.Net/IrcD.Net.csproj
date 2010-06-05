@@ -18,7 +18,8 @@
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -58,6 +59,7 @@
       <HintPath>lib\DbLinq.Sqlite.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Addin" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -69,6 +71,7 @@
     <Reference Include="System.Data.SQLite">
       <HintPath>lib\System.Data.SQLite.DLL</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -148,6 +151,7 @@
     <Compile Include="Modes\ChannelModes\ModePrivate.cs" />
     <Compile Include="Modes\ChannelModes\ModeSecret.cs" />
     <Compile Include="Modes\ChannelModes\ModeTopic.cs" />
+    <Compile Include="Modes\ChannelModes\ModeTranslate.cs" />
     <Compile Include="Modes\ChannelRanks\ModeHalfOp.cs" />
     <Compile Include="Modes\ChannelRanks\ModeOp.cs" />
     <Compile Include="Modes\ChannelRanks\ModeVoice.cs" />
@@ -172,12 +176,17 @@
     <Compile Include="ServerReplies\ServerReplies.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="UserPerChannelInfo.cs" />
+    <Compile Include="Utils\GoogleTranslateAPI.cs" />
+    <Compile Include="Utils\IrcConstants.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\Enumerable.cs" />
+    <Compile Include="Utils\JSON.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\WildCard.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>

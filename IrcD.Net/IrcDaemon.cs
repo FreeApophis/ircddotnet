@@ -125,7 +125,7 @@ namespace IrcD
             }
         }
 
-        private bool connected = true;
+        private bool connected;
         private byte[] buffer = new byte[MaxBufferSize];
         private EndPoint ep = new IPEndPoint(0, 0);
         private EndPoint localEp;
@@ -242,6 +242,8 @@ namespace IrcD
             supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeSecret>());
             supportedChannelModes.Add(ModeFactory.AddChannelMode<ModePrivate>());
             supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeTopic>());
+            if (Options.IrcMode == IrcMode.Modern)
+                supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeTranslate>());
 
             if (Options.IrcMode == IrcMode.Modern) supportedRanks.Add(ModeFactory.AddChannelRank<ModeHalfOp>());
             supportedRanks.Add(ModeFactory.AddChannelRank<ModeOp>());
@@ -254,10 +256,10 @@ namespace IrcD
 
         public void Start()
         {
-            if (!connected)
-            {
-                MainLoop();
-            }
+            if (connected) return;
+
+            connected = true;
+            MainLoop();
         }
 
         public void Stop()
@@ -447,14 +449,15 @@ namespace IrcD
                 return false;
             if (Options.IrcMode == IrcMode.Modern)
             {
-                if (nick.Any(c => c == ' ' || c == ',' || c == '\x7'))
+                if (nick.Any(c => c == ' ' || c == ',' || c == '\x7' || c == '!' || c == '@' || c == '*' || c == '?' || c == '+' || c == '%' || c == '#'))
                     return false;
             }
 
             if (Options.IrcMode == IrcMode.Rfc1459 || Options.IrcMode == IrcMode.Rfc2810)
             {
-                //TODO
-                return false;
+                if (!nick.All(c => (c >= '\x5B' && c <= '\x60') || (c >= '\x7B' && c <= '\x7D') || (c >= 'a' && c < 'z') || (c >= 'A' && c < 'Z') || (c >= '0' && c < '9')
+                                    || c == '[' || c == ']' || c == '\\' || c == '`' || c == '_' || c == '^' || c == '{' || c == '|' || c == '}'))
+                    return false;
             }
 
             return true;

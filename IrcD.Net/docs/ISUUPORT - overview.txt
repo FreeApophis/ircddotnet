@@ -1,0 +1,141 @@
+This document is an overview of all the parameters used in the 005 numeric (RPL_ISUPPORT) of the IRC protocol, with a short description of what all the parameters mean.
+
+For a more formal defenition of the ISUPPORT numeric see Edward Brocklesby's ISUPPORT draft.
+
+This page now just lists some examples of what is being used, which include things not in the draft. The reason they're not in draft is because they are either experimental or considered to be of no real use.
+
+A simple example output:
+
+:irc.example.org 005 nick PREFIX=(ov)@+ CHANTYPES=#& :are supported by this server
+
+Here is the list with all parameters with a short description:
+
+Parameter 	Value 	Servers 	Explanation 	Example
+PREFIX 	(modes)prefixes 	all 	A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command.
+
+Note: Some servers only show the most powerful, others may show all of them.
+	PREFIX=(ov)@+ (IRCNet, Bahamut, ircu)
+PREFIX=(ohv)@%+ (Hybrid)
+CHANTYPES 	chars 	all 	The supported channel prefixes. 	CHANTYPES=#& (ircu)
+CHANTYPES=#&!+ (IRCNet)
+CHANTYPES=# (Bahamut)
+CHANTYPES=#& (Hybrid)
+CHANMODES 	A,B,C,D 	all 	This is a list of channel modes according to 4 types.
+A = Mode that adds or removes a nick or address to a list. Always has a parameter.
+B = Mode that changes a setting and always has a parameter.
+C = Mode that changes a setting and only has a parameter when set.
+D = Mode that changes a setting and never has a parameter.
+
+Note: Modes of type A return the list when there is no parameter present.
+
+Note: Some clients assumes that any mode not listed is of type D.
+
+Note: Modes in PREFIX are not listed but could be considered type B.
+	CHANMODES=b,k,l,imnpstr (ircu)
+CHANMODES=b,k,l,ciLmMnOprRst (Bahamut)
+CHANMODES=beI,k,l,imnpstaqr (IRCNet)
+CHANMODES=beI,k,l,imnpsta (Hybrid)
+MODES 	number 	all 	Maximum number of channel modes with parameter allowed per MODE command. 	MODES=3 (IRCNet)
+MODES=4 (Hybrid)
+MODES=6 (ircu, Bahamut)
+MAXCHANNELS 	number 	all 	Maximum number of channels allowed to join.
+This has been replaced by CHANLIMIT. 	MAXCHANNELS=10 (IRCNet, Hybrid, Bahamut)
+MAXCHANNELS=20 (ircu)
+CHANLIMIT 	pfx:num[,pfx:num,...] 	all 	Maximum number of channels allowed to join by channel prefix. 	CHANLIMIT=#&!+:10 (IRCNet)
+NICKLEN 	number 	all 	Maximum nickname length. 	NICKLEN=9 (IRCNet, ircu, Hybrid)
+NICKLEN=30 (Bahamut)
+MAXBANS 	number 	all 	Maximum number of bans per channel.
+
+Note: This has been replaced by MAXLIST.
+	MAXBANS=30 (IRCNet)
+MAXBANS=25 (Hybrid)
+MAXBANS=45 (ircu)
+MAXBANS=100 (Bahamut)
+MAXLIST 	mode:num[,mode:num,...] 	all 	Maximum number entries in the list per mode. 	MAXLIST=beI:30 (IRCNet)
+NETWORK 	name 	all 	The IRC network name. 	NETWORK=EFnet (Hybrid)
+NETWORK=IRCNet (IRCNet)
+NETWORK=UnderNet (ircu)
+NETWORK=DALnet (Bahamut)
+EXCEPTS 	[mode] 	Hybrid, IRCNet 	The server support ban exceptions (e mode). See RFC 2811 for more information. 	EXCEPTS=e
+INVEX 	[mode] 	Hybrid, IRCNet 	The server support invite exceptions (+I mode). See RFC 2811 for more information. 	INVEX=I
+WALLCHOPS 	  	Hybrid, ircu 	The server supports messaging channel operators (NOTICE @#channel)
+
+Note: This has been replaced by STATUSMSG.
+
+ircu also supports a WALLCHOPS command?
+
+Note: ircu didn't support voiced persons because it conflicted with +channels. They removed the +channels.
+
+Note: Hybrid supports everything in PREFIX
+
+Note: Hybrid 6 and ircu don't support it with PRIVMSG, Hybrid 7 does.
+	WALLCHOPS
+WALLVOICES 	  	ircu 	Notice to +#channel goes to all voiced persons. 	WALLVOICES
+STATUSMSG 	string 	ratbox 	The server supports messaging channel member who have a certain status or higher. The status is one of the letters from PREFIX. 	STATUSMSG=+@
+CASEMAPPING 	string 	all 	Case mapping used for nick- and channel name comparing. Current possible values:
+
+ascii: The chars [a-z] are lowercase of [A-Z].
+
+rfc1459: ascii with additional {}|~ the lowercase of []\^.
+
+strict-rfc1459: ascii with additional {}| the lowercase of []\.
+
+Note: RFC1459 forgot to mention the ~ and ^ although in all known implementations those are considered equivalent too.
+	CASEMAPPING=rfc1459 (ircu, Hybrid, IRCNet)
+CASEMAPPING=ascii (Bahamut)
+ELIST 	tokens 	  		The server supports extentions for the LIST command. The tokens specify which extention are supported.
+M = mask search,
+N = !mask search
+U = usercount search (< >)
+C = creation time search (C< C>)
+T = topic search (T< T>) 	ELIST=U (ratbox)
+ELIST=MNUCT (Bahamut)
+TOPICLEN 	number 	all 	Maximum topic length. 	TOPICLEN=80 (IRCNet)
+TOPICLEN=120 (Hybrid)
+TOPICLEN=160 (ircu)
+TOPICLEN=307 (Bahamut)
+KICKLEN 	number 	all 	Maximum kick comment length. 	KICKLEN=80 (IRCNet)
+KICKLEN=120 (Hybrid)
+KICKLEN=160 (ircu)
+KICKLEN=307 (Bahamut)
+CHANNELLEN 	number 	all 	Maximum channel name length. 	CHANNELLEN=50 (IRCNet)
+CHIDLEN 	number 	IRCNet 	Channel ID length for !channels (5 by default). See RFC 2811 for more information.
+
+Note: This has been replaced by IDCHAN
+	CHIDLEN=5
+IDCHAN 	pfx:num[,pfx:num,...] 	IRCNet 	The ID length for channels with an ID. The prefix says for which channel type it is, and the number how long it is. See RFC 2811 for more information. 	IDCHAN=!:5
+STD 	string 	none? 	The standard which the implementation is using. 	STD=i-d(03)
+SILENCE 	number 	ircu, Bahamut 	The server support the SILENCE command. The number is the maximum number of allowed entries in the list. 	SILENCE=15 (ircu)
+SILENCE=10 (Bahamut)
+RFC2812 	  	IRCNet 	Server supports RFC 2812 features. 	RFC2812
+PENALTY 	  	IRCNet 	Server gives extra penalty to some commands instead of the normal 2 seconds per message and 1 second for every 120 bytes in a message. 	PENALTY
+FNC 	  	IRCNet 	Forced nick changes: The server may change the nickname without the client sending a NICK message. 	FNC
+SAFELIST 	  	Bahamut 	The LIST is sent in multiple iterations so send queue won't fill and kill the client connection. 	SAFELIST
+AWAYLEN 	number 	ircu 	The max length of an away message 	AWAYLEN=160 (ircu)
+NOQUIT 	  	Bahamut 	Isn't this server to server feature, nothing to do with clients? 	NOQUIT
+USERIP 	  	ircu 	The USERIP command exists. 	USERIP
+CPRIVMSG 	  	ircu 	The CPRIVMSG command exists, used for mass messaging people in specified channel (CPRIVMSG channel nick,nick2,... :text) 	CPRIVMSG
+CNOTICE 	  	ircu 	The CNOTICE command exists, just like CPRIVMSG 	CNOTICE
+MAXNICKLEN 	  	ircu 	Maximum length of nicks the server will send to the client? 	MAXNICKLEN
+MAXTARGETS 	number 	Hybrid 	Maximum targets allowed for PRIVMSG and NOTICE commands 	MAXTARGETS=4 (Hybrid)
+KNOCK 	  	Hybrid 	The KNOCK command exists. 	KNOCK
+VCHANS 	  	Hybrid 	Server supports virtual channels. See vchans.txt for more information. 	VCHANS
+WATCH 	number 	Bahamut 	Maximum number of WATCHes allowed. 	WATCH=128 (Bahamut)
+WHOX 	  	ircu 	The WHO command uses WHOX protocol. 	WHOX
+CALLERID 	  	Hybrid 	The server supports server side ignores via the +g user mode. See modeg.txt for more information. 	CALLERID
+ACCEPT 	  	  	[Deprecated] The same as CALLERID. 	ACCEPT
+LANGUAGE 	number,string,string,... 	KineIRCd 	[Experimental] The server supports the LANGUAGE command. See the language document for more information. 	LANGUAGE=2,en,i-klingon
+
+Some of those parameters define a length. This is a length in octets and not in (multi-byte) characters.
+
+I would like to be able to place some links to commands like SILENCE, USERIP, CPRIVMSG, CNOTICE, KNOCK, and others. Whatever may be useful to client authors. They don't seem to put any documentation online.
+
+Some older version of this document said CHARMAPPING instead of CASEMAPPING. This was an error and has been corrected.
+
+CHARSET has been removed. See the draft for explanation.
+
+For comments or corrections, please mail Q@irc.org
+
+You should find the latest version of this document here.
+
+Document last changed on Okt 14, 2004. 

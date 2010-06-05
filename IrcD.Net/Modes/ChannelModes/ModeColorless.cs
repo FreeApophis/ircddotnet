@@ -19,7 +19,9 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 using IrcD.ServerReplies;
+using IrcD.Utils;
 
 namespace IrcD.Modes.ChannelModes
 {
@@ -32,6 +34,19 @@ namespace IrcD.Modes.ChannelModes
 
         public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
         {
+            if(ircCommand == IrcCommandType.PrivateMessage || ircCommand == IrcCommandType.Notice)
+            {
+                if (args[1].Any(c => c == IrcConstants.IrcColor))
+                {
+                    channel.IrcDaemon.Replies.SendCannotSendToChannel(user, channel.Name, "Color is not permitted in this channel");
+                    return false;
+                }
+                if (args[1].Any(c => c == IrcConstants.IrcBold || c == IrcConstants.IrcNormal || c == IrcConstants.IrcUnderline || c == IrcConstants.IrcReverse))
+                {
+                    channel.IrcDaemon.Replies.SendCannotSendToChannel(user, channel.Name, "Control codes (bold/underline/reverse) are not permitted in this channel");
+                    return false;
+                }
+            }
             return true;
         }
     }

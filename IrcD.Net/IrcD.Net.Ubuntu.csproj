@@ -18,7 +18,8 @@
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -79,6 +80,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -158,6 +160,7 @@
     <Compile Include="Modes\ChannelModes\ModePrivate.cs" />
     <Compile Include="Modes\ChannelModes\ModeSecret.cs" />
     <Compile Include="Modes\ChannelModes\ModeTopic.cs" />
+    <Compile Include="Modes\ChannelModes\ModeTranslate.cs" />
     <Compile Include="Modes\ChannelRanks\ModeHalfOp.cs" />
     <Compile Include="Modes\ChannelRanks\ModeOp.cs" />
     <Compile Include="Modes\ChannelRanks\ModeVoice.cs" />
@@ -184,6 +187,9 @@
     <Compile Include="UserPerChannelInfo.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\Enumerable.cs" />
+    <Compile Include="Utils\GoogleTranslateAPI.cs" />
+    <Compile Include="Utils\IrcConstants.cs" />
+    <Compile Include="Utils\JSON.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\WildCard.cs" />
   </ItemGroup>
