@@ -179,6 +179,76 @@ namespace IrcD.ServerReplies
         }
 
         /// <summary>
+        /// Reply Code 251
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendListUserClient(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.ListUserClient);
+
+            // TODO: implement this
+            response.Append(":There are <integer> users and <integer> services on <integer> servers");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 252
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendListUserOp(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.ListUserOp);
+
+            // TODO: implement this
+            response.Append("<integer> :operator(s) online");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 253
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendListUserUnknown(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.ListUserUnknown);
+
+            // TODO: implement this
+            response.Append("<integer> :unknown connection(s)");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 254
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendListUserChannels(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.ListUserChannels);
+
+            // TODO: implement this
+            response.Append("<integer> :channels formed");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 255
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendListUserMe(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.ListUserMe);
+
+            // TODO: implement this
+            response.Append(":I have <integer> clients and <integer> servers");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
         /// Reply 301
         /// </summary>
         /// <param name="info"></param>

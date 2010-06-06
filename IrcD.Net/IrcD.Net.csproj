@@ -176,7 +176,7 @@
     <Compile Include="ServerReplies\ServerReplies.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="UserPerChannelInfo.cs" />
-    <Compile Include="Utils\GoogleTranslateAPI.cs" />
+    <Compile Include="Utils\GoogleTranslate.cs" />
     <Compile Include="Utils\IrcConstants.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\Enumerable.cs" />

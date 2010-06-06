@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace IrcD
+namespace IrcD.ServerReplies
 {
 	/// <summary>
 	///
@@ -51,11 +51,11 @@ namespace IrcD
 	    ServiceListEnd =                 235,
 	    StatsUptime =                    242,
 	    StatsOLine =                     243,
-	    LuserClient =                    251,
-	    LuserOp =                        252,
-	    LuserUnknown =                   253,
-	    LuserChannels =                  254,
-	    LuserMe =                        255,
+	    ListUserClient =                 251,
+        ListUserOp =                     252,
+        ListUserUnknown =                253,
+        ListUserChannels =               254,
+        ListUserMe =                     255,
 	    AdminMe =                        256,
 	    AdminLocation1 =                 257,
 	    AdminLocation2 =                 258,

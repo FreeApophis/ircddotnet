@@ -18,29 +18,38 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 using System.Collections.Generic;
+using IrcD.ServerReplies;
+using IrcD.Utils;
 
-namespace IrcD.Commands
+namespace IrcD.Modes.ChannelModes
 {
-    public class ListUsers : CommandBase
+    class ModeTranslate : ChannelMode
     {
-        public ListUsers(IrcDaemon ircDaemon)
-            : base(ircDaemon, "LUSERS")
-        { }
+        private readonly GoogleTranslate translator;
 
-        public override void Handle(UserInfo info, List<string> args)
+        public ModeTranslate()
+            : base('T')
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
+            translator = new GoogleTranslate();
+        }
 
-            IrcDaemon.Replies.SendListUserClient(info);
-            IrcDaemon.Replies.SendListUserOp(info);
-            IrcDaemon.Replies.SendListUserUnknown(info);
-            IrcDaemon.Replies.SendListUserChannels(info);
-            IrcDaemon.Replies.SendListUserMe(info);
+        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        {
+            if (ircCommand == IrcCommandType.Join)
+            {
+
+            }
+            if (ircCommand == IrcCommandType.PrivateMessage)
+            {
+                // TODO: dangerously slow!!! not allowed!!! BLOCKS!!!
+                var source = translator.DetectLanguage(args[1]);
+                var text = translator.TranslateText(args[1], source, "en");
+                channel.IrcDaemon.Send.PrivateMessage(user, channel, channel.Name, "[" + source + "]" + text);
+                return false;
+            }
+            return true;
         }
     }
 }
