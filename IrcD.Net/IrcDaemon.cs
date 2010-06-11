@@ -309,7 +309,7 @@ namespace IrcD
                                 }
                                 catch (SocketException e)
                                 {
-                                    Logger.Log("ERROR:  (Socket reset) " + e.Message + "(CODE:" + e.ErrorCode + ")");
+                                    Logger.Log("ERROR:  (Socket reset) " + e.Message + "(CODE:" + e.ErrorCode + ")", 4, "E1" + sockets[s].Nick);
                                     sockets[s].Remove("Socket reset by peer (" + e.ErrorCode + ")");
 
                                 }
@@ -317,7 +317,7 @@ namespace IrcD
                         }
                         catch (Exception e)
                         {
-                            Logger.Log("Unknown ERROR: " + e.Message);
+                            Logger.Log("Unknown ERROR: " + e.Message, 4, "E2" + sockets[s].Nick);
                             Logger.Log("Trace: " + e.StackTrace);
                         }
                     }
@@ -333,7 +333,7 @@ namespace IrcD
                             // Ping Timeout (5 Minutes without any life sign)
                             user.Remove("Ping Timeout");
                         }
-                        else if (user.LastPing < DateTime.Now.AddMinutes(-1))
+                        else if (user.LastAlive < DateTime.Now.AddMinutes(-1) && user.LastPing < DateTime.Now.AddMinutes(-1))
                         {
                             user.LastPing = DateTime.Now;
                             Send.Ping(user);

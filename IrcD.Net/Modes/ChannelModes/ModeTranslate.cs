@@ -19,9 +19,11 @@
  */
 
 
+using System;
 using System.Collections.Generic;
 using IrcD.ServerReplies;
 using IrcD.Utils;
+using System.Runtime.Remoting.Messaging;
 
 namespace IrcD.Modes.ChannelModes
 {
@@ -43,13 +45,21 @@ namespace IrcD.Modes.ChannelModes
             }
             if (ircCommand == IrcCommandType.PrivateMessage)
             {
-                // TODO: dangerously slow!!! not allowed!!! BLOCKS!!!
-                var source = translator.DetectLanguage(args[1]);
-                var text = translator.TranslateText(args[1], source, "en");
-                channel.IrcDaemon.Send.PrivateMessage(user, channel, channel.Name, "[" + source + "]" + text);
+                var t = new GoogleTranslate.TranslateDelegate(translator.TranslateText);
+                t.BeginInvoke(args[1], "en", "", TranslateCallBack, new Utils.Tuple<ChannelInfo, UserInfo>(channel, user));
+
                 return false;
             }
             return true;
+        }
+
+        private static void TranslateCallBack(IAsyncResult asyncResult)
+        {
+            var state = (Utils.Tuple<ChannelInfo, UserInfo>)asyncResult.AsyncState;
+            var asyncDelegate = ((AsyncResult)asyncResult).AsyncDelegate;
+            var result = ((GoogleTranslate.TranslateDelegate)asyncDelegate).EndInvoke(asyncResult);
+
+            state.First.IrcDaemon.Send.PrivateMessage(state.Second, state.First, state.First.Name, "[" + result.Second + "]" + result.First);
         }
     }
 }

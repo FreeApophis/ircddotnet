@@ -164,7 +164,7 @@ namespace IrcD.ServerReplies
         public void Ping(InfoBase receiver)
         {
             command.Length = 0;
-            command.Append(" PING ");
+            command.Append("PING ");
             command.Append(ircDaemon.ServerPrefix);
 
             receiver.WriteLine(command);

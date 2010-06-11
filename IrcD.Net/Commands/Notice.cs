@@ -48,8 +48,6 @@ namespace IrcD.Commands
                 return;
             }
 
-            // TODO: idle timer, which commands reset them?
-            info.LastAction = DateTime.Now;
             if (ChannelInfo.ValidChannel(args[0]))
             {
                 if (IrcDaemon.Channels.ContainsKey(args[0]))

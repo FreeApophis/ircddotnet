@@ -127,7 +127,9 @@ namespace IrcD.Utils
             }
         }
 
-        public string TranslateText(string input, string sourceLanguage, string targetLanguage)
+        public delegate Tuple<string, string> TranslateDelegate(string input, string targetLanguage, string sourceLanguage = "");
+
+        public Tuple<string, string> TranslateText(string input, string targetLanguage, string sourceLanguage = "")
         {
             var url = String.Format("http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q={0}&langpair={1}", input, sourceLanguage + "|" + targetLanguage);
 
@@ -140,7 +142,7 @@ namespace IrcD.Utils
                 {
                     throw new Exception((string)((Hashtable)jsonObj)["responseDetails"]);
                 }
-                return HttpUtility.HtmlDecode(((string)((Hashtable)((Hashtable)jsonObj)["responseData"])["translatedText"]));
+                return new Tuple<string, string>(HttpUtility.HtmlDecode(((string)((Hashtable)((Hashtable)jsonObj)["responseData"])["translatedText"])), HttpUtility.HtmlDecode(((string)((Hashtable)((Hashtable)jsonObj)["responseData"])["detectedSourceLanguage"])));
             }
             return null;
         }

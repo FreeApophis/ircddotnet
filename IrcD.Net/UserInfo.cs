@@ -306,9 +306,10 @@ namespace IrcD
             // Clean up channels
             foreach (var upci in UserPerChannelInfos)
             {
-                IrcDaemon.Send.Quit(this, upci.ChannelInfo, message);
-
+                // Important: remove nick first! or we end in a exception-catch endless loop
                 upci.ChannelInfo.UserPerChannelInfos.Remove(Nick);
+
+                IrcDaemon.Send.Quit(this, upci.ChannelInfo, message);
             }
 
             UserPerChannelInfos.Clear();

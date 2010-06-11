@@ -182,6 +182,7 @@
     <Compile Include="Utils\Enumerable.cs" />
     <Compile Include="Utils\JSON.cs" />
     <Compile Include="Utils\Logger.cs" />
+    <Compile Include="Utils\Tuple.cs" />
     <Compile Include="Utils\WildCard.cs" />
   </ItemGroup>
   <ItemGroup>

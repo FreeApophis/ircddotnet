@@ -48,7 +48,7 @@ namespace IrcD.Commands
                 return;
             }
 
-            // TODO: idle timer, which commands reset them?
+            // Only Private Messages reset this
             info.LastAction = DateTime.Now;
             if (ChannelInfo.ValidChannel(args[0]))
             {
