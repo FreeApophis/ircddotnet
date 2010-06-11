@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace IrcD.Utils
 {
@@ -33,5 +34,21 @@ namespace IrcD.Utils
             while (ie1.MoveNext() && ie2.MoveNext())
                 yield return func(ie1.Current, ie2.Current);
         }
+        public static string Concatenate<T>(this IEnumerable<T> strings, string separator)
+        {
+            var stringBuilder = new StringBuilder();
+
+            foreach (var item in strings)
+            {
+                stringBuilder.Append(item);
+                stringBuilder.Append(separator);
+            }
+
+            stringBuilder.Length = stringBuilder.Length - separator.Length;
+            return stringBuilder.ToString();
+        }
+
+
+
     }
 }

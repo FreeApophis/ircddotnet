@@ -189,7 +189,6 @@ namespace IrcD
             commands.Add(new Join(this));
             commands.Add(new Kick(this));
             commands.Add(new Kill(this));
-            commands.Add(new Knock(this));
             commands.Add(new Links(this));
             commands.Add(new List(this));
             commands.Add(new ListUsers(this));
@@ -223,6 +222,16 @@ namespace IrcD
             commands.Add(new Who(this));
             commands.Add(new WhoIs(this));
             commands.Add(new WhoWas(this));
+
+            if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
+            {
+            }
+
+            if (Options.IrcMode == IrcMode.Modern)
+            {
+                commands.Add(new Knock(this));
+                commands.Add(new Language(this));
+            }
         }
 
         private void SetupModes()

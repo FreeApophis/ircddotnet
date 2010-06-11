@@ -21,6 +21,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Web;
 
@@ -28,7 +29,7 @@ namespace IrcD.Utils
 {
     public class GoogleTranslate
     {
-        private readonly Dictionary<string, string> languages = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase) {
+        private static readonly Dictionary<string, string> languages = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase) {
             { "af", "Afrikaans" },
             { "sq", "Albanian" },
             { "am", "Amharic" },
@@ -119,7 +120,7 @@ namespace IrcD.Utils
             { "vi", "Vietnamese" },
         };
 
-        public Dictionary<string, string> Languages
+        public static Dictionary<string, string> Languages
         {
             get
             {
@@ -128,6 +129,7 @@ namespace IrcD.Utils
         }
 
         public delegate Tuple<string, string> TranslateDelegate(string input, string targetLanguage, string sourceLanguage = "");
+        public delegate Dictionary<string, Tuple<string, string, string>> TranslateMultipleDelegate(string input, IEnumerable<string> targetLanguages);
 
         public Tuple<string, string> TranslateText(string input, string targetLanguage, string sourceLanguage = "")
         {
@@ -145,6 +147,74 @@ namespace IrcD.Utils
                 return new Tuple<string, string>(HttpUtility.HtmlDecode(((string)((Hashtable)((Hashtable)jsonObj)["responseData"])["translatedText"])), HttpUtility.HtmlDecode(((string)((Hashtable)((Hashtable)jsonObj)["responseData"])["detectedSourceLanguage"])));
             }
             return null;
+        }
+
+        public Dictionary<string, Tuple<string, string, string>> TranslateText(string input, IEnumerable<string> targetLanguages)
+        {
+            var result = new Dictionary<string, Tuple<string, string, string>>();
+
+            try
+            {
+                var url = String.Format("http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q={0}&langpair=%7C{1}", input, targetLanguages.Concatenate("&langpair=%7C"));
+                var webClient = new WebClient { Encoding = System.Text.Encoding.UTF8 };
+                var resultString = webClient.DownloadString(url);
+                var jsonObj = JSON.JsonDecode(resultString);
+
+                var allResponses = jsonObj as Hashtable;
+                if (allResponses != null)
+                {
+                    var responseData = allResponses["responseData"] as ArrayList;
+                    if (responseData != null)
+                    {
+                        foreach (var singleResponse in responseData.OfType<Hashtable>().Zip(targetLanguages, (f, s) => new { Translation = f, Target = s }))
+                        {
+                            var singleResponseData = singleResponse.Translation["responseData"] as Hashtable;
+                            string text;
+                            string sourcelang;
+                            if (singleResponseData != null)
+                            {
+                                text = HttpUtility.HtmlDecode(singleResponseData["translatedText"] as string);
+                                sourcelang = HttpUtility.HtmlDecode(singleResponseData["detectedSourceLanguage"] as string);
+                            }
+                            else
+                            {
+                                text = input;
+                                sourcelang = "F";
+                            }
+                            result.Add(singleResponse.Target, new Tuple<string, string, string>(sourcelang, singleResponse.Target, text));
+                        }
+                    }
+                    else
+                    {
+                        var singleResponseData = allResponses["responseData"] as Hashtable;
+
+                        string text;
+                        string sourcelang;
+                        if (singleResponseData != null)
+                        {
+                            text = HttpUtility.HtmlDecode(singleResponseData["translatedText"] as string);
+                            sourcelang = HttpUtility.HtmlDecode(singleResponseData["detectedSourceLanguage"] as string);
+                        }
+                        else
+                        {
+                            text = input;
+                            sourcelang = "F";
+                        }
+                        result.Add(targetLanguages.First(), new Tuple<string, string, string>(sourcelang, targetLanguages.First(), text));
+                    }
+                }
+            }
+            finally
+            {
+                if (result.Count == 0)
+                {
+                    foreach (var targetLanguage in targetLanguages)
+                    {
+                        result.Add(targetLanguage, new Tuple<string, string, string>("F", targetLanguage, input));
+                    }
+                }
+            }
+            return result;
         }
 
         public string DetectLanguage(string input)

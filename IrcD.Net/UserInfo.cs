@@ -80,6 +80,19 @@ namespace IrcD
         public string Host { get; private set; }
         public string AwayMessage { get; set; }
 
+        private string language = "en";
+        public string Language
+        {
+            get
+            {
+                return language;
+            }
+            set
+            {
+                language = GoogleTranslate.Languages.ContainsKey(value) ? value : "en";
+            }
+        }
+
 
         public void InitNick(string nick)
         {

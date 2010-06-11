@@ -18,33 +18,32 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !UBUNTU
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Threading;
 
-namespace IrcD.Database
+namespace IrcD.Utils
 {
-    /// <summary>
-    /// Description of DatabaseCommon.
-    /// </summary>
-    public class DatabaseCommon
+    public class Tuple<TFirst, TSecond>
     {
-        private static readonly Dictionary<int, Main> Connection = new Dictionary<int, Main>();
-
-        public static Main Db
+        public Tuple(TFirst first, TSecond second)
         {
-            get
-            {
-                Main connection;
-                if (!Connection.TryGetValue(Thread.CurrentThread.ManagedThreadId, out connection))
-                {
-                    connection = new Main(new SQLiteConnection("Data Source=ircd.db;FailIfMissing=true;"));
-                    Connection.Add(Thread.CurrentThread.ManagedThreadId, connection);
-                }
-                return connection;
-            }
+            First = first;
+            Second = second;
         }
+
+        public TFirst First { get; set; }
+        public TSecond Second { get; set; }
+    }
+
+    public class Tuple<TFirst, TSecond, TThird>
+    {
+        public Tuple(TFirst first, TSecond second, TThird third)
+        {
+            First = first;
+            Second = second;
+            Third = third;
+        }
+
+        public TFirst First { get; set; }
+        public TSecond Second { get; set; }
+        public TThird Third { get; set; }
     }
 }
-#endif

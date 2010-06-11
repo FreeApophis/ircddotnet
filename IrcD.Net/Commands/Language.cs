@@ -18,33 +18,30 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !UBUNTU
+
 using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Threading;
 
-namespace IrcD.Database
+namespace IrcD.Commands
 {
-    /// <summary>
-    /// Description of DatabaseCommon.
-    /// </summary>
-    public class DatabaseCommon
+    class Language : CommandBase
     {
-        private static readonly Dictionary<int, Main> Connection = new Dictionary<int, Main>();
+        public Language(IrcDaemon ircDaemon)
+            : base(ircDaemon, "LANGUAGE")
+        { }
 
-        public static Main Db
+        public override void Handle(UserInfo info, List<string> args)
         {
-            get
+            if (!info.Registered)
             {
-                Main connection;
-                if (!Connection.TryGetValue(Thread.CurrentThread.ManagedThreadId, out connection))
-                {
-                    connection = new Main(new SQLiteConnection("Data Source=ircd.db;FailIfMissing=true;"));
-                    Connection.Add(Thread.CurrentThread.ManagedThreadId, connection);
-                }
-                return connection;
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
             }
+            if (args.Count < 1)
+            {
+                return;
+            }
+
+            info.Language = args[0];
         }
     }
 }
-#endif

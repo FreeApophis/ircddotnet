@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using IrcD.ServerReplies;
 using IrcD.Utils;
 using System.Runtime.Remoting.Messaging;
@@ -45,8 +46,8 @@ namespace IrcD.Modes.ChannelModes
             }
             if (ircCommand == IrcCommandType.PrivateMessage)
             {
-                var t = new GoogleTranslate.TranslateDelegate(translator.TranslateText);
-                t.BeginInvoke(args[1], "en", "", TranslateCallBack, new Utils.Tuple<ChannelInfo, UserInfo>(channel, user));
+                var t = new GoogleTranslate.TranslateMultipleDelegate(translator.TranslateText);
+                t.BeginInvoke(args[1], channel.Users.Select(u => u.Language).Distinct(), TranslateCallBack, new Utils.Tuple<ChannelInfo, UserInfo>(channel, user));
 
                 return false;
             }
@@ -57,9 +58,20 @@ namespace IrcD.Modes.ChannelModes
         {
             var state = (Utils.Tuple<ChannelInfo, UserInfo>)asyncResult.AsyncState;
             var asyncDelegate = ((AsyncResult)asyncResult).AsyncDelegate;
-            var result = ((GoogleTranslate.TranslateDelegate)asyncDelegate).EndInvoke(asyncResult);
+            var result = ((GoogleTranslate.TranslateMultipleDelegate)asyncDelegate).EndInvoke(asyncResult);
 
-            state.First.IrcDaemon.Send.PrivateMessage(state.Second, state.First, state.First.Name, "[" + result.Second + "]" + result.First);
+            foreach (var user in state.First.Users.Where(u => u != state.Second))
+            {
+                Utils.Tuple<string, string, string> res;
+                if (result.TryGetValue(user.Language, out res))
+                {
+                    user.IrcDaemon.Send.PrivateMessage(state.Second, user, state.First.Name, "[" + res.First + "]" + res.Third);
+                }
+                else
+                {
+                    user.IrcDaemon.Send.PrivateMessage(state.Second, user, state.First.Name, "Translation Failed");
+                }
+            }
         }
     }
 }
