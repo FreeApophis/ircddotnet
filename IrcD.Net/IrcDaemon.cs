@@ -462,6 +462,5 @@ namespace IrcD
 
             return true;
         }
-
     }
 }
