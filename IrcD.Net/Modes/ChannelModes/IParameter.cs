@@ -42,5 +42,6 @@ namespace IrcD.Modes.ChannelModes
         List<string> Parameter { get; }
 
         void SendList(UserInfo info, ChannelInfo chan);
+        string Remove(string parameter);
     }
 }

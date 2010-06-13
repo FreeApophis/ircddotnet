@@ -18,6 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using IrcD.ServerReplies;
 
@@ -54,8 +55,18 @@ namespace IrcD.Modes.ChannelModes
 
         public string Add(string parameter)
         {
+            parameter = UserInfo.NormalizeHostmask(parameter);
+
             banExceptionList.Add(parameter);
+
             return parameter;
+        }
+
+        public string Remove(string parameter)
+        {
+            parameter = UserInfo.NormalizeHostmask(parameter);
+
+            return banExceptionList.RemoveAll(p => p == parameter) > 0 ? parameter : null;
         }
     }
 }

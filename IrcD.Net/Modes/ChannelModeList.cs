@@ -134,15 +134,17 @@ namespace IrcD.Modes
                                 }
                                 else
                                 {
-                                    if (paramA.Parameter.Any(p => p == parameter))
+                                    var p = paramA.Remove(parameter);
+
+                                    if (lastprefix != '-')
                                     {
-                                        paramA.Parameter.RemoveAll(p => p == parameter);
-                                        if (lastprefix != '-')
-                                        {
-                                            validmode.Append(lastprefix = '-');
-                                        }
+                                        validmode.Append(lastprefix = '-');
+                                    }
+
+                                    if (p != null)
+                                    {
                                         validmode.Append(cmode.Char);
-                                        validparam.Add(parameter);
+                                        validparam.Add(p);
                                     }
                                 }
                             }

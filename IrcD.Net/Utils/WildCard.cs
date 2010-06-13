@@ -20,13 +20,13 @@ namespace IrcD.Utils
     /// Represents a wildcard running on the
     ///  engine.
     /// 
-    public class Wildcard : Regex
+    public class WildCard : Regex
     {
         /// 
         /// Initializes a wildcard with the given search pattern.
         /// 
         /// The wildcard pattern to match.
-        public Wildcard(string pattern, WildcardMatch matchType)
+        public WildCard(string pattern, WildcardMatch matchType)
             : base(WildcardToRegex(pattern, matchType))
         {
         }
@@ -37,7 +37,7 @@ namespace IrcD.Utils
         /// The wildcard pattern to match.
         /// A combination of one or more
         /// .
-        public Wildcard(string pattern, RegexOptions options, WildcardMatch matchType)
+        public WildCard(string pattern, RegexOptions options, WildcardMatch matchType)
             : base(WildcardToRegex(pattern, matchType), options)
         {
         }

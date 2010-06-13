@@ -338,5 +338,36 @@ namespace IrcD
 
             // Ready for destruction 
         }
+
+        internal static string NormalizeHostmask(string parameter)
+        {
+            var hasAt = parameter.Contains('@');
+            var hasEx = parameter.Contains('!');
+
+            if (!hasAt && !hasEx)
+            {
+                if (parameter.Contains('.'))
+                {
+                    parameter = "*!*@" + parameter;
+
+                }
+                else
+                {
+                    parameter = parameter + "!*@*";
+                }
+            }
+
+            if (hasEx && parameter.First() == '!')
+            {
+                parameter = "*" + parameter;
+            }
+
+            if (hasAt && parameter.Last() == '@')
+            {
+                parameter = parameter + "*";
+            }
+
+            return parameter;
+        }
     }
 }
