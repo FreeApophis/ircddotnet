@@ -119,6 +119,7 @@ namespace IrcD.Utils
             { "ug", "Uighur" },
             { "vi", "Vietnamese" },
         };
+        public const string Original = "original";
 
         public static Dictionary<string, string> Languages
         {
@@ -128,10 +129,10 @@ namespace IrcD.Utils
             }
         }
 
-        public delegate Tuple<string, string> TranslateDelegate(string input, string targetLanguage, string sourceLanguage = "");
+        public delegate Tuple<string, string> TranslateDelegate(string input, string targetLanguage, string sourceLanguage = null);
         public delegate Dictionary<string, Tuple<string, string, string>> TranslateMultipleDelegate(string input, IEnumerable<string> targetLanguages);
 
-        public Tuple<string, string> TranslateText(string input, string targetLanguage, string sourceLanguage = "")
+        public Tuple<string, string> TranslateText(string input, string targetLanguage, string sourceLanguage = null)
         {
             var url = String.Format("http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q={0}&langpair={1}", input, sourceLanguage + "|" + targetLanguage);
 
@@ -151,6 +152,7 @@ namespace IrcD.Utils
 
         public Dictionary<string, Tuple<string, string, string>> TranslateText(string input, IEnumerable<string> targetLanguages)
         {
+            string sourcelang = string.Empty;
             var result = new Dictionary<string, Tuple<string, string, string>>();
 
             try
@@ -170,7 +172,6 @@ namespace IrcD.Utils
                         {
                             var singleResponseData = singleResponse.Translation["responseData"] as Hashtable;
                             string text;
-                            string sourcelang;
                             if (singleResponseData != null)
                             {
                                 text = HttpUtility.HtmlDecode(singleResponseData["translatedText"] as string);
@@ -189,7 +190,6 @@ namespace IrcD.Utils
                         var singleResponseData = allResponses["responseData"] as Hashtable;
 
                         string text;
-                        string sourcelang;
                         if (singleResponseData != null)
                         {
                             text = HttpUtility.HtmlDecode(singleResponseData["translatedText"] as string);
@@ -208,11 +208,13 @@ namespace IrcD.Utils
             {
                 if (result.Count == 0)
                 {
+                    sourcelang = "F";
                     foreach (var targetLanguage in targetLanguages)
                     {
                         result.Add(targetLanguage, new Tuple<string, string, string>("F", targetLanguage, input));
                     }
                 }
+                result.Add(Original, new Tuple<string, string, string>(sourcelang, sourcelang, input));
             }
             return result;
         }

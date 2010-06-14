@@ -28,6 +28,7 @@ using IrcD.Database;
 #endif
 using IrcD.Modes;
 using IrcD.Utils;
+using Enumerable = IrcD.Utils.Enumerable;
 
 namespace IrcD
 {
@@ -79,16 +80,17 @@ namespace IrcD
         public string Host { get; private set; }
         public string AwayMessage { get; set; }
 
-        private string language = "en";
-        public string Language
+        private IEnumerable<string> languages = new List<string> { "en" };
+
+        public IEnumerable<string> Languages
         {
             get
             {
-                return language;
+                return languages.Any() ? languages : System.Linq.Enumerable.Repeat("en", 1);
             }
             set
             {
-                language = GoogleTranslate.Languages.ContainsKey(value) ? value : "en";
+                languages = value.Where(l => GoogleTranslate.Languages.ContainsKey(l));
             }
         }
 

@@ -41,7 +41,7 @@ namespace IrcD.Commands
                 return;
             }
 
-            info.Language = args[0];
+            info.Languages = args[0].Split(new[] { ',' });
         }
     }
 }

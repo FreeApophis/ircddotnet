@@ -60,7 +60,7 @@ namespace IrcD.Modes
         {
             get
             {
-                return NickPrefixRaw != ' ' ? NickPrefixRaw.ToString() : "";
+                return NickPrefixRaw != ' ' ? NickPrefixRaw.ToString() : string.Empty;
             }
         }
 

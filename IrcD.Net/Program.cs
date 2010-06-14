@@ -18,13 +18,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Linq;
+
 #if !UBUNTU
 using IrcD.Database;
+using System.Linq;
 #endif
-using IrcD.Modes;
-using IrcD.Modes.ChannelModes;
 
 namespace IrcD
 {
@@ -32,7 +30,7 @@ namespace IrcD
     {
         public static void Main(string[] args)
         {
-            var ircd = new IrcDaemon(IrcMode.Modern);
+            var ircd = new IrcDaemon();
             ircd.Options.NickLength = 50;
 
 #if !UBUNTU

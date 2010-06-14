@@ -47,7 +47,7 @@ namespace IrcD.Modes.ChannelModes
             if (ircCommand == IrcCommandType.PrivateMessage)
             {
                 var t = new GoogleTranslate.TranslateMultipleDelegate(translator.TranslateText);
-                t.BeginInvoke(args[1], channel.Users.Select(u => u.Language).Distinct(), TranslateCallBack, new Utils.Tuple<ChannelInfo, UserInfo>(channel, user));
+                t.BeginInvoke(args[1], channel.Users.Select(u => u.Languages.First()).Distinct(), TranslateCallBack, new Utils.Tuple<ChannelInfo, UserInfo>(channel, user));
 
                 return false;
             }
@@ -63,7 +63,11 @@ namespace IrcD.Modes.ChannelModes
             foreach (var user in state.First.Users.Where(u => u != state.Second))
             {
                 Utils.Tuple<string, string, string> res;
-                if (result.TryGetValue(user.Language, out res))
+                if (user.Languages.Contains(result[GoogleTranslate.Original].First))
+                {
+                    user.IrcDaemon.Send.PrivateMessage(state.Second, user, state.First.Name, "[" + result[GoogleTranslate.Original].First + "]" + result[GoogleTranslate.Original].Third);
+                }
+                else if (result.TryGetValue(user.Languages.First(), out res))
                 {
                     user.IrcDaemon.Send.PrivateMessage(state.Second, user, state.First.Name, "[" + res.First + "]" + res.Third);
                 }

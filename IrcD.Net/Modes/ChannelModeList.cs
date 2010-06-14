@@ -283,7 +283,7 @@ namespace IrcD.Modes
                 }
             }
 
-            return "" + modes + parameters;
+            return modes.ToString() + parameters;
         }
     }
 }
