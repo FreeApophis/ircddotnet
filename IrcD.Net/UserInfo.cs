@@ -27,7 +27,6 @@ using System.Text;
 using IrcD.Database;
 #endif
 using IrcD.Modes;
-using IrcD.Modes.UserModes;
 using IrcD.Utils;
 
 namespace IrcD

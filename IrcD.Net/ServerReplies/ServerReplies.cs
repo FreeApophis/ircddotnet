@@ -21,8 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using IrcD.Utils;
+using Enumerable = IrcD.Utils.Enumerable;
 
 namespace IrcD.ServerReplies
 {
@@ -137,18 +139,44 @@ namespace IrcD.ServerReplies
         /// <param name="info"></param>
         public void SendISupport(UserInfo info)
         {
-            BuildMessageHeader(info, ReplyCode.ISupport);
-
+            var daemon = info.IrcDaemon;
             // TODO: features supported by server
 
-            response.Append(" PREFIX=");
-            response.Append(info.IrcDaemon.SupportedRanks.ToPrefixList());
-            response.Append(" CHANMODES=");
-            response.Append(info.IrcDaemon.SupportedChannelModes.ToParameterList());
-            response.Append(" :are supported by this server");
+            var features = new List<string>();
 
-            info.WriteLine(response);
+            features.Add("PREFIX=" + info.IrcDaemon.SupportedRanks.ToPrefixList());
+            features.Add(" CHANMODES=" + info.IrcDaemon.SupportedChannelModes.ToParameterList());
+            features.AddRange(info.IrcDaemon.SupportedChannelModes.SelectMany(m => m.Value.Support(info.IrcDaemon)));
+            features.Add("NETWORK=" + daemon.Options.NetworkName);
+
+            BuildMessageHeader(info, ReplyCode.ISupport);
+            sendSplitted(response.ToString(), info, features, "are supported by this server");
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="prefix"></param>
+        /// <param name="info"></param>
+        /// <param name="features"></param>
+        /// <param name="postfix"></param>
+        private void sendSplitted(string prefix, UserInfo info, List<string> features, string postfix)
+        {
+            var daemon = info.IrcDaemon;
+            var currentLine = new StringBuilder();
+
+            foreach (var feature in features)
+            {
+                if (prefix.Length + currentLine.Length + 1 + feature.Length + 2 + postfix.Length > daemon.Options.MaxLineLength)
+                {
+                    currentLine.Append(" :");
+                    currentLine.Append(postfix);
+                    info.WriteLine(currentLine);
+                    currentLine.Length = 0;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Reply Code 005 / 010

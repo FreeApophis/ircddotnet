@@ -139,7 +139,7 @@
     <Compile Include="IrcServer.cs" />
     <Compile Include="Modes\ChannelMode.cs" />
     <Compile Include="Modes\ChannelModeList.cs" />
-    <Compile Include="Modes\ChannelModes\ModeInviteList.cs" />
+    <Compile Include="Modes\ChannelModes\ModeInviteException.cs" />
     <Compile Include="Modes\ChannelModes\IParameter.cs" />
     <Compile Include="Modes\ChannelModes\ModeBanException.cs" />
     <Compile Include="Modes\ChannelModes\ModeBan.cs" />
@@ -170,6 +170,7 @@
     <Compile Include="Modes\UserModes\ModeWallops.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerInfo.cs" />
     <Compile Include="ServerReplies\IrcCommandType.cs" />
     <Compile Include="ServerReplies\ProtocolMessages.cs" />
     <Compile Include="ServerReplies\ReplyCode.cs" />

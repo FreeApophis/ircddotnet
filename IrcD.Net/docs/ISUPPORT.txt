@@ -1,36 +1,46 @@
-Network Working Group                                           C. Kalt
-Request for Comments: 2813                                   April 2000
-Updates: 1459
-Category: Informational
+
+Network Working Group                                      E. Brocklesby
+Internet-Draft                                           January 5, 2004
+Expires: July 5, 2004
 
 
-                  Internet Relay Chat: Server Protocol
+                  IRC RPL_ISUPPORT Numeric Definition
+                    draft-brocklesby-irc-isupport-03
 
 Status of this Memo
 
-   This memo provides information for the Internet community.  It does
-   not specify an Internet standard of any kind.  Distribution of this
-   memo is unlimited.
+   This document is an Internet-Draft and is in full conformance with
+   all provisions of Section 10 of RFC2026.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF), its areas, and its working groups. Note that other
+   groups may also distribute working documents as Internet-Drafts.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time. It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   The list of current Internet-Drafts can be accessed at http://
+   www.ietf.org/ietf/1id-abstracts.txt.
+
+   The list of Internet-Draft Shadow Directories can be accessed at
+   http://www.ietf.org/shadow.html.
+
+   This Internet-Draft will expire on July 5, 2004.
 
 Copyright Notice
 
-   Copyright (C) The Internet Society (2000).  All Rights Reserved.
+   Copyright (C) The Internet Society (2004). All Rights Reserved.
 
 Abstract
 
-   While based on the client-server model, the IRC (Internet Relay Chat)
-   protocol allows servers to connect to each other effectively forming
-   a network.
-
-   This document defines the protocol used by servers to talk to each
-   other.  It was originally a superset of the client protocol but has
-   evolved differently.
-
-   First formally documented in May 1993 as part of RFC 1459 [IRC], most
-   of the changes brought since then can be found in this document as
-   development was focused on making the protocol scale better.  Better
-   scalability has allowed existing world-wide networks to keep growing
-   and reach sizes which defy the old specification.
+   This memo presents a way for the server to unobtrusively advertise
+   the ways in which it differs from the Internet Relay Chat (IRC)
+   specification defined in RFC1459. It is a primary goal to implement
+   this in a way which is completely backwards-compatible with the
+   original protocol, and as much as possible with current non-standard
+   implementations of the ISUPPORT numeric.
 
 
 
@@ -41,175 +51,164 @@ Abstract
 
 
 
-
-
-
-
-
-
-
-
-Kalt                         Informational                      [Page 1]
+Brocklesby                Expires July 5, 2004                  [Page 1]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
 Table of Contents
 
-   1.  Introduction ...............................................   3
-   2.  Global database ............................................   3
-      2.1  Servers ................................................   3
-      2.2  Clients ................................................   4
-         2.2.1  Users .............................................   4
-         2.2.2  Services ..........................................   4
-      2.3  Channels ...............................................   4
-   3.  The IRC Server Specification ...............................   5
-      3.1  Overview ...............................................   5
-      3.2  Character codes ........................................   5
-      3.3  Messages ...............................................   5
-         3.3.1  Message format in Augmented BNF ...................   6
-      3.4  Numeric replies ........................................   7
-   4.  Message Details ............................................   7
-      4.1  Connection Registration ................................   8
-         4.1.1  Password message ..................................   8
-         4.1.2  Server message ....................................   9
-         4.1.3  Nick ..............................................  10
-         4.1.4  Service message ...................................  11
-         4.1.5  Quit ..............................................  12
-         4.1.6  Server quit message ...............................  13
-      4.2  Channel operations .....................................  14
-         4.2.1  Join message ......................................  14
-         4.2.2  Njoin message .....................................  15
-         4.2.3  Mode message ......................................  16
-   5.  Implementation details  ....................................  16
-      5.1  Connection 'Liveness' ..................................  16
-      5.2  Accepting a client to server connection ................  16
-         5.2.1  Users .............................................  16
-         5.2.2  Services ..........................................  17
-      5.3  Establishing a server-server connection. ...............  17
-         5.3.1  Link options ......................................  17
-            5.3.1.1  Compressed server to server links ............  18
-            5.3.1.2  Anti abuse protections .......................  18
-         5.3.2  State information exchange when connecting ........  18
-      5.4  Terminating server-client connections ..................  19
-      5.5  Terminating server-server connections ..................  19
-      5.6  Tracking nickname changes ..............................  19
-      5.7  Tracking recently used nicknames .......................  20
-      5.8  Flood control of clients ...............................  20
-      5.9  Non-blocking lookups ...................................  21
-         5.9.1  Hostname (DNS) lookups ............................  21
-         5.9.2  Username (Ident) lookups ..........................  21
-   6.  Current problems ...........................................  21
-      6.1  Scalability ............................................  21
-      6.2  Labels .................................................  22
+   1.   Introduction . . . . . . . . . . . . . . . . . . . . . . . .   3
+   1.1  Terminology  . . . . . . . . . . . . . . . . . . . . . . . .   3
+   1.2  Changes to previous version  . . . . . . . . . . . . . . . .   3
+   1.3  Motivation . . . . . . . . . . . . . . . . . . . . . . . . .   3
+   1.4  Notes on examples  . . . . . . . . . . . . . . . . . . . . .   4
+   2.   Protocol outline . . . . . . . . . . . . . . . . . . . . . .   4
+   3.   Currently defined parameters . . . . . . . . . . . . . . . .   7
+   3.1  CASEMAPPING  . . . . . . . . . . . . . . . . . . . . . . . .   7
+   3.2  CHANLIMIT  . . . . . . . . . . . . . . . . . . . . . . . . .   7
+   3.3  CHANMODES  . . . . . . . . . . . . . . . . . . . . . . . . .   8
+   3.4  CHANNELLEN . . . . . . . . . . . . . . . . . . . . . . . . .   9
+   3.5  CHANTYPES  . . . . . . . . . . . . . . . . . . . . . . . . .   9
+   3.6  EXCEPTS  . . . . . . . . . . . . . . . . . . . . . . . . . .   9
+   3.7  IDCHAN . . . . . . . . . . . . . . . . . . . . . . . . . . .  10
+   3.8  INVEX  . . . . . . . . . . . . . . . . . . . . . . . . . . .  10
+   3.9  KICKLEN  . . . . . . . . . . . . . . . . . . . . . . . . . .  10
+   3.10 MAXLIST  . . . . . . . . . . . . . . . . . . . . . . . . . .  11
+   3.11 MODES  . . . . . . . . . . . . . . . . . . . . . . . . . . .  11
+   3.12 NETWORK  . . . . . . . . . . . . . . . . . . . . . . . . . .  12
+   3.13 NICKLEN  . . . . . . . . . . . . . . . . . . . . . . . . . .  12
+   3.14 PREFIX . . . . . . . . . . . . . . . . . . . . . . . . . . .  13
+   3.15 SAFELIST . . . . . . . . . . . . . . . . . . . . . . . . . .  13
+   3.16 STATUSMSG  . . . . . . . . . . . . . . . . . . . . . . . . .  14
+   3.17 STD  . . . . . . . . . . . . . . . . . . . . . . . . . . . .  14
+   3.18 TARGMAX  . . . . . . . . . . . . . . . . . . . . . . . . . .  15
+   3.19 TOPICLEN . . . . . . . . . . . . . . . . . . . . . . . . . .  15
+   4.   Differences to existing implementations  . . . . . . . . . .  16
+   4.1  PREFIX parameter without value . . . . . . . . . . . . . . .  16
+   4.2  EXCEPTS and INVEX value argument . . . . . . . . . . . . . .  16
+   4.3  STATUSMSG / WALLCHOPS  . . . . . . . . . . . . . . . . . . .  16
+   4.4  Conflicts with RFC 2812  . . . . . . . . . . . . . . . . . .  16
+   4.5  Default value for CASEMAPPING  . . . . . . . . . . . . . . .  17
+   4.6  CHANLIMIT / MAXCHANNELS  . . . . . . . . . . . . . . . . . .  17
+   4.7  MAXLIST / MAXBANS  . . . . . . . . . . . . . . . . . . . . .  17
+   4.8  CHARSET  . . . . . . . . . . . . . . . . . . . . . . . . . .  17
+   4.9  TARGMAX / MAXTARGETS . . . . . . . . . . . . . . . . . . . .  17
+   5.   Security Considerations  . . . . . . . . . . . . . . . . . .  18
+        Normative References . . . . . . . . . . . . . . . . . . . .  18
+        Informative references . . . . . . . . . . . . . . . . . . .  18
+        Author's Address . . . . . . . . . . . . . . . . . . . . . .  18
+   A.   Default ISUPPORT values  . . . . . . . . . . . . . . . . . .  18
+   B.   Acknowledgements . . . . . . . . . . . . . . . . . . . . . .  19
+        Intellectual Property and Copyright Statements . . . . . . .  20
 
 
 
-Kalt                         Informational                      [Page 2]
+
+
+
+Brocklesby                Expires July 5, 2004                  [Page 2]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
-
-         6.2.1  Nicknames .........................................  22
-         6.2.2  Channels ..........................................  22
-         6.2.3  Servers ...........................................  22
-      6.3  Algorithms .............................................  22
-   7.  Security Considerations ....................................  23
-      7.1  Authentication .........................................  23
-      7.2  Integrity ..............................................  23
-   8.  Current support and availability ...........................  24
-   9.  Acknowledgements ...........................................  24
-   10.  References ................................................  24
-   11.  Author's Address ..........................................  25
-   12. Full Copyright Statement ...................................  26
 
 1. Introduction
 
-   This document is intended for people working on implementing an IRC
-   server but will also be useful to anyone implementing an IRC service.
+1.1 Terminology
 
-   Servers provide the three basic services required for realtime
-   conferencing defined by the "Internet Relay Chat: Architecture"
-   [IRC-ARCH]: client locator (via the client protocol [IRC-CLIENT]),
-   message relaying (via the server protocol defined in this document)
-   and channel hosting and management (following specific rules [IRC-
-   CHAN]).
+   o  Original IRC protocol: The original IRC protocol as described in
+      RFC 1459 [5].
+   o  The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and
+      "OPTIONAL" in this document are to be interpreted as described in
+      RFC 2119 [1].
+   o  The ABNF syntax used in this document is defined in RFC 2234 [2]
+   o  The term "character" is this document is used to mean an octet, as
+      defined in RFC 1459 [5], section 2.2.
 
-2. Global database
+1.2 Changes to previous version
 
-   Although the IRC Protocol defines a fairly distributed model, each
-   server maintains a "global state database" about the whole IRC
-   network.  This database is, in theory, identical on all servers.
+     [Note: To be removed by the RFC editor prior to publication.]
 
-2.1 Servers
+   The follow significant changes were made from version 02 to version
+   03 of this document:
 
-   Servers are uniquely identified by their name which has a maximum
-   length of sixty three (63) characters.  See the protocol grammar
-   rules (section 3.3.1) for what may and may not be used in a server
-   name.
+   o  The semantics of MAXCHANNELS were changed and it was renamed to
+      CHANLIMIT.
+   o  The semantics of CHIDLEN were changed and it was renamed to
+      IDCHAN.
+   o  The description of the protocol was clarified significantly, as
+      were several parameter definitions.  Several recommendations of
+      what the client should do when faced with protocol violations by
+      the server were also removed.
+   o  Several implications or recommendations of client or server
+      behaviour were changed into requirements or removed entirely.
+   o  In particular, the server is now required to send STD as the first
+      parameter upon client registration, followed by all defined
+      parameters which have no default value.
+   o  The specification of a parameter's value was changed to allow
+      "\xHH" sequences, to represent spaces and other characters.  This
+      feature is considered experimental and comments are particular
+      appreciated.
+   o  Delivery of 005 numerics from remote servers is now explicitly
+      prohibited.
+   o  The CHARSET parameter was found to be unworkable and has been
+      entirely removed.
+   o  The TARGMAX parameter was added.
+   o  "X" and "X=" were made identical.
 
-   Each server is typically known by all other servers, however it is
-   possible to define a "hostmask" to group servers together according
-   to their name.  Inside the hostmasked area, all the servers have a
-   name which matches the hostmask, and any other server with a name
-   matching the hostmask SHALL NOT be connected to the IRC network
-   outside the hostmasked area.  Servers which are outside the area have
-   no knowledge of the individual servers present inside the area,
-   instead they are presented with a virtual server which has the
-   hostmask for name.
+1.3 Motivation
+
+   Since the publication of RFC 1459 [5] in 1993, a number of changes
 
 
 
-
-Kalt                         Informational                      [Page 3]
+Brocklesby                Expires July 5, 2004                  [Page 3]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-2.2 Clients
+   and extensions have been made to the IRC protocol.  This has led to a
+   problem whereby clients are unable to correctly interpret some server
+   replies, because the reply, channel mode, and so on may have
+   different meanings on different implementations of the IRC server.
+   It is also difficult for the client to ascertain which protocol
+   extensions may be available on a specific server.
 
-   For each client, all servers MUST have the following information: a
-   netwide unique identifier (whose format depends on the type of
-   client) and the server to which the client is connected.
+   A de facto standard has emerged in the community, originally
+   implemented by the Undernet's IRC server software based on the 005
+   numeric from DALnet's IRC server, which allows the server to
+   advertise to the client upon connection which protocol extensions it
+   supports. This reply, termed RPL_ISUPPORT, uses the non-standard
+   numeric 005.
 
-2.2.1 Users
+   Unfortunately, since there is no standard document describing the
+   ISUPPORT numeric, differences have emerged between implementations in
+   IRC server software; it is believed that this reduces the potential
+   usefulness of the feature.  This memo attempts to standardise the
+   format and content of the ISUPPORT numeric in an extensible way, such
+   that IRC clients can use the information provided to the maximum
+   extent.
 
-   Each user is distinguished from other users by a unique nickname
-   having a maximum length of nine (9) characters.  See the protocol
-   grammar rules (section 3.3.1) for what may and may not be used in a
-   nickname.  In addition to the nickname, all servers MUST have the
-   following information about all users: the name of the host that the
-   user is running on, the username of the user on that host, and the
-   server to which the client is connected.
+1.4 Notes on examples
 
-2.2.2 Services
+   Several examples of protocol replies are given throughout this
+   document. These are intended only for clarification of the protocol;
+   in the case of a discrepancy between the example and the formal
+   specification, the specification is always preferred.
 
-   Each service is distinguished from other services by a service name
-   composed of a nickname and a server name.  The nickname has a maximum
-   length of nine (9) characters.  See the protocol grammar rules
-   (section 3.3.1) for what may and may not be used in a nickname.  The
-   server name used to compose the service name is the name of the
-   server to which the service is connected.  In addition to this
-   service name all servers MUST know the service type.
+2. Protocol outline
 
-   Services differ from users by the format of their identifier, but
-   more importantly services and users don't have the same type of
-   access to the server: services can request part or all of the global
-   state information that a server maintains, but have a more restricted
-   set of commands available to them (See "IRC Client Protocol" [IRC-
-   CLIENT] for details on which) and are not allowed to join channels.
-   Finally services are not usually subject to the "Flood control"
-   mechanism described in section 5.8.
+   The ISUPPORT numeric consists of a series of parameters, each of
+   which maps to a protocol extension supported by the IRC server.  A
+   parameter may have an associated value, typically a numeric or string
+   value, which provides additional information on the extension.
 
-2.3 Channels
-
-   Alike services, channels have a scope [IRC-CHAN] and are not
-   necessarily known to all servers.  When a channel existence is known
-   to a server, the server MUST keep track of the channel members, as
-   well as the channel modes.
-
-
-
+   The format of the ISUPPORT numeric is the same as other server
+   numeric replies currently used. A client which does not understand
+   the numeric may ignore it; however, it is recommended that IRC
+   clients understand ISUPPORT, in order to allow users the full benefit
+   of features implemented by the IRC server.
 
 
 
@@ -217,1148 +216,916 @@ RFC 2813          Internet Relay Chat: Server Protocol        April 2000
 
 
 
-Kalt                         Informational                      [Page 4]
+
+
+
+Brocklesby                Expires July 5, 2004                  [Page 4]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-3. The IRC Server Specification
+   The ABNF grammar for the numeric is as follows:
 
-3.1 Overview
+     isupport = ":" servername SP "005" SP nickname SP
+   		1*13( token SP ) ":are supported by this server"
 
-   The protocol as described herein is for use with server to server
-   connections.  For client to server connections, see the IRC Client
-   Protocol specification.
+     token = *1"-" parameter / parameter *1( "=" value )
+     parameter = 1*20letter
+     value = *letpun
+     letter = ALPHA / DIGIT
+     punct = %d33-47 / %d58-64 / %d91-96 / %d123-126
+     letpun = letter / punct
 
-   There are, however, more restrictions on client connections (which
-   are considered to be untrustworthy) than on server connections.
+   The format of the postfix descriptive text is not fixed, and may be
+   any string subject to the requirements of RFC 1459 [5] regarding
+   numeric replies.  Servername and nickname are as defined in RFC 1459
+   [5].
 
-3.2 Character codes
+   The "servername" MUST be the name of the server to which the client
+   is connected;  the 005 numeric is never sent remotely across the
+   network. As with other local numerics, when delivered remotely it
+   MUST be converted into a 105 numeric before delivery to the client.
 
-   No specific character set is specified. The protocol is based on a a
-   set of codes which are composed of eight (8) bits, making up an
-   octet.  Each message may be composed of any number of these octets;
-   however, some octet values are used for control codes which act as
-   message delimiters.
+   A token is of the form "PARAMETER[=VALUE]" or "-PARAMETER". The forms
+   "X" and "X=" are identical;  they both define that the parameter is
+   present but has no value.  The server SHOULD send "X", not "X="; this
+   is the normalised form.
 
-   Regardless of being an 8-bit protocol, the delimiters and keywords
-   are such that protocol is mostly usable from US-ASCII terminal and a
-   telnet connection.
+   The server MUST send the parameter in upper-case text; unless
+   otherwise stated, the parameter's value is case sensitive.
 
-   Because of IRC's Scandinavian origin, the characters {}|^ are
-   considered to be the lower case equivalents of the characters []\~,
-   respectively. This is a critical issue when determining the
-   equivalence of two nicknames, or channel names.
+   The parameter's value may contain sequences of the form "\xHH", where
+   HH is a two-digit hexadecimal number.  Each such sequence is
+   considered identical to the equivalent octet after parsing of the
+   reply into separate tokens has occurred.
 
-3.3 Messages
+     [Example: X=A\x20B defines one token, "X", with the value "A B",
+      rather than two tokens "X" and "B".]
+     [Note: The literal string "\x" must therefore be encoded as
+      "\x5Cx".]
 
-   Servers and clients send each other messages which may or may not
-   generate a reply.  Most communication between servers do not generate
-   any reply, as servers mostly perform routing tasks for the clients.
+   If the server has not advertised a CHARSET parameter, it MUST not use
+   such sequences with a value outside those permitted by the above ABNF
+   grammar, with the exception of "\x20";  if it has advertised CHARSET,
+   then it may in addition send any printable character defined in that
+   encoding. Characters in multibyte encodings such as UTF-8 should be
+   sent as a series of \x sequences.
 
-   Each IRC message may consist of up to three main parts: the prefix
-   (OPTIONAL), the command, and the command parameters (maximum of
-   fifteen (15)).  The prefix, command, and all parameters are separated
-   by one ASCII space character (0x20) each.
-
-   The presence of a prefix is indicated with a single leading ASCII
-   colon character (':', 0x3b), which MUST be the first character of the
-   message itself.  There MUST be NO gap (whitespace) between the colon
-   and the prefix.  The prefix is used by servers to indicate the true
-   origin of the message.  If the prefix is missing from the message, it
-   is assumed to have originated from the connection from which it was
-   received.  Clients SHOULD not use a prefix when sending a message
-   from themselves; if they use one, the only valid prefix is the
-   registered nickname associated with the client.
-
+   RFC 1459 [5] defines a maximum of 15 parameters to any reply,
 
 
-Kalt                         Informational                      [Page 5]
+
+Brocklesby                Expires July 5, 2004                  [Page 5]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-   When a server receives a message, it MUST identify its source using
-   the (eventually assumed) prefix.  If the prefix cannot be found in
-   the server's internal database, it MUST be discarded, and if the
-   prefix indicates the message comes from an (unknown) server, the link
-   from which the message was received MUST be dropped.  Dropping a link
-   in such circumstances is a little excessive but necessary to maintain
-   the integrity of the network and to prevent future problems.  Another
-   common error condition is that the prefix found in the server's
-   internal database identifies a different source (typically a source
-   registered from a different link than from which the message
-   arrived).  If the message was received from a server link and the
-   prefix identifies a client, a KILL message MUST be issued for the
-   client and sent to all servers.  In other cases, the link from which
-   the message arrived SHOULD be dropped for clients, and MUST be
-   dropped for servers.  In all cases, the message MUST be discarded.
+   including the nickname and the text; therefore, only 13 capabilities
+   are possible per reply.
 
-   The command MUST either be a valid IRC command or a three (3) digit
-   number represented in ASCII text.
+   In order to allow flexibility in the protocol, and future expansion,
+   the server may send more than one ISUPPORT reply per connection.  It
+   is RECOMMENDED that consecutive ISUPPORT replies are sent adjacent to
+   each other.  The client MUST support receiving multiple ISUPPORT
+   replies, and merge them to produce the final list of supported
+   protocol extensions.  It is RECOMMENDED that the server attempt to
+   send 13 tokens per line before sending multiple replies.
 
-   IRC messages are always lines of characters terminated with a CR-LF
-   (Carriage Return - Line Feed) pair, and these messages SHALL NOT
-   exceed 512 characters in length, counting all characters including
-   the trailing CR-LF. Thus, there are 510 characters maximum allowed
-   for the command and its parameters.  There is no provision for
-   continuation message lines.  See section 5 for more details about
-   current implementations.
+   On connection to the server, all parameters are assumed to be equal
+   to their default values, if any.  Unless later changed by the server,
+   this default value persists throughout the connection. Except as
+   explicitly stated in its definition, a parameter SHOULD NOT be sent
+   unless it changes this default value. The server MUST send an 005
+   reply after client registration but before any further client
+   commands are processed in order to resolve any ambiguities in
+   parameters with no default value.
 
-3.3.1 Message format in Augmented BNF
+   The form "-PARAMETER" is used to negate a previously specified
+   parameter; that is, revert to the behaviour that would occur if the
+   parameter had not been specified. This is intended to allow servers
+   to change their capabilities without disconnecting clients. Both
+   parameters with and without a value argument may be negated; however,
+   the value argument is not supplied.  It is not required to negate a
+   parameter in order to change its value, the server should merely
+   re-advertise the parameter with the new value.
 
-   The protocol messages must be extracted from the contiguous stream of
-   octets.  The current solution is to designate two characters, CR and
-   LF, as message separators.  Empty messages are silently ignored,
-   which permits use of the sequence CR-LF between messages without
-   extra problems.
+   The server may negate tokens which have not been previously
+   advertised to the client; in this case, the client should ignore the
+   negation.
 
-   The extracted message is parsed into the components <prefix>,
-   <command> and list of parameters (<params>).
+   The server may not advertise and negate the same parameter, nor
+   advertise the same parameter with different value specifiers, in the
+   same ISUPPORT numeric reply.  However, the server is free to
+   advertise or negate the same parameters in separate replies.
 
-   The Augmented BNF representation for this is found in "IRC Client
-   Protocol" [IRC-CLIENT].
+   The server MUST NOT negate a parameter which does not have a
+   meaningful default value.
 
-   The extended prefix (["!" user "@" host ]) MUST NOT be used in server
-   to server communications and is only intended for server to client
-   messages in order to provide clients with more useful information
-   about who a message is from without the need for additional queries.
-
-
-
+     [Note: Implementations often change the value of a particular
+      parameter upon certain events, such as a successful OPER command
+      from a client. It is important that any relevant parameters be
+      (re)advertised when this occurs.]
 
 
 
-Kalt                         Informational                      [Page 6]
+
+
+
+Brocklesby                Expires July 5, 2004                  [Page 6]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-3.4 Numeric replies
+3. Currently defined parameters
 
-   Most of the messages sent to the server generate a reply of some
-   sort.  The most common reply is the numeric reply, used for both
-   errors and normal replies.  The numeric reply MUST be sent as one
-   message consisting of the sender prefix, the three digit numeric, and
-   the target of the reply.  A numeric reply is not allowed to originate
-   from a client; any such messages received by a server are silently
-   dropped. In all other respects, a numeric reply is just like a normal
-   message, except that the keyword is made up of 3 numeric digits
-   rather than a string of letters.  A list of different replies is
-   supplied in "IRC Client Protocol" [IRC-CLIENT].
+   A number of parameters are currently used in the IRC community, and
+   it is believed to be beneficial to standardise these.  They are
+   listed below, with relevant information.
 
-4. Message Details
+     [Note: It is intended and expected that future documents will
+      update and extend the set of defined parameters; this is not meant
+      to be an exhaustive list.]
 
-   All the messages recognized by the IRC server and client are
-   described in the IRC Client Protocol specification.
+3.1 CASEMAPPING
 
-   Where the reply ERR_NOSUCHSERVER is returned, it means that the
-   target of the message could not be found.  The server MUST NOT send
-   any other replies after this error for that command.
+   o  CASEMAPPING=string
 
-   The server to which a client is connected is required to parse the
-   complete message, returning any appropriate errors.  If the server
-   encounters a fatal error while parsing a message, an error MUST be
-   sent back to the client and the parsing terminated.  A fatal error
-   may follow from incorrect command, a destination which is otherwise
-   unknown to the server (server, client or channel names fit this
-   category), not enough parameters or incorrect privileges.
+   The CASEMAPPING parameter allows the server to specify which method
+   it uses to compare equality of case-insensitive strings. Possible
+   values are:
 
-   If a full set of parameters is presented, then each MUST be checked
-   for validity and appropriate responses sent back to the client.  In
-   the case of messages which use parameter lists using the comma as an
-   item separator, a reply MUST be sent for each item.
+   o  "ascii": The ASCII characters 97 to 122 (decimal) are defined as
+      the lower-case characters of ASCII 65 to 90 (decimal).  No other
+      character equivalency is defined.
+   o  "rfc1459": The ASCII characters 97 to 126 (decimal) are defined as
+      the lower-case characters of ASCII 65 to 94 (decimal).  No other
+      character equivalency is defined.
+   o  "strict-rfc1459": The ASCII characters 97 to 125 (decimal) are
+      defined as the lower-case characters of ASCII 65 to 93 (decimal).
+      No other character equivalency is defined.
 
-   In the examples below, some messages appear using the full format:
+     [Note: The only difference between "rfc1459" and "strict-rfc1459"
+      is that the characters "~" and "^" are not considered equivalent
+      in the "strict-rfc1459" encoding.  This is believed to be an
+      mistake in the specification of character equivalency in RFC 1459
+      [5]; the majority of IRC server implementations known to the
+      author treat these characters as equivalent (however, see Section
+      4.5).]
 
-   :Name COMMAND parameter list
+   The CASEMAPPING token requires a value.
 
-   Such examples represent a message from "Name" in transit between
-   servers, where it is essential to include the name of the original
-   sender of the message so remote servers may send back a reply along
-   the correct path.
+   The default value for CASEMAPPING is "rfc1459".  While this differs
+   from the historical definition in RFC 1459 [5], it is believed to
+   reflect current IRC server implementations, and is as such more
+   useful.
 
-   The message details for client to server communication are described
-   in the "IRC Client Protocol" [IRC-CLIENT].  Some sections in the
-   following pages apply to some of these messages, they are additions
-   to the message specifications which are only relevant to server to
+3.2 CHANLIMIT
+
+   o  CHANLIMIT=pfx:num[,pfx:num,...]
+
+   This parameter specifies the maximum number of channels that a client
 
 
 
-Kalt                         Informational                      [Page 7]
+Brocklesby                Expires July 5, 2004                  [Page 7]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-   server communication, or to the server implementation.  The messages
-   which are introduced here are only used for server to server
-   communication.
+   may join.  The value is a series of "pfx:num" pairs, where 'pfx'
+   refers to one or more channel prefix characters (as specified in
+   CHANTYPES), and 'num' indicates how many of these types of channel
+   the client may join in total. If there is no limit to the number of
+   certain channel type(s) a client may join, the limit should be
+   specified as the empty string, for example "#:".
 
-4.1 Connection Registration
+     [Example: CHANLIMIT=#+:10,&: indicates that a client may join up to
+      10 '#' and '+' channels (for example, 7 '#' channels and 3 '+'
+      channels), and any number of '&' channels.]
 
-   The commands described here are used to register a connection with
-   another IRC server.
+   Clients on either this server or a remote server may be on more than
+   this number of channels; this parameter is only intended for
+   information on how many channels the client it is advertised to may
+   join.
 
-4.1.1 Password message
+   There is no default value for the CHANLIMIT token.
 
-      Command: PASS
-   Parameters: <password> <version> <flags> [<options>]
+   The CHANLIMIT token requires a value.
 
-   The PASS command is used to set a 'connection password'.  The
-   password MUST be set before any attempt to register the connection is
-   made.  Currently this means that servers MUST send a PASS command
-   before any SERVER command.  Only one (1) PASS command SHALL be
-   accepted from a connection.
+3.3 CHANMODES
 
-   The last three (3) parameters MUST be ignored if received from a
-   client (e.g. a user or a service).  They are only relevant when
-   received from a server.
+   o  CHANMODES=A,B,C,D
 
-   The <version> parameter is a string of at least four (4) characters,
-   and up to fourteen (14) characters.  The first four (4) characters
-   MUST be digits and indicate the protocol version known by the server
-   issuing the message.  The protocol described by this document is
-   version 2.10 which is encoded as "0210".  The remaining OPTIONAL
-   characters are implementation dependent and should describe the
-   software version number.
+   The CHANMODES token specifies the modes that may be set on a channel.
+   These modes are split into four categories, as follows:
 
-   The <flags> parameter is a string of up to one hundred (100)
-   characters.  It is composed of two substrings separated by the
-   character "|" (%x7C).  If present, the first substring MUST be the
-   name of the implementation.  The reference implementation (See
-   Section 8, "Current support and availability") uses the string "IRC".
-   If a different implementation is written, which needs an identifier,
-   then that identifier should be registered through publication of an
-   RFC. The second substring is implementation dependent.  Both
-   substrings are OPTIONAL, but the character "|" is REQUIRED.  The
-   character "|" MUST NOT appear in either substring.
+   o  Type A: Modes that add or remove an address to or from a list.
+      These modes always take a parameter when sent by the server to a
+      client; when sent by a client, they may be specified without a
+      parameter, which requests the server to display the current
+      contents of the corresponding list on the channel to the client.
+   o  Type B: Modes that change a setting on the channel.  These modes
+      always take a parameter.
+   o  Type C: Modes that change a setting on the channel. These modes
+      take a parameter only when set; the parameter is absent when the
+      mode is removed both in the client's and server's MODE command.
+   o  Type D: Modes that change a setting on the channel. These modes
+      never take a parameter.
 
-   Finally, the last parameter, <options>, is used for link options.
-   The only options defined by the protocol are link compression (using
-   the character "Z"), and an abuse protection flag (using the character
+   If the server sends any additional types after these 4, the client
+   MUST ignore them; this is intended to allow future extension of this
+   token.
 
-
-
+   The IRC server MUST NOT list modes in CHANMODES which are also
+   present in the PREFIX parameter; however, for completeness, modes
+   described in PREFIX may be treated as type B modes.
 
 
-Kalt                         Informational                      [Page 8]
+
+
+Brocklesby                Expires July 5, 2004                  [Page 8]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-   "P").  See sections 5.3.1.1 (Compressed server to server links) and
-   5.3.1.2 (Anti abuse protections) respectively for more information on
-   these options.
+   If the server does not support any modes corresponding to a
+   particular type, it should advertise that type as the empty string.
 
-   Numeric Replies:
+     [Example: A server supporting no channel modes would advertise
+      "CHANMODES=,,,".]
+     [Example: CHANMODES=b,k,l,imnpst]
 
-           ERR_NEEDMOREPARAMS              ERR_ALREADYREGISTRED
+   The CHANMODES token requires a value.
 
-   Example:
+   There is no default value for the CHANMODES token.
 
-        PASS moresecretpassword 0210010000 IRC|aBgH$ Z
+3.4 CHANNELLEN
 
-4.1.2 Server message
+   o  CHANNELLEN=number
 
-      Command: SERVER
-   Parameters: <servername> <hopcount> <token> <info>
+   The CHANNELLEN parameter specifies the maximum length of the name of
+   a channel that may be created by a client. The server may make known
+   to the client a channel with a name longer than that specified in
+   this value -- that is, the client must not depend on a channel's name
+   never being longer than this.
 
-   The SERVER command is used to register a new server. A new connection
-   introduces itself as a server to its peer.  This message is also used
-   to pass server data over whole net.  When a new server is connected
-   to net, information about it MUST be broadcasted to the whole
-   network.
+   The CHANNELLEN token does not require a value;  if none is given,
+   channel names are not limited in length.  If a value is given, it
+   must be numeric.
 
-   The <info> parameter may contain space characters.
+   The default value for CHANNELLEN is 200; this corresponds to RFC 1459
+   [5].
 
-   <hopcount> is used to give all servers some internal information on
-   how far away each server is.  Local peers have a value of 0, and each
-   passed server increments the value.  With a full server list, it
-   would be possible to construct a map of the entire server tree, but
-   hostmasks prevent this from being done.
+3.5 CHANTYPES
 
-   The <token> parameter is an unsigned number used by servers as an
-   identifier.  This identifier is subsequently used to reference a
-   server in the NICK and SERVICE messages sent between servers.  Server
-   tokens only have a meaning for the point-to-point peering they are
-   used and MUST be unique for that connection.  They are not global.
+   o  CHANTYPES=chars
 
-   The SERVER message MUST only be accepted from either (a) a connection
-   which is yet to be registered and is attempting to register as a
-   server, or (b) an existing connection to another server, in which
-   case the SERVER message is introducing a new server behind that
+   The CHANTYPES parameter specifies the valid characters to begin a
+   channel name.
+
+     [Example: CHANTYPES=+#& defines that channels names may begin with
+      either +, #, or &; for example, #mychannel.]
+
+   The default value for CHANTYPES is "CHANTYPES=#&", which corresponds
+   to RFC 1459 [5].  It SHOULD NOT be specified if the server supports
+   exactly these channel types.
+
+   The CHANMODES parameter does not require a value;  if none is given,
+   the server does not support any channel types.
+
+3.6 EXCEPTS
+
+
+
+
+
+Brocklesby                Expires July 5, 2004                  [Page 9]
+
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
+
+
+   o  EXCEPTS[=modechar]
+
+   The EXCEPTS parameter indicates that the server supports "ban
+   exceptions" (channel mode +e), as defined in RFC 2811 [3], section
+   4.3.1. The optional value argument to EXCEPTS indicates which channel
+   mode is used for ban exceptions.  If the token is specified with no
+   value, it is assumed that mode +e is used.
+
+   The default value for EXCEPTS is that channel exceptions are not
+   supported.
+
+3.7 IDCHAN
+
+   o  IDCHAN=pfx:num[,pfx:num,...]
+
+   The IDCHAN parameter indicates the existence of "safe" channels as
+   described in RFC 2811 [3], and the length of the "id" portion of
+   those channel names.
+
+   Each mode:num pair indicates one or more channel name prefixes which
+   corresponds to a "safe" channel, and the length of the ID portion of
+   those channels' name.
+
+     [Example: IDCHAN=!:5 means the client should expect IDs which are 5
+      characters in length on "!" channels; for example "!JNB4Sircd",
+      where "JNB4S" is the ID and "ircd" is the channel's short name.]
+
+   The IDCHAN token requires a value.
+
+   The default value for IDCHAN is no value;  that is, there are no
+   "safe" channel types.
+
+3.8 INVEX
+
+   o  INVEX[=modechar]
+
+   The INVEX parameter indicates that the server supports "invite
+   exceptions", as defined in RFC 2811 [3], section 4.3.2. The optional
+   value argument to INVEX indicates which channel mode is used for
+   invite exceptions.  If the token is specified with no value, it is
+   assumed that mode +I is used.
+
+   The default value for INVEX is that channel invite exceptions are not
+   available.
+
+3.9 KICKLEN
+
+
+
+
+
+Brocklesby                Expires July 5, 2004                 [Page 10]
+
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
+
+
+   o  KICKLEN=number
+
+   The KICKLEN parameter specifies the maximum length of a KICK message
+   that a client may use.  Note that it only specifies the length the
+   client should send to the server -- the server may send KICK messages
+   with a length longer than this value.
+
+   The KICKLEN token does not require a value;  if none is given, KICK
+   messages are not limited in length.  If a value is given, it must be
+   numeric.
+
+   There is no default value for the KICKLEN token.
+
+3.10 MAXLIST
+
+   o  MAXLIST=mode:num[,mode:num,...]
+
+   This parameter specifies the maximum numbers of 'list modes' (type A
+   modes in CHANMODES) that a client may set on a channel at one time.
+   Note that this MUST only be interpreted as applying to new modes
+   which are set by clients -- it should not be used to infer the
+   maximum length of any mode lists returned by the server.
+
+   The parameter is a series of mode-number pairs, each of which
+   specifies one or more type A modes, along with the maximum size of
+   the associated list for those modes.  Modes which are specified in
+   the same pair share the same maximum size.
+
+     [Example: Given "b:25,eI:50", it would be possible to set up to 25
+      "+b" modes, and up to 50 of a combination of "+e" and "+I" modes,
+      e.g. 30 "+e" and 20 "+I" modes, making up a total of 50.]
+     [Example: MAXLIST=b:25 indicates that 25 bans may be set on a
+      channel at one time.]
+
+   The MAXLIST token requires a value.
+
+   There is no default value for the MAXLIST token.
+
+3.11 MODES
+
+   o  MODES=number
+
+   This parameter specifies the maximum number of "variable" modes which
+   may by set on a channel by a single MODE command from a client. A
+   "variable" mode is defined as being type A, B and C modes as defined
+   for CHANMODES, and channel modes specified in the PREFIX parameter.
+
+
+
+
+
+Brocklesby                Expires July 5, 2004                 [Page 11]
+
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
+
+
+     [Example: MODES=3 indicates that 3 modes may be set with a MODE
+      command.]
+
+   The value of MODES does not limit the number of modes in a MODE
+   command which is sent from the server to the client;  the client MUST
+   NOT rely on this being the case.
+
+   The default value for the MODES parameter is 3, which corresponds to
+   RFC 1459 [5].
+
+   The MODES token does not require a value;  if none is given, the
+   number of modes which may be set in one command is not limited.  If a
+   value is given, it must be numeric.
+
+3.12 NETWORK
+
+   o  NETWORK=name
+
+   The NETWORK parameter defines the name of the IRC network that the
+   client is connected to.
+
+     [Example: NETWORK=EFnet indicates that the client is connected to
+      the EFnet IRC network.]
+
+   Note that this parameter is intended only for user display purposes;
+   the client SHOULD NOT assume further capabilities or features of the
+   IRC server based on the value of the NETWORK parameter.
+
+   The NETWORK token requires a value.
+
+   The default value of the NETWORK token is no value;  that is, the
+   network does not have a name specified.
+
+3.13 NICKLEN
+
+   o  NICKLEN=number
+
+   This parameter specifies the maximum nickname length that the client
+   may use in a nickname.
+
+     [Example: NICKLEN=9 indicates that clients may have nicknames up to
+      9 characters in length.]
+
+   This parameter does not restrict the length of any nicknames other
+   clients on the network may use.
+
+   The NICKLEN token requires a numeric value.
+
+
+
+
+Brocklesby                Expires July 5, 2004                 [Page 12]
+
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
+
+
+   The default value for NICKLEN is 9, which corresponds to RFC 1459
+   [5].
+
+3.14 PREFIX
+
+   o  PREFIX=[(modes)prefixes]
+
+   The PREFIX parameter specifies a list of channel status flags (the
+   "modes" section) that clients may have on channels, followed by a
+   mapping to the equivalent channel status flags ("prefixes"), which
+   are used in NAMES and WHO replies.  There is a one to one mapping
+   between each mode and prefix.
+
+   The order of the modes is from that which gives most privileges on
+   the channel, to that which gives the least.
+
+     [Example: (ab)&* maps the channel mode 'a' to the channel status
+      flag '&', and channel mode 'b' to the channel status flag '*'.]
+
+     [Example: PREFIX=(ohv)@%+ maps channel mode 'o' to status '@', 'h'
+      to status '%', and 'v' to status +.
+
+   The default value for PREFIX is "PREFIX=(ov)@+", which corresponds to
+   RFC 1459 [5]. It SHOULD NOT be specified if the server provides only
+   these modes.  If a server provides ANY additional status flags, it
+   MUST also provide (ov)@+ (assuming they are applicable to the
+   server). The PREFIX parameter may be advertised with a null value
+   specifier; this indicates that no prefixes are supported by the IRC
    server.
 
-   Most errors that occur with the receipt of a SERVER command result in
-   the connection being terminated by the destination host (target
-   SERVER).  Because of the severity of such event, error replies are
-   usually sent using the "ERROR" command rather than a numeric.
+   Note that PREFIX does NOT specify whether or not the server sends
+   multiple prefix characters for a user in NAMES replies.
+
+3.15 SAFELIST
+
+   o  SAFELIST
+
+   The SAFELIST parameter indicates that the client may request a "LIST"
+   command from the server, without being disconnected due to the large
+   amount of data generated by the command.
+
+   The SAFELIST token must not be specified with a value.
+
+   The default value for the SAFELIST token is none;  that is, the
+   client may not safely request a LIST command.
 
 
 
 
-Kalt                         Informational                      [Page 9]
+
+
+Brocklesby                Expires July 5, 2004                 [Page 13]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-   If a SERVER message is parsed and it attempts to introduce a server
-   which is already known to the receiving server, the connection, from
-   which that message arrived, MUST be closed (following the correct
-   procedures), since a duplicate route to a server has been formed and
-   the acyclic nature of the IRC tree breaks.  In some conditions, the
-   connection from which the already known server has registered MAY be
-   closed instead.  It should be noted that this kind of error can also
-   be the result of a second running server, problem which cannot be
-   fixed within the protocol and typically requires human intervention.
-   This type of problem is particularly insidious, as it can quite
-   easily result in part of the IRC network to be isolated, with one of
-   the two servers connected to each partition therefore making it
-   impossible for the two parts to unite.
+3.16 STATUSMSG
 
-   Numeric Replies:
+   o  STATUSMSG=string
 
-           ERR_ALREADYREGISTRED
+   The server supports a method of sending a NOTICE message to only
+   those people on a channel with the specified status.  This is done
+   via a NOTICE command, with the channel prefixed by the desired status
+   flag as the target.
 
-   Example:
+     [Example: NOTICE @#channel :Hi there]
 
-   SERVER test.oulu.fi 1 1 :Experimental server ; New server
-                                   test.oulu.fi introducing itself and
-                                   attempting to register.
+   The server should deliver the message to all users on the specified
+   channel with equal or higher status on the channel as the status flag
+   indicates.
 
-   :tolsun.oulu.fi SERVER csd.bu.edu 5 34 :BU Central Server ; Server
-                                   tolsun.oulu.fi is our uplink for
-                                   csd.bu.edu which is 5 hops away.  The
-                                   token "34" will be used by
-                                   tolsun.oulu.fi when introducing new
-                                   users or services connected to
-                                   csd.bu.edu.
+     [Example: STATUSMSG=@+ indicates that "@#channel" and "+#channel"
+      would be valid targets. A message to "+#channel" would deliver the
+      message to all users with voice and channel operator privileges on
+      #channel, assuming that the server supported the PREFIX value
+      (ov)@+.]
 
-4.1.3 Nick
+   The required value argument to STATUSMSG indicates which prefixes
+   (from the PREFIX parameter) are valid status values for use in NOTICE
+   commands.
 
-      Command: NICK
-   Parameters: <nickname> <hopcount> <username> <host> <servertoken>
-               <umode> <realname>
+   The server MUST NOT advertise a character in STATUSMSG which is also
+   present in CHANTYPES.
 
-   This form of the NICK message MUST NOT be allowed from user
-   connections. However, it MUST be used instead of the NICK/USER pair
-   to notify other servers of new users joining the IRC network.
+   The STATUSMSG token requires a value.
 
-   This message is really the combination of three distinct messages:
-   NICK, USER and MODE [IRC-CLIENT].
+   The default value of the STATUSMSG token is none;  that is, the
+   server does not support this form of messaging.
 
-   The <hopcount> parameter is used by servers to indicate how far away
-   a user is from its home server.  A local connection has a hopcount of
-   0.  The hopcount value is incremented by each passed server.
+3.17 STD
+
+   o  STD=version[,version[,...]]
+
+   The STD parameter indicates which form(s) of the ISUPPORT numeric are
+   used by the server.  Currently, one only possible value is defined;
+   that is "rfcnnnn", which refers to this document.
+
+     [Note: To be changed by the RFC Editor before publication.]
+
+   The STD parameter is intended to be extensible, so that if later
+   standards emerge which update this document, the server may be able
+   to advertise this.  The "version" string is free-form subject to the
+   requirements in section ABNF, however, protocol updates defined in
+   RFCs should be named "rfcxxxx", where "xxxx" is the relevant RFC
 
 
 
-Kalt                         Informational                     [Page 10]
+Brocklesby                Expires July 5, 2004                 [Page 14]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-   The <servertoken> parameter replaces the <servername> parameter of
-   the USER (See section 4.1.2 for more information on server tokens).
+   number.
 
-   Examples:
+   A server may support any number of STD versions. However, new version
+   strings MUST NOT be added unless there is an ambiguity between two
+   tokens defined with different meanings in two different standards. It
+   is expected that most new features may be advertised simply by
+   additional parameters, in which case a new version string is not
+   required.
 
-   NICK syrk 5 kalt millennium.stealth.net 34 +i :Christophe Kalt ; New
-                                   user with nickname "syrk", username
-                                   "kalt", connected from host
-                                   "millennium.stealth.net" to server
-                                   "34" ("csd.bu.edu" according to the
-                                   previous example).
+   The STD token MUST be the first token advertised by the server upon
+   connection.
 
-   :krys NICK syrk                 ; The other form of the NICK message,
-                                   as defined in "IRC Client Protocol"
-                                   [IRC-CLIENT] and used between
-                                   servers: krys changed his nickname to
-                                   syrk
+   The STD token requires a value.
 
-4.1.4 Service message
+   The default value for the STD parameter is none; that is, no
+   standardised ISUPPORT is available.
 
-      Command: SERVICE
-   Parameters: <servicename> <servertoken> <distribution> <type>
-                <hopcount> <info>
+3.18 TARGMAX
 
-   The SERVICE command is used to introduce a new service.  This form of
-   the SERVICE message SHOULD NOT be allowed from client (unregistered,
-   or registered) connections.  However, it MUST be used between servers
-   to notify other servers of new services joining the IRC network.
+   o  TARGMAX=[cmd:lim,cmd:lim...]
 
-   The <servertoken> is used to identify the server to which the service
-   is connected.  (See section 4.1.2 for more information on server
-   tokens).
+   The TARGMAX parameter specifies the maximum number of targets
+   allowable for commands which accept multiple targets.  It consists of
+   a series of cmd:lim pairs, where each command 'cmd' allows up to
+   'lim' targets (generally either channels or nicks).  In the case of
+   the KICK command, the limit indicates the maximum number of (user,
+   channel) pairs which may be specified in any one KICK command.
 
-   The <hopcount> parameter is used by servers to indicate how far away
-   a service is from its home server.  A local connection has a hopcount
-   of 0.  The hopcount value is incremented by each passed server.
+     [Example: TARGMAX=PRIVMSG:4,NOTICE:3 would allow "PRIVMSG A,B,C,D
+      :message" and "NOTICE A,B,C :message", but not "PRIVMSG A,B,C,D,E
+      :message" or "NOTICE A,B,C,D :message".]
 
-   The <distribution> parameter is used to specify the visibility of a
-   service.  The service may only be known to servers which have a name
-   matching the distribution.  For a matching server to have knowledge
-   of the service, the network path between that server and the server
-   to which the service is connected MUST be composed of servers whose
-   names all match the mask.  Plain "*" is used when no restriction is
-   wished.
+   If no argument is given for a particular command (e.g. "WHOIS:"),
+   that command does not have a limit on the number of targets.
 
-   The <type> parameter is currently reserved for future usage.
+   The server MUST specify all commands available to the user which
+   support multiple targets.
+
+   The default value of TARGMAX is that no commands allow multiple
+   targets. If this is the case, the server SHOULD NOT specify
+   "TARGMAX=".
+
+3.19 TOPICLEN
+
+   o  TOPICLEN=number
+
+   The TOPICLEN parameter specifies the maximum length of the topic
+   specified in the TOPIC command for a channel.  Note that it only
 
 
 
-
-
-Kalt                         Informational                     [Page 11]
+Brocklesby                Expires July 5, 2004                 [Page 15]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-   Numeric Replies:
+   specifies the length of topic that may be set -- the server is free
+   to return topics longer than this length to the client.
 
-           ERR_ALREADYREGISTRED            ERR_NEEDMOREPARAMS
-           ERR_ERRONEUSNICKNAME
-           RPL_YOURESERVICE                RPL_YOURHOST
-           RPL_MYINFO
+   The TOPICLEN token does not require a value;  if none is given, the
+   length of channel topics is not limited.
 
-   Example:
+   The TOPICLEN token requires a numeric value.
 
-SERVICE dict@irc.fr 9 *.fr 0 1 :French Dictionary r" registered on
-                                   server "9" is being announced to
-                                   another server.  This service will
-                                   only be available on servers whose
-                                   name matches "*.fr".
+4. Differences to existing implementations
 
-4.1.5 Quit
+   A number of differences exist between the ISUPPORT defined in this
+   document and traditional implementations of the ISUPPORT numeric.
 
-      Command: QUIT
-   Parameters: [<Quit Message>]
+4.1 PREFIX parameter without value
 
-   A client session ends with a quit message.  The server MUST close the
-   connection to a client which sends a QUIT message. If a "Quit
-   Message" is given, this will be sent instead of the default message,
-   the nickname or service name.
+   The PREFIX parameter is traditionally not sent without a value
+   parameter; indeed, the author is not aware of any IRC server
+   implementations where this would be appropriate. However, it is
+   believed that this support is desired to allow extra flexibility,
+   while retaining compatibility with traditional PREFIX
+   implementations.
 
-   When "netsplit" (See Section 4.1.6) occur, the "Quit Message" is
-   composed of the names of two servers involved, separated by a space.
-   The first name is that of the server which is still connected and the
-   second name is either that of the server which has become
-   disconnected or that of the server to which the leaving client was
-   connected:
+4.2 EXCEPTS and INVEX value argument
 
-      <Quit Message> =  ":" servername SPACE servername
+   EXCEPTS and INVEX traditionally take no argument -- while they
+   indicate presence of these features on the server, they do not
+   specify the channel mode which is associated with these features. It
+   is believed that the argument value described here provides extra
+   flexibility while retaining backwards compatibility.
 
-   Because the "Quit Message" has a special meaning for "netsplits",
-   servers SHOULD NOT allow a client to use a <Quit Message> in the
-   format described above.
+4.3 STATUSMSG / WALLCHOPS
 
-   If, for some other reason, a client connection is closed without the
-   client issuing a QUIT command (e.g. client dies and EOF occurs on
-   socket), the server is REQUIRED to fill in the quit message with some
-   sort of message reflecting the nature of the event which caused it to
-   happen.  Typically, this is done by reporting a system specific
-   error.
+   The STATUSMSG parameter replaces the traditional WALLCHOPS parameter
+   used by some current implementations.  It is believed that the name
+   STATUSMSG better reflects the functionality; since the argument to
+   STATUSMSG is not optional, it would break backwards compatibility to
+   use the name WALLCHOPS. It was not considered beneficial to allow a
+   STATUSMSG flag without a value.
 
-   Numeric Replies:
+4.4 Conflicts with RFC 2812
 
-           None.
-
+   RFC 2812 [4], section 5.1, defines a numeric reply "RPL_BOUNCE", with
+   the associated number "005".  While this conflicts with the ISUPPORT
+   numeric, it is considered that ISUPPORT has received much more
+   widespread support, and is the de facto standard for use of the 005
+   numeric.  The only server implementation known to use this numeric
+   has now changed it to 010.
 
 
-Kalt                         Informational                     [Page 12]
+
+
+Brocklesby                Expires July 5, 2004                 [Page 16]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-   Examples:
+   RFC2812 is an Informational RFC and does not not specify an Internet
+   standard.
 
-   :WiZ QUIT :Gone to have lunch   ; Preferred message format.
+4.5 Default value for CASEMAPPING
 
-4.1.6 Server quit message
+   The default value for CASEMAPPING ("rfc1459") was chosen because it
+   reflects the prevailing implementations of the IRC server software
+   currently in use. While some IRC servers have moved to the "ascii"
+   case mapping, those known to the author indicate this via
+   CASEMAPPING=ascii; therefore this is not believed to introduce any
+   compatibility problems.
 
-      Command: SQUIT
-   Parameters: <server> <comment>
+4.6 CHANLIMIT / MAXCHANNELS
 
-   The SQUIT message has two distinct uses.
+   CHANLIMIT replaces the traditional MAXCHANNELS parameter. MAXCHANNELS
+   did not specify which types of channel(s) the limit applied to; many
+   server implementation did not apply the limit to server-local "&"
+   channels, for example.  The token was renamed from MAXCHANNELS to
+   CHANLIMIT to prevent confusion.
 
-   The first one (described in "Internet Relay Chat: Client Protocol"
-   [IRC-CLIENT]) allows operators to break a local or remote server
-   link.  This form of the message is also eventually used by servers to
-   break a remote server link.
+4.7 MAXLIST / MAXBANS
 
-   The second use of this message is needed to inform other servers when
-   a "network split" (also known as "netsplit") occurs, in other words
-   to inform other servers about quitting or dead servers.  If a server
-   wishes to break the connection to another server it MUST send a SQUIT
-   message to the other server, using the name of the other server as
-   the server parameter, which then closes its connection to the
-   quitting server.
+   MAXLIST replaces the traditional MAXBANS token.  MAXBANS was
+   considered non-useful, because of its ambiguous meaning; two of the
+   largest IRC networks, for example, could not agree whether
+   "MAXBANS=x" was equivalent to "MAXLIST=beI:x" or
+   "MAXLIST=b:x,e:x,I:x". MAXLIST is also considerably more flexible;
+   to standardise either of the described behaviours for MAXBANS would
+   leave some IRC servers unable to accurately describe their
+   capabilities.
 
-   The <comment> is filled in by servers which SHOULD place an error or
-   similar message here.
+4.8 CHARSET
 
-   Both of the servers which are on either side of the connection being
-   closed are REQUIRED to send out a SQUIT message (to all its other
-   server connections) for all other servers which are considered to be
-   behind that link.
+   The traditional CHARSET parameter has been entirely removed.  It was
+   found to be unworkable;  a correct specification could not be devised
+   to represent its meaning across implementations.  Several other
+   methods to implement the same functionality are under discussion but
+   are outside the scope of this document.
 
-   Similarly, a QUIT message MAY be sent to the other still connected
-   servers on behalf of all clients behind that quitting link.  In
-   addition to this, all channel members of a channel which lost a
-   member due to the "split" MUST be sent a QUIT message.  Messages to
-   channel members are generated by each client's local server.
+4.9 TARGMAX / MAXTARGETS
 
-   If a server connection is terminated prematurely (e.g., the server on
-   the other end of the link died), the server which detects this
-   disconnection is REQUIRED to inform the rest of the network that the
-   connection has closed and fill in the comment field with something
-   appropriate.
-
-   When a client is removed as the result of a SQUIT message, the server
-   SHOULD add the nickname to the list of temporarily unavailable
-   nicknames in an attempt to prevent future nickname collisions. See
-
+   Traditional implementations use MAXTARGETS instead of TARGMAX.
+   However, TARGMAX allowed several commands to be specified (such as
+   WHOIS and KICK) whereas MAXTARGETS only applies to channels.  TARGMAX
+   is also more extendable to cope with future changes.
 
 
 
-Kalt                         Informational                     [Page 13]
+
+
+
+Brocklesby                Expires July 5, 2004                 [Page 17]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-   section 5.7 (Tracking recently used nicknames) for more information
-   on this procedure.
+5. Security Considerations
 
-   Numeric replies:
+   This memo does not raise any security considerations.
 
-           ERR_NOPRIVILEGES                ERR_NOSUCHSERVER
-           ERR_NEEDMOREPARAMS
+Normative References
 
-   Example:
+   [1]  Bradner, S., "Key words for use in RFCs to Indicate Requirement
+        Levels", RFC 2119, March 1997.
 
-   SQUIT tolsun.oulu.fi :Bad Link ?  ; the server link tolson.oulu.fi
-                                   has been terminated because of "Bad
-                                   Link".
+   [2]  Crocker, D. and P. Overell, "Augumented BNF for Syntax
+        Specifications: ABNF", RFC 2234, November 1997.
 
-   :Trillian SQUIT cm22.eng.umd.edu :Server out of control ; message
-                                   from Trillian to disconnect
-                                   "cm22.eng.umd.edu" from the net
-                                   because "Server out of control".
+   [3]  Kalt, C., "Internet Relay Chat: Channel Management", RFC 2811,
+        April 2000.
 
-4.2 Channel operations
+   [4]  Kalt, C., "Internet Relay Chat: Client Protocol", RFC 2812,
+        April 2000.
 
-   This group of messages is concerned with manipulating channels, their
-   properties (channel modes), and their contents (typically users).  In
-   implementing these, a number of race conditions are inevitable when
-   users at opposing ends of a network send commands which will
-   ultimately clash.  It is also REQUIRED that servers keep a nickname
-   history to ensure that wherever a <nick> parameter is given, the
-   server check its history in case it has recently been changed.
+   [5]  Reed, D. and J. Oikarinen, "Internet Relay Chat Protocol", RFC
+        1459, May 1993.
 
-4.2.1 Join message
+Informative references
 
-      Command: JOIN
-   Parameters: <channel>[ %x7 <modes> ]
-               *( "," <channel>[ %x7 <modes> ] )
-
-   The JOIN command is used by client to start listening a specific
-   channel. Whether or not a client is allowed to join a channel is
-   checked only by the local server the client is connected to; all
-   other servers automatically add the user to the channel when the
-   command is received from other servers.
-
-   Optionally, the user status (channel modes 'O', 'o', and 'v') on the
-   channel may be appended to the channel name using a control G (^G or
-   ASCII 7) as separator.  Such data MUST be ignored if the message
-   wasn't received from a server.  This format MUST NOT be sent to
-   clients, it can only be used between servers and SHOULD be avoided.
+   [6]  Roeckx, K., "The 005 numeric", September 2002.
 
 
+Author's Address
+
+   Edward Brocklesby
+   57 Williamson Way
+   Oxford, Oxon  OX4 4TU
+   GB
+
+   EMail: ejb@goth.net
+
+Appendix A. Default ISUPPORT values
+
+   As an aid to implementation, a standard ISUPPORT reply with all
+   values which may be assumed to be at their defaults upon connection
+   is supplied here (lines broken due to formatting requirements).
+
+
+       :irc.example.com 005 nickname :CASEMAPPING=rfc1459 CHANNELLEN=200
+           CHANTYPES=#& MODES=3 NICKLEN=9 PREFIX=(ov)@+ TARGMAX
+
+   In addition, the server must provide values for the following
+   parameters: CHANLIMIT, CHANMODES, KICKLEN, MAXLIST, STD, TOPICLEN.
 
 
 
-Kalt                         Informational                     [Page 14]
+
+Brocklesby                Expires July 5, 2004                 [Page 18]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-   The JOIN command MUST be broadcast to all servers so that each server
-   knows where to find the users who are on the channel.  This allows
-   optimal delivery of PRIVMSG and NOTICE messages to the channel.
+Appendix B. Acknowledgements
 
-   Numeric Replies:
+   The author gratefully acknowledges the contributions of Bill Fenner
+   ("fenestro"), Perry Lorier ("Isomer"), Kurt Roeckx ("Q") and John
+   Midgley ("CrazyEddy") in the preparation of this document.
 
-           ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
-           ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
-           ERR_CHANNELISFULL               ERR_BADCHANMASK
-           ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
-           ERR_TOOMANYTARGETS              ERR_UNAVAILRESOURCE
-           RPL_TOPIC
-
-   Examples:
-
-   :WiZ JOIN #Twilight_zone        ; JOIN message from WiZ
-
-4.2.2 Njoin message
-
-      Command: NJOIN
-   Parameters: <channel> [ "@@" / "@" ] [ "+" ] <nickname>
-                         *( "," [ "@@" / "@" ] [ "+" ] <nickname> )
-
-   The NJOIN message is used between servers only.  If such a message is
-   received from a client, it MUST be ignored.  It is used when two
-   servers connect to each other to exchange the list of channel members
-   for each channel.
-
-   Even though the same function can be performed by using a succession
-   of JOIN, this message SHOULD be used instead as it is more efficient.
-   The prefix "@@" indicates that the user is the "channel creator", the
-   character "@" alone indicates a "channel operator", and the character
-   '+' indicates that the user has the voice privilege.
-
-   Numeric Replies:
-
-           ERR_NEEDMOREPARAMS              ERR_NOSUCHCHANNEL
-           ERR_ALREADYREGISTRED
-
-   Examples:
-
-   :ircd.stealth.net NJOIN #Twilight_zone :@WiZ,+syrk,avalon ; NJOIN
-                                   message from ircd.stealth.net
-                                   announcing users joining the
-                                   #Twilight_zone channel: WiZ with
-                                   channel operator status, syrk with
-                                   voice privilege and avalon with no
-                                   privilege.
+   This document is heavily based on a previous document entitled "The
+   005 numeric".
 
 
 
-Kalt                         Informational                     [Page 15]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Brocklesby                Expires July 5, 2004                 [Page 19]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-4.2.3 Mode message
+Intellectual Property Statement
 
-   The MODE message is a dual-purpose command in IRC.  It allows both
-   usernames and channels to have their mode changed.
+   The IETF takes no position regarding the validity or scope of any
+   intellectual property or other rights that might be claimed to
+   pertain to the implementation or use of the technology described in
+   this document or the extent to which any license under such rights
+   might or might not be available; neither does it represent that it
+   has made any effort to identify any such rights. Information on the
+   IETF's procedures with respect to rights in standards-track and
+   standards-related documentation can be found in BCP-11. Copies of
+   claims of rights made available for publication and any assurances of
+   licenses to be made available, or the result of an attempt made to
+   obtain a general license or permission for the use of such
+   proprietary rights by implementors or users of this specification can
+   be obtained from the IETF Secretariat.
 
-   When parsing MODE messages, it is RECOMMENDED that the entire message
-   be parsed first, and then the changes which resulted passed on.
-
-   It is REQUIRED that servers are able to change channel modes so that
-   "channel creator" and "channel operators" may be created.
-
-5. Implementation details
-
-   A the time of writing, the only current implementation of this
-   protocol is the IRC server, version 2.10. Earlier versions may
-   implement some or all of the commands described by this document with
-   NOTICE messages replacing many of the numeric replies. Unfortunately,
-   due to backward compatibility requirements, the implementation of
-   some parts of this document varies with what is laid out.  One
-   notable difference is:
-
-        * recognition that any LF or CR anywhere in a message marks
-          the end of that message (instead of requiring CR-LF);
-
-   The rest of this section deals with issues that are mostly of
-   importance to those who wish to implement a server but some parts
-   also apply directly to clients as well.
-
-5.1 Connection 'Liveness'
-
-   To detect when a connection has died or become unresponsive, the
-   server MUST poll each of its connections.  The PING command (See "IRC
-   Client Protocol" [IRC-CLIENT]) is used if the server doesn't get a
-   response from its peer in a given amount of time.
-
-   If a connection doesn't respond in time, its connection is closed
-   using the appropriate procedures.
-
-5.2 Accepting a client to server connection
-
-5.2.1 Users
-
-   When a server successfully registers a new user connection, it is
-   REQUIRED to send to the user unambiguous messages stating: the user
-   identifiers upon which it was registered (RPL_WELCOME), the server
-   name and version (RPL_YOURHOST), the server birth information
-   (RPL_CREATED), available user and channel modes (RPL_MYINFO), and it
-   MAY send any introductory messages which may be deemed appropriate.
+   The IETF invites any interested party to bring to its attention any
+   copyrights, patents or patent applications, or other proprietary
+   rights which may cover technology that may be required to practice
+   this standard. Please address the information to the IETF Executive
+   Director.
 
 
+Full Copyright Statement
 
-Kalt                         Informational                     [Page 16]
+   Copyright (C) The Internet Society (2004). All Rights Reserved.
+
+   This document and translations of it may be copied and furnished to
+   others, and derivative works that comment on or otherwise explain it
+   or assist in its implementation may be prepared, copied, published
+   and distributed, in whole or in part, without restriction of any
+   kind, provided that the above copyright notice and this paragraph are
+   included on all such copies and derivative works. However, this
+   document itself may not be modified in any way, such as by removing
+   the copyright notice or references to the Internet Society or other
+   Internet organizations, except as needed for the purpose of
+   developing Internet standards in which case the procedures for
+   copyrights defined in the Internet Standards process must be
+   followed, or as required to translate it into languages other than
+   English.
+
+   The limited permissions granted above are perpetual and will not be
+   revoked by the Internet Society or its successors or assignees.
+
+   This document and the information contained herein is provided on an
+   "AS IS" basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+   TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
+   BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
+
+
+
+Brocklesby                Expires July 5, 2004                 [Page 20]
 
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
+Internet-Draft    IRC RPL_ISUPPORT Numeric Definition       January 2004
 
 
-   In particular the server SHALL send the current user/service/server
-   count (as per the LUSER reply) and finally the MOTD (if any, as per
-   the MOTD reply).
+   HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
+   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 
-   After dealing with registration, the server MUST then send out to
-   other servers the new user's nickname (NICK message), other
-   information as supplied by itself (USER message) and as the server
-   could discover (from DNS servers).  The server MUST NOT send this
-   information out with a pair of NICK and USER messages as defined in
-   "IRC Client Protocol" [IRC-CLIENT], but MUST instead take advantage
-   of the extended NICK message defined in section 4.1.3.
 
-5.2.2 Services
+Acknowledgment
 
-   Upon successfully registering a new service connection, the server is
-   subject to the same kind of REQUIREMENTS as for a user.  Services
-   being somewhat different, only the following replies are sent:
-   RPL_YOURESERVICE, RPL_YOURHOST, RPL_MYINFO.
+   Funding for the RFC Editor function is currently provided by the
+   Internet Society.
 
-   After dealing with this, the server MUST then send out to other
-   servers (SERVICE message) the new service's nickname and other
-   information as supplied by the service (SERVICE message) and as the
-   server could discover (from DNS servers).
-
-5.3 Establishing a server-server connection.
-
-   The process of establishing a server-to-server connection is fraught
-   with danger since there are many possible areas where problems can
-   occur - the least of which are race conditions.
-
-   After a server has received a connection following by a PASS/SERVER
-   pair which were recognized as being valid, the server SHOULD then
-   reply with its own PASS/SERVER information for that connection as
-   well as all of the other state information it knows about as
-   described below.
-
-   When the initiating server receives a PASS/SERVER pair, it too then
-   checks that the server responding is authenticated properly before
-   accepting the connection to be that server.
-
-5.3.1 Link options
-
-   Server links are based on a common protocol (defined by this
-   document) but a particular link MAY set specific options using the
-   PASS message (See Section 4.1.1).
-
-
-
-
-
-
-Kalt                         Informational                     [Page 17]
-
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
-
-
-5.3.1.1 Compressed server to server links
-
-   If a server wishes to establish a compressed link with its peer, it
-   MUST set the 'Z' flag in the options parameter to the PASS message.
-   If both servers request compression and both servers are able to
-   initialize the two compressed streams, then the remainder of the
-   communication is to be compressed.  If any server fails to initialize
-   the stream, it will send an uncompressed ERROR message to its peer
-   and close the connection.
-
-   The data format used for the compression is described by RFC 1950
-   [ZLIB], RFC 1951 [DEFLATE] and RFC 1952 [GZIP].
-
-5.3.1.2 Anti abuse protections
-
-   Most servers implement various kinds of protections against possible
-   abusive behaviours from non trusted parties (typically users).  On
-   some networks, such protections are indispensable, on others they are
-   superfluous.  To require that all servers implement and enable such
-   features on a particular network, the 'P' flag is used when two
-   servers connect.  If this flag is present, it means that the server
-   protections are enabled, and that the server REQUIRES all its server
-   links to enable them as well.
-
-   Commonly found protections are described in sections 5.7 (Tracking
-   recently used nicknames) and 5.8 (Flood control of clients).
-
-5.3.2 State information exchange when connecting
-
-   The order of state information being exchanged between servers is
-   essential.  The REQUIRED order is as follows:
-
-           * all known servers;
-
-           * all known client information;
-
-           * all known channel information.
-
-   Information regarding servers is sent via extra SERVER messages,
-   client information with NICK and SERVICE messages and channels with
-   NJOIN/MODE messages.
-
-   NOTE: channel topics SHOULD NOT be exchanged here because the TOPIC
-   command overwrites any old topic information, so at best, the two
-   sides of the connection would exchange topics.
-
-
-
-
-
-
-Kalt                         Informational                     [Page 18]
-
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
-
-
-   By passing the state information about servers first, any collisions
-   with servers that already exist occur before nickname collisions
-   caused by a second server introducing a particular nickname.  Due to
-   the IRC network only being able to exist as an acyclic graph, it may
-   be possible that the network has already reconnected in another
-   location.  In this event, the place where the server collision occurs
-   indicates where the net needs to split.
-
-5.4 Terminating server-client connections
-
-   When a client connection unexpectedly closes, a QUIT message is
-   generated on behalf of the client by the server to which the client
-   was connected.  No other message is to be generated or used.
-
-5.5 Terminating server-server connections
-
-   If a server-server connection is closed, either via a SQUIT command
-   or "natural" causes, the rest of the connected IRC network MUST have
-   its information updated by the server which detected the closure.
-   The terminating server then sends a list of SQUITs (one for each
-   server behind that connection).  (See Section 4.1.6 (SQUIT)).
-
-5.6 Tracking nickname changes
-
-   All IRC servers are REQUIRED to keep a history of recent nickname
-   changes.  This is important to allow the server to have a chance of
-   keeping in touch of things when nick-change race conditions occur
-   with commands manipulating them.  Messages which MUST trace nick
-   changes are:
-
-           * KILL (the nick being disconnected)
-
-           * MODE (+/- o,v on channels)
-
-           * KICK (the nick being removed from channel)
-
-      No other commands need to check nick changes.
-
-   In the above cases, the server is required to first check for the
-   existence of the nickname, then check its history to see who that
-   nick now belongs to (if anyone!).  This reduces the chances of race
-   conditions but they can still occur with the server ending up
-   affecting the wrong client.  When performing a change trace for an
-   above command it is RECOMMENDED that a time range be given and
-   entries which are too old ignored.
-
-
-
-
-
-
-Kalt                         Informational                     [Page 19]
-
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
-
-
-   For a reasonable history, a server SHOULD be able to keep previous
-   nickname for every client it knows about if they all decided to
-   change.  This size is limited by other factors (such as memory, etc).
-
-5.7 Tracking recently used nicknames
-
-   This mechanism is commonly known as "Nickname Delay", it has been
-   proven to significantly reduce the number of nickname collisions
-   resulting from "network splits"/reconnections as well as abuse.
-
-   In addition of keeping track of nickname changes, servers SHOULD keep
-   track of nicknames which were recently used and were released as the
-   result of a "network split" or a KILL message.  These nicknames are
-   then unavailable to the server local clients and cannot be re-used
-   (even though they are not currently in use) for a certain period of
-   time.
-
-   The duration for which a nickname remains unavailable SHOULD be set
-   considering many factors among which are the size (user wise) of the
-   IRC network, and the usual duration of "network splits".  It SHOULD
-   be uniform on all servers for a given IRC network.
-
-5.8 Flood control of clients
-
-   With a large network of interconnected IRC servers, it is quite easy
-   for any single client attached to the network to supply a continuous
-   stream of messages that result in not only flooding the network, but
-   also degrading the level of service provided to others.  Rather than
-   require every 'victim' to provide their own protection, flood
-   protection was written into the server and is applied to all clients
-   except services.  The current algorithm is as follows:
-
-   * check to see if client's `message timer' is less than current time
-     (set to be equal if it is);
-
-   * read any data present from the client;
-
-   * while the timer is less than ten (10) seconds ahead of the current
-     time, parse any present messages and penalize the client by two (2)
-     seconds for each message;
-
-   * additional penalties MAY be used for specific commands which
-     generate a lot of traffic across the network.
-
-   This in essence means that the client may send one (1) message every
-   two (2) seconds without being adversely affected.  Services MAY also
-   be subject to this mechanism.
-
-
-
-
-Kalt                         Informational                     [Page 20]
-
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
-
-
-5.9 Non-blocking lookups
-
-   In a real-time environment, it is essential that a server process
-   does as little waiting as possible so that all the clients are
-   serviced fairly.  Obviously this requires non-blocking IO on all
-   network read/write operations.  For normal server connections, this
-   was not difficult, but there are other support operations that may
-   cause the server to block (such as disk reads).  Where possible, such
-   activity SHOULD be performed with a short timeout.
-
-5.9.1 Hostname (DNS) lookups
-
-   Using the standard resolver libraries from Berkeley and others has
-   meant large delays in some cases where replies have timed out.  To
-   avoid this, a separate set of DNS routines were written for the
-   current implementation.  Routines were setup for non-blocking IO
-   operations with local cache, and then polled from within the main
-   server IO loop.
-
-5.9.2 Username (Ident) lookups
-
-   Although there are numerous ident libraries (implementing the
-   "Identification Protocol" [IDENT]) for use and inclusion into other
-   programs, these caused problems since they operated in a synchronous
-   manner and resulted in frequent delays.  Again the solution was to
-   write a set of routines which would cooperate with the rest of the
-   server and work using non-blocking IO.
-
-6. Current problems
-
-   There are a number of recognized problems with this protocol, all of
-   which are hoped to be solved sometime in the near future during its
-   rewrite.  Currently, work is underway to find working solutions to
-   these problems.
-
-6.1 Scalability
-
-   It is widely recognized that this protocol does not scale
-   sufficiently well when used in a large arena.  The main problem comes
-   from the requirement that all servers know about all other servers
-   and clients and that information regarding them be updated as soon as
-   it changes.  It is also desirable to keep the number of servers low
-   so that the path length between any two points is kept minimal and
-   the spanning tree as strongly branched as possible.
-
-
-
-
-
-
-
-Kalt                         Informational                     [Page 21]
-
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
-
-
-6.2 Labels
-
-   The current IRC protocol has 4 types of labels: the nickname, the
-   channel name, the server name and the service name.  Each of the four
-   types has its own domain and no duplicates are allowed inside that
-   domain.  Currently, it is possible for users to pick the label for
-   any of the first three, resulting in collisions.  It is widely
-   recognized that this needs reworking, with a plan for unique names
-   for nicks that don't collide being desirable as well as a solution
-   allowing a cyclic tree.
-
-6.2.1 Nicknames
-
-   The idea of the nickname on IRC is very convenient for users to use
-   when talking to each other outside of a channel, but there is only a
-   finite nickname space and being what they are, it's not uncommon for
-   several people to want to use the same nick.  If a nickname is chosen
-   by two people using this protocol, either one will not succeed or
-   both will be removed by use of KILL (See Section 3.7.1 of "IRC Client
-   Protocol" [IRC-CLIENT]).
-
-6.2.2 Channels
-
-   The current channel layout requires that all servers know about all
-   channels, their inhabitants and properties.  Besides not scaling
-   well, the issue of privacy is also a concern.  A collision of
-   channels is treated as an inclusive event (people from both nets on
-   channel with common name are considered to be members of it) rather
-   than an exclusive one such as used to solve nickname collisions.
-
-   This protocol defines "Safe Channels" which are very unlikely to be
-   the subject of a channel collision.  Other channel types are kept for
-   backward compatibility.
-
-6.2.3 Servers
-
-   Although the number of servers is usually small relative to the
-   number of users and channels, they too are currently REQUIRED to be
-   known globally, either each one separately or hidden behind a mask.
-
-6.3 Algorithms
-
-   In some places within the server code, it has not been possible to
-   avoid N^2 algorithms such as checking the channel list of a set of
-   clients.
-
-
-
-
-
-
-Kalt                         Informational                     [Page 22]
-
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
-
-
-   In current server versions, there are only few database consistency
-   checks, most of the time each server assumes that a neighbouring
-   server is correct.  This opens the door to large problems if a
-   connecting server is buggy or otherwise tries to introduce
-   contradictions to the existing net.
-
-   Currently, because of the lack of unique internal and global labels,
-   there are a multitude of race conditions that exist.  These race
-   conditions generally arise from the problem of it taking time for
-   messages to traverse and effect the IRC network.  Even by changing to
-   unique labels, there are problems with channel-related commands being
-   disrupted.
-
-7. Security Considerations
-
-7.1 Authentication
-
-   Servers only have two means of authenticating incoming connections:
-   plain text password, and DNS lookups.  While these methods are weak
-   and widely recognized as unsafe, their combination has proven to be
-   sufficient in the past:
-
-    * public networks typically allow user connections with only few
-      restrictions, without requiring accurate authentication.
-
-    * private networks which operate in a controlled environment often
-      use home-grown authentication mechanisms not available on the
-      internet: reliable ident servers [IDENT], or other proprietary
-      mechanisms.
-
-   The same comments apply to the authentication of IRC Operators.
-
-   It should also be noted that while there has been no real demand over
-   the years for stronger authentication, and no real effort to provide
-   better means to safely authenticate users, the current protocol
-   offers enough to be able to easily plug-in external authentication
-   methods based on the information that a client can submit to the
-   server upon connection: nickname, username, password.
-
-7.2 Integrity
-
-   Since the PASS and OPER messages of the IRC protocol are sent in
-   clear text, a stream layer encryption mechanism (like "The TLS
-   Protocol" [TLS]) could be used to protect these transactions.
-
-
-
-
-
-
-
-Kalt                         Informational                     [Page 23]
-
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
-
-
-8. Current support and availability
-
-      Mailing lists for IRC related discussion:
-        General discussion: ircd-users@irc.org
-        Protocol development: ircd-dev@irc.org
-
-      Software implementations:
-        ftp://ftp.irc.org/irc/server
-        ftp://ftp.funet.fi/pub/unix/irc
-        ftp://coombs.anu.edu.au/pub/irc
-
-      Newsgroup: alt.irc
-
-9. Acknowledgements
-
-   Parts of this document were copied from the RFC 1459 [IRC] which
-   first formally documented the IRC Protocol.  It has also benefited
-   from many rounds of review and comments.  In particular, the
-   following people have made significant contributions to this
-   document:
-
-   Matthew Green, Michael Neumayer, Volker Paulsen, Kurt Roeckx, Vesa
-   Ruokonen, Magnus Tjernstrom, Stefan Zehl.
-
-10. References
-
-   [KEYWORDS]   Bradner, S., "Key words for use in RFCs to Indicate
-                Requirement Levels", BCP 14, RFC 2119, March 1997.
-
-   [ABNF]       Crocker, D. and P. Overell, "Augmented BNF for Syntax
-                Specifications: ABNF", RFC 2234, November 1997.
-
-   [IRC]        Oikarinen, J. and D. Reed, "Internet Relay Chat
-                Protocol", RFC 1459, May 1993.
-
-   [IRC-ARCH]   Kalt, C., "Internet Relay Chat: Architecture", RFC 2810,
-                April 2000.
-
-   [IRC-CLIENT] Kalt, C., "Internet Relay Chat: Client Protocol", RFC
-                2812, April 2000.
-
-
-   [IRC-CHAN]   Kalt, C., "Internet Relay Chat: Channel Management", RFC
-                2811, April 2000.
-
-   [ZLIB]       Deutsch, P. and J-L. Gailly, "ZLIB Compressed Data
-                Format Specification version 3.3", RFC 1950, May 1996.
-
-
-
-
-Kalt                         Informational                     [Page 24]
-
-RFC 2813          Internet Relay Chat: Server Protocol        April 2000
-
-
-   [DEFLATE]    Deutsch, P., "DEFLATE Compressed Data Format
-                Specification version 1.3", RFC 1951, May 1996.
-
-   [GZIP]       Deutsch, P., "GZIP file format specification version
-                4.3", RFC 1952, May 1996.
-
-   [IDENT]      St. Johns, M., "The Identification Protocol", RFC 1413,
-                February 1993.
-
-   [TLS]        Dierks, T. and C. Allen, "The TLS Protocol", RFC 2246,
-                January 1999.
-
-11. Author's Address
-
-   Christophe Kalt
-   99 Teaneck Rd, Apt #117
-   Ridgefield Park, NJ 07660
-   USA
-
-   EMail: kalt@stealth.net

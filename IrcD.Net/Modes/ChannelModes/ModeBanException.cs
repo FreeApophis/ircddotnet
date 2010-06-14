@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
@@ -67,6 +68,11 @@ namespace IrcD.Modes.ChannelModes
             parameter = UserInfo.NormalizeHostmask(parameter);
 
             return banExceptionList.RemoveAll(p => p == parameter) > 0 ? parameter : null;
+        }
+
+        public override IEnumerable<string> Support(IrcDaemon ircDaemon)
+        {
+            return Enumerable.Repeat("EXCEPTS=" + Char, 1);
         }
     }
 }

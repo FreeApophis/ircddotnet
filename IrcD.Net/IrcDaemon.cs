@@ -239,10 +239,13 @@ namespace IrcD
             supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeBan>());
             if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
                 supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeBanException>());
+
             if (Options.IrcMode == IrcMode.Modern)
                 supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeColorless>());
+            
+            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeInvite>());
             if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
-                supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeInvite>());
+                supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeInviteException>());
 
             supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeKey>());
             supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeLimit>());
@@ -285,7 +288,7 @@ namespace IrcD
             connectSocket.Bind(localEp);
             connectSocket.Listen(20);
 
-            sockets.Add(connectSocket, new UserInfo(this, connectSocket, "TODO:Server", true, true));
+            sockets.Add(connectSocket, new UserInfo(this, connectSocket, Options.ServerName, true, true));
 
             while (connected)
             {

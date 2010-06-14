@@ -73,6 +73,19 @@ namespace IrcD
             set { nickLength = value; }
         }
 
+        private int maxLineLength = 510;
+        public int MaxLineLength
+        {
+            get
+            {
+                return maxLineLength;
+            }
+            set
+            {
+                maxLineLength = value;
+            }
+        }
+
         private List<string> motd = new List<string>();
 
         public List<string> MOTD
