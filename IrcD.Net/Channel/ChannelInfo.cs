@@ -31,8 +31,15 @@ namespace IrcD.Channel
             : base(ircDaemon)
         {
             this.name = name;
+            channelType = ircDaemon.SupportedChannelTypes[name[0]];
         }
 
+        private readonly ChannelType channelType;
+
+        public ChannelType ChannelType
+        {
+            get { return channelType; }
+        }
         private readonly string name;
 
         public string Name
@@ -109,14 +116,5 @@ namespace IrcD.Channel
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="channel"></param>
-        /// <returns></returns>
-        public static bool ValidChannel(string channel)
-        {
-            return channel.StartsWith("#") && !channel.Any(c => c == ' ' || c == ',' || c == '\x7');
-        }
     }
 }

@@ -62,12 +62,12 @@ namespace IrcD
             }
         }
 
-        private readonly Dictionary<char, ChannelType> channelTypes = new Dictionary<char, ChannelType>();
-        public Dictionary<char, ChannelType> ChannelTypes
+        private readonly Dictionary<char, ChannelType> supportedChannelTypes = new Dictionary<char, ChannelType>();
+        public Dictionary<char, ChannelType> SupportedChannelTypes
         {
             get
             {
-                return channelTypes;
+                return supportedChannelTypes;
             }
         }
 
@@ -282,7 +282,7 @@ namespace IrcD
         private void SetupChannelTypes()
         {
             ChannelType chan = new NormalChannel();
-            channelTypes.Add(chan.Prefix, chan);
+            supportedChannelTypes.Add(chan.Prefix, chan);
         }
 
         public void Start()
@@ -492,6 +492,17 @@ namespace IrcD
             }
 
             return true;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <returns></returns>
+        public bool ValidChannel(string channel)
+        {
+            return SupportedChannelTypes.Any(t => t.Value.Prefix == channel[0]) && (!channel.Any(c => c == ' ' || c == ',' || c == '\x7' || c == ':'));
         }
     }
 }

@@ -151,8 +151,8 @@ namespace IrcD.ServerReplies
             features.Add("STD=" + version);
             features.Add("PREFIX=" + daemon.SupportedRanks.ToPrefixList());
             features.Add("CHANMODES=" + daemon.SupportedChannelModes.ToParameterList());
-            features.Add("CHANTYPES=" + daemon.ChannelTypes.Select(type => type.Value.Prefix).Concatenate(string.Empty));
-            features.Add("CHANLIMIT=" + daemon.ChannelTypes.Select(c => c.Value.Prefix + ":" + c.Value.MaxJoinedAllowed).Concatenate(","));
+            features.Add("CHANTYPES=" + daemon.SupportedChannelTypes.Select(type => type.Value.Prefix).Concatenate(string.Empty));
+            features.Add("CHANLIMIT=" + daemon.SupportedChannelTypes.Select(c => c.Value.Prefix + ":" + c.Value.MaxJoinedAllowed).Concatenate(","));
             features.AddRange(daemon.SupportedChannelModes.SelectMany(m => m.Value.Support(info.IrcDaemon)));
             features.Add("NETWORK=" + daemon.Options.NetworkName);
             features.Add("CASEMAPPING=" + daemon.Options.IrcCaseMapping.ToDescription());
@@ -1373,12 +1373,12 @@ namespace IrcD.ServerReplies
         /// </summary>
         /// <param name="info"></param>
         /// <param name="chan"></param>
-        public void SendBadChannelMask(UserInfo info, ChannelInfo chan)
+        public void SendBadChannelMask(UserInfo info, string chan)
         {
             BuildMessageHeader(info, ReplyCode.ErrorBadChannelMask);
 
             response.Append(" ");
-            response.Append(chan.Name);
+            response.Append(chan);
             response.Append(" :Bad Channel Mask");
 
             info.WriteLine(response);

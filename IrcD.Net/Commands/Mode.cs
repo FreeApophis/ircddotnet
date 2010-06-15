@@ -45,7 +45,7 @@ namespace IrcD.Commands
                 return;
             }
             // Check if its a channel
-            if (ChannelInfo.ValidChannel(args[0]))
+            if (IrcDaemon.ValidChannel(args[0]))
             {
 
                 if (!IrcDaemon.Channels.ContainsKey(args[0]))

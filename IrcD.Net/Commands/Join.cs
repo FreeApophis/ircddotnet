@@ -67,8 +67,16 @@ namespace IrcD.Commands
                 }
                 else
                 {
-                    chan = new ChannelInfo(channel, IrcDaemon);
-                    IrcDaemon.Channels.Add(chan.Name, chan);
+                    if (IrcDaemon.ValidChannel(channel))
+                    {
+                        chan = new ChannelInfo(channel, IrcDaemon);
+                        IrcDaemon.Channels.Add(chan.Name, chan);
+                    }
+                    else
+                    {
+                        IrcDaemon.Replies.SendBadChannelMask(info, channel);
+                        return;
+                    }
                 }
 
                 var chanuser = new UserPerChannelInfo(info, chan);

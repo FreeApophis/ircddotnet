@@ -51,7 +51,7 @@ namespace IrcD.Commands
 
             // Only Private Messages reset this
             info.LastAction = DateTime.Now;
-            if (ChannelInfo.ValidChannel(args[0]))
+            if (IrcDaemon.ValidChannel(args[0]))
             {
                 if (IrcDaemon.Channels.ContainsKey(args[0]))
                 {
