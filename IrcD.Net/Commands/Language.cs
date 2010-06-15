@@ -20,6 +20,7 @@
 
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IrcD.Commands
 {
@@ -43,5 +44,11 @@ namespace IrcD.Commands
 
             info.Languages = args[0].Split(new[] { ',' });
         }
+
+        public override IEnumerable<string> Support(IrcDaemon ircDaemon)
+        {
+            return Enumerable.Repeat("LANGUAGE=" + ircDaemon.Options.MaxLanguages, 1);
+        }
+
     }
 }

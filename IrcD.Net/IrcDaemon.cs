@@ -220,8 +220,6 @@ namespace IrcD
             commands.Add(new Restart(this));
             commands.Add(new ServerQuit(this));
             commands.Add(new Service(this));
-            commands.Add(new ServiceList(this));
-            commands.Add(new ServiceQuery(this));
             commands.Add(new Stats(this));
             commands.Add(new Summon(this));
             commands.Add(new Time(this));
@@ -237,12 +235,15 @@ namespace IrcD
 
             if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
             {
+                commands.Add(new ServiceList(this));
+                commands.Add(new ServiceQuery(this));
             }
 
             if (Options.IrcMode == IrcMode.Modern)
             {
                 commands.Add(new Knock(this));
                 commands.Add(new Language(this));
+                commands.Add(new Silence(this));
             }
         }
 

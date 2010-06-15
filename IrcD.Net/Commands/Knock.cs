@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IrcD.Commands
 {
@@ -30,6 +31,11 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+        }
+
+        public override IEnumerable<string> Support(IrcDaemon ircDaemon)
+        {
+            return Enumerable.Repeat("KNOCK", 1);
         }
     }
 }

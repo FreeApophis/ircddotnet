@@ -78,6 +78,14 @@ namespace IrcD
             set { maxLanguages = value; }
         }
 
+
+        private int maxSilence = 20;
+        public int MaxSilence
+        {
+            get { return maxSilence; }
+            set { maxSilence = value; }
+        }
+
         private int maxChannelLength = 50;
         public int MaxChannelLength
         {
@@ -97,8 +105,8 @@ namespace IrcD
         {
             get { return maxKickLength; }
             set { maxKickLength = value; }
-        }        
-        
+        }
+
         private int maxAwayLength = 300;
         public int MaxAwayLength
         {
@@ -182,7 +190,5 @@ namespace IrcD
                 networkName = value;
             }
         }
-
-
     }
 }

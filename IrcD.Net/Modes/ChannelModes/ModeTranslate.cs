@@ -79,19 +79,5 @@ namespace IrcD.Modes.ChannelModes
                 }
             }
         }
-
-        public override IEnumerable<string> Support(IrcDaemon ircDaemon)
-        {
-            var support = new List<string>();
-            var languages = GoogleTranslate.Languages.Select(l => l);
-
-            do
-            {
-                support.Add("LANGUAGES=" + ircDaemon.Options.MaxLanguages + "," + languages.Take(40).Select(l => l.Key).Concatenate(","));
-                languages = languages.Skip(40);
-            } while (languages.Any());
-
-            return support;
-        }
     }
 }

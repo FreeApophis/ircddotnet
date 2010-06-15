@@ -25,7 +25,6 @@ using System.Linq;
 using System.Text;
 using IrcD.Channel;
 using IrcD.Utils;
-using Enumerable = IrcD.Utils.Enumerable;
 
 namespace IrcD.ServerReplies
 {
@@ -188,9 +187,36 @@ namespace IrcD.ServerReplies
             var currentLine = new StringBuilder();
             var postfixlength = postfix != null ? 2 + postfix.Length : 0;
 
+            currentLine.Append(prefix);
+
             foreach (var feature in features)
             {
-                if (prefix.Length + currentLine.Length + 1 + feature.Length + postfixlength > daemon.Options.MaxLineLength)
+                if (feature.StartsWith("LANGUAGE"))
+                {
+                    currentLine.Append(" ");
+                    currentLine.Append(feature);
+
+                    foreach (var language in GoogleTranslate.Languages.Keys)
+                    {
+                        if (currentLine.Length + 1 + language.Length + postfixlength > daemon.Options.MaxLineLength)
+                        {
+                            if (postfix != null)
+                            {
+                                currentLine.Append(" :");
+                                currentLine.Append(postfix);
+                            }
+                            info.WriteLine(currentLine);
+                            currentLine.Length = 0;
+                            currentLine.Append(prefix);
+                            currentLine.Append(" ");
+                            currentLine.Append(feature);
+                        }
+                        currentLine.Append(",");
+                        currentLine.Append(language);
+                    }
+                    continue;
+                }
+                if (currentLine.Length + 1 + feature.Length + postfixlength > daemon.Options.MaxLineLength)
                 {
                     if (postfix != null)
                     {

@@ -95,6 +95,7 @@
     <Compile Include="Commands\CommandList.cs" />
     <Compile Include="Commands\Die.cs" />
     <Compile Include="Commands\Language.cs" />
+    <Compile Include="Commands\Silence.cs" />
     <Compile Include="Commands\Wallops.cs" />
     <Compile Include="Commands\UserHost.cs" />
     <Compile Include="Commands\IsOn.cs" />
