@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.Channel;
 using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes

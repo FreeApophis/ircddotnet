@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IrcD.Channel;
 using IrcD.Commands;
 using IrcD.ServerReplies;
 

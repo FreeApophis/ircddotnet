@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IrcD.Commands
 {
@@ -47,6 +48,16 @@ namespace IrcD.Commands
         public static string[] GetSubArgument(string arg)
         {
             return arg.Split(new[] { ',' });
+        }
+
+        /// <summary>
+        ///  Returns a list of ISUPPORT / Numeric 005 information this Mode is providing. 
+        /// </summary>
+        /// <param name="ircDaemon">Server Object</param>
+        /// <returns>returns strings for direct usage in an ISUPPORT reply</returns>
+        public virtual IEnumerable<string> Support(IrcDaemon ircDaemon)
+        {
+            return Enumerable.Empty<string>();
         }
 
     }

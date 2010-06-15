@@ -24,6 +24,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using IrcD.Channel;
 using IrcD.Commands;
 using IrcD.Modes;
 using IrcD.Modes.ChannelModes;
@@ -58,6 +59,15 @@ namespace IrcD
             get
             {
                 return channels;
+            }
+        }
+
+        private readonly Dictionary<char, ChannelType> channelTypes = new Dictionary<char, ChannelType>();
+        public Dictionary<char, ChannelType> ChannelTypes
+        {
+            get
+            {
+                return channelTypes;
             }
         }
 
@@ -171,12 +181,14 @@ namespace IrcD
             serverCreated = DateTime.Now;
 
             // Add Commands
-            AddCommands();
+            SetupCommands();
             // Add Modes
             SetupModes();
+            //Add ChannelTypes
+            SetupChannelTypes();
         }
 
-        private void AddCommands()
+        private void SetupCommands()
         {
             commands.Add(new Admin(this));
             commands.Add(new Away(this));
@@ -242,7 +254,7 @@ namespace IrcD
 
             if (Options.IrcMode == IrcMode.Modern)
                 supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeColorless>());
-            
+
             supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeInvite>());
             if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
                 supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeInviteException>());
@@ -264,6 +276,12 @@ namespace IrcD
             supportedUserModes.Add(ModeFactory.AddUserMode<ModeInvisible>());
             supportedUserModes.Add(ModeFactory.AddUserMode<ModeRestricted>());
             supportedUserModes.Add(ModeFactory.AddUserMode<ModeWallops>());
+        }
+
+        private void SetupChannelTypes()
+        {
+            ChannelType chan = new NormalChannel();
+            channelTypes.Add(chan.Prefix, chan);
         }
 
         public void Start()
@@ -457,7 +475,7 @@ namespace IrcD
         /// <returns></returns>
         public bool ValidNick(string nick)
         {
-            if (nick.Length > Options.NickLength)
+            if (nick.Length > Options.MaxNickLength)
                 return false;
             if (Options.IrcMode == IrcMode.Modern)
             {

@@ -21,6 +21,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IrcD.ServerReplies;
+using IrcD.Channel;
 
 namespace IrcD.Modes
 {

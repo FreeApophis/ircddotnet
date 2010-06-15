@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using IrcD.Channel;
 using IrcD.ServerReplies;
 using IrcD.Utils;
 

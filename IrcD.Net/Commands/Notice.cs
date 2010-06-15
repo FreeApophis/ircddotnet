@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using IrcD.Channel;
 using IrcD.ServerReplies;
 
 namespace IrcD.Commands

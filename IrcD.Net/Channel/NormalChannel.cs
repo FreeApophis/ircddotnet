@@ -18,31 +18,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
-using IrcD.Channel;
-using IrcD.ServerReplies;
-
-namespace IrcD.Modes.ChannelModes
+namespace IrcD.Channel
 {
-    public class ModeModerated : ChannelMode
+    class NormalChannel : ChannelType
     {
-        public ModeModerated()
-            : base('m')
+        public NormalChannel()
+            : base('#', 10)
         {
-        }
-
-        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
-        {
-            if (ircCommand == IrcCommandType.PrivateMessage || ircCommand == IrcCommandType.Notice)
-            {
-                UserPerChannelInfo upci;
-                if (!channel.UserPerChannelInfos.TryGetValue(user.Nick, out upci) || upci.Modes.Level < 10)
-                {
-                    user.IrcDaemon.Replies.SendCannotSendToChannel(user, channel.Name);
-                    return false;
-                }
-            }
-            return true;
         }
     }
 }

@@ -28,6 +28,7 @@ namespace IrcD
         internal ServerOptions(IrcMode ircMode)
         {
             this.ircMode = ircMode;
+            IrcCaseMapping = ircMode == IrcMode.Rfc1459 ? IrcCaseMapping.StrictRfc1459 : IrcCaseMapping.Rfc1459;
         }
 
         private int serverPort = 6667;
@@ -36,15 +37,6 @@ namespace IrcD
         {
             get { return serverPort; }
             set { serverPort = value; }
-        }
-
-        private readonly List<char> channelPrefixes = new List<char> { '&', '#', '+', '!' };
-        public List<char> ChannelPrefixes
-        {
-            get
-            {
-                return channelPrefixes;
-            }
         }
 
         public string ServerPass { get; set; }
@@ -65,26 +57,55 @@ namespace IrcD
         }
 
 
-        private int nickLength = 9;
-
-        public int NickLength
+        private int maxNickLength = 9;
+        public int MaxNickLength
         {
-            get { return nickLength; }
-            set { nickLength = value; }
+            get { return maxNickLength; }
+            set { maxNickLength = value; }
         }
 
         private int maxLineLength = 510;
         public int MaxLineLength
         {
-            get
-            {
-                return maxLineLength;
-            }
-            set
-            {
-                maxLineLength = value;
-            }
+            get { return maxLineLength; }
+            set { maxLineLength = value; }
         }
+
+        private int maxLanguages = 10;
+        public int MaxLanguages
+        {
+            get { return maxLanguages; }
+            set { maxLanguages = value; }
+        }
+
+        private int maxChannelLength = 50;
+        public int MaxChannelLength
+        {
+            get { return maxChannelLength; }
+            set { maxChannelLength = value; }
+        }
+
+        private int maxTopicLength = 300;
+        public int MaxTopicLength
+        {
+            get { return maxTopicLength; }
+            set { maxTopicLength = value; }
+        }
+
+        private int maxKickLength = 300;
+        public int MaxKickLength
+        {
+            get { return maxKickLength; }
+            set { maxKickLength = value; }
+        }        
+        
+        private int maxAwayLength = 300;
+        public int MaxAwayLength
+        {
+            get { return maxAwayLength; }
+            set { maxAwayLength = value; }
+        }
+
 
         private List<string> motd = new List<string>();
 
@@ -120,6 +141,10 @@ namespace IrcD
         {
             get { return ircMode; }
         }
+
+        public IrcCaseMapping IrcCaseMapping { get; set; }
+
+
         private string standardPartMessage = "Leaving";
 
         public string StandardPartMessage
@@ -157,6 +182,7 @@ namespace IrcD
                 networkName = value;
             }
         }
+
 
     }
 }

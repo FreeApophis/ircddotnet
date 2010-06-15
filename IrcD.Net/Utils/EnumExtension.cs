@@ -18,36 +18,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
-using IrcD.Channel;
-using IrcD.ServerReplies;
 
-namespace IrcD.Modes.ChannelModes
+using System;
+
+namespace IrcD.Utils
 {
-    public class ModeTopic : ChannelMode
+    public static class EnumExtension
     {
-        public ModeTopic()
-            : base('t')
+        public static string ToDescription(this Enum enumeration)
         {
-        }
+            var type = enumeration.GetType();
+            var memInfo = type.GetMember(enumeration.ToString());
 
-        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
-        {
-            if (ircCommand == IrcCommandType.Topic)
+            if (null != memInfo && memInfo.Length > 0)
             {
-                UserPerChannelInfo upci;
-                if (!channel.UserPerChannelInfos.TryGetValue(user.Nick, out upci))
-                {
-                    user.IrcDaemon.Replies.SendNotOnChannel(user, channel.Name);
-                    return false;
-                }
-                if (upci.Modes.Level < 30)
-                {
-                    user.IrcDaemon.Replies.SendChannelOpPrivilegesNeeded(user, channel);
-                    return false;
-                }
+                object[] attrs = memInfo[0].GetCustomAttributes(typeof(EnumDescription), false);
+                if (null != attrs && attrs.Length > 0)
+                    return ((EnumDescription)attrs[0]).Text;
             }
-            return true;
+            return enumeration.ToString();
         }
     }
 }

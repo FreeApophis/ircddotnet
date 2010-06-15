@@ -20,6 +20,7 @@
 
 
 #if !UBUNTU
+using System.Linq;
 using IrcD.Database;
 using System.Linq;
 #endif
@@ -31,7 +32,7 @@ namespace IrcD
         public static void Main(string[] args)
         {
             var ircd = new IrcDaemon();
-            ircd.Options.NickLength = 50;
+            ircd.Options.MaxNickLength = 50;
 
 #if !UBUNTU
             ircd.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();

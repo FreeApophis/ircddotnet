@@ -19,6 +19,7 @@
  */
 
 using System.Text;
+using IrcD.Channel;
 
 namespace IrcD.ServerReplies
 {

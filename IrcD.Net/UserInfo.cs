@@ -24,8 +24,10 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 #if !UBUNTU
+using IrcD.Channel;
 using IrcD.Database;
 #endif
+using IrcD.Channel;
 using IrcD.Modes;
 using IrcD.Utils;
 using Enumerable = IrcD.Utils.Enumerable;

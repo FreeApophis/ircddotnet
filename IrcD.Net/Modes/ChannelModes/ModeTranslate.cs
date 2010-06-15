@@ -22,9 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IrcD.Channel;
 using IrcD.ServerReplies;
 using IrcD.Utils;
 using System.Runtime.Remoting.Messaging;
+using Enumerable = System.Linq.Enumerable;
 
 namespace IrcD.Modes.ChannelModes
 {
@@ -76,6 +78,20 @@ namespace IrcD.Modes.ChannelModes
                     user.IrcDaemon.Send.PrivateMessage(state.Second, user, state.First.Name, "Translation Failed");
                 }
             }
+        }
+
+        public override IEnumerable<string> Support(IrcDaemon ircDaemon)
+        {
+            var support = new List<string>();
+            var languages = GoogleTranslate.Languages.Select(l => l);
+
+            do
+            {
+                support.Add("LANGUAGES=" + ircDaemon.Options.MaxLanguages + "," + languages.Take(40).Select(l => l.Key).Concatenate(","));
+                languages = languages.Skip(40);
+            } while (languages.Any());
+
+            return support;
         }
     }
 }

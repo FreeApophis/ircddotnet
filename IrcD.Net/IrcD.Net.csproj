@@ -78,7 +78,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChannelInfo.cs" />
+    <Compile Include="Channel\ChannelInfo.cs" />
+    <Compile Include="Channel\ChannelType.cs" />
+    <Compile Include="Channel\NormalChannel.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\CommandList.cs" />
     <Compile Include="Commands\Die.cs" />
@@ -133,6 +135,7 @@
     <Compile Include="Database\Log.cs" />
     <Compile Include="Database\Main.cs" />
     <Compile Include="Database\Setting.cs" />
+    <Compile Include="IrcCaseMapping.cs" />
     <Compile Include="IrcMode.cs" />
     <Compile Include="InfoBase.cs" />
     <Compile Include="IrcDaemon.cs" />
@@ -177,7 +180,9 @@
     <Compile Include="ServerOptions.cs" />
     <Compile Include="ServerReplies\ServerReplies.cs" />
     <Compile Include="UserInfo.cs" />
-    <Compile Include="UserPerChannelInfo.cs" />
+    <Compile Include="Channel\UserPerChannelInfo.cs" />
+    <Compile Include="Utils\EnumExtension.cs" />
+    <Compile Include="Utils\EnumDescription.cs" />
     <Compile Include="Utils\GoogleTranslate.cs" />
     <Compile Include="Utils\IrcConstants.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using IrcD.Channel;
 using IrcD.Utils;
 using Enumerable = IrcD.Utils.Enumerable;
 
@@ -139,18 +140,39 @@ namespace IrcD.ServerReplies
         /// <param name="info"></param>
         public void SendISupport(UserInfo info)
         {
+            // ISUPPORT never went to an RFC, but this is based on draft03.
+            const string version = "draft03";
+
             var daemon = info.IrcDaemon;
+
             // TODO: features supported by server
 
             var features = new List<string>();
 
-            features.Add("PREFIX=" + info.IrcDaemon.SupportedRanks.ToPrefixList());
-            features.Add(" CHANMODES=" + info.IrcDaemon.SupportedChannelModes.ToParameterList());
-            features.AddRange(info.IrcDaemon.SupportedChannelModes.SelectMany(m => m.Value.Support(info.IrcDaemon)));
+            features.Add("STD=" + version);
+            features.Add("PREFIX=" + daemon.SupportedRanks.ToPrefixList());
+            features.Add("CHANMODES=" + daemon.SupportedChannelModes.ToParameterList());
+            features.Add("CHANTYPES=" + daemon.ChannelTypes.Select(type => type.Value.Prefix).Concatenate(string.Empty));
+            features.Add("CHANLIMIT=" + daemon.ChannelTypes.Select(c => c.Value.Prefix + ":" + c.Value.MaxJoinedAllowed).Concatenate(","));
+            features.AddRange(daemon.SupportedChannelModes.SelectMany(m => m.Value.Support(info.IrcDaemon)));
             features.Add("NETWORK=" + daemon.Options.NetworkName);
+            features.Add("CASEMAPPING=" + daemon.Options.IrcCaseMapping.ToDescription());
+            // TODO: Group by same MaxJoinedAllowed
+            features.Add("CHANNELLEN=" + daemon.Options.MaxChannelLength);
+            features.Add("NICKLEN=" + daemon.Options.MaxNickLength);
+            features.Add("MAXNICKLEN=" + daemon.Options.MaxNickLength);
+            features.Add("TOPICLEN=" + daemon.Options.MaxTopicLength);
+            features.Add("KICKLEN=" + daemon.Options.MaxKickLength);
+            features.Add("AWAYLEN=" + daemon.Options.MaxAwayLength);
+            features.AddRange(daemon.Commands.Supported());
+
+            if (daemon.Options.IrcMode != IrcMode.Rfc1459)
+            {
+                features.Add("RFC2812");
+            }
 
             BuildMessageHeader(info, ReplyCode.ISupport);
-            sendSplitted(response.ToString(), info, features, "are supported by this server");
+            SendSplitted(response.ToString(), info, features, "are supported by this server");
         }
 
         /// <summary>
@@ -160,21 +182,36 @@ namespace IrcD.ServerReplies
         /// <param name="info"></param>
         /// <param name="features"></param>
         /// <param name="postfix"></param>
-        private void sendSplitted(string prefix, UserInfo info, List<string> features, string postfix)
+        private static void SendSplitted(string prefix, UserInfo info, IEnumerable<string> features, string postfix)
         {
             var daemon = info.IrcDaemon;
             var currentLine = new StringBuilder();
+            var postfixlength = postfix != null ? 2 + postfix.Length : 0;
 
             foreach (var feature in features)
             {
-                if (prefix.Length + currentLine.Length + 1 + feature.Length + 2 + postfix.Length > daemon.Options.MaxLineLength)
+                if (prefix.Length + currentLine.Length + 1 + feature.Length + postfixlength > daemon.Options.MaxLineLength)
                 {
-                    currentLine.Append(" :");
-                    currentLine.Append(postfix);
+                    if (postfix != null)
+                    {
+                        currentLine.Append(" :");
+                        currentLine.Append(postfix);
+                    }
                     info.WriteLine(currentLine);
                     currentLine.Length = 0;
+                    currentLine.Append(prefix);
                 }
+                currentLine.Append(" ");
+                currentLine.Append(feature);
             }
+
+            if (postfix != null)
+            {
+                currentLine.Append(" :");
+                currentLine.Append(postfix);
+            }
+            info.WriteLine(currentLine);
+
         }
 
 

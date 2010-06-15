@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using IrcD.Utils;
 
@@ -39,6 +40,11 @@ namespace IrcD.Commands
         public void Add(CommandBase command)
         {
             commandList.Add(command.Name, command);
+        }
+
+        public IEnumerable<string> Supported()
+        {
+            return commandList.SelectMany(m => m.Value.Support(ircDaemon));
         }
 
         public void Handle(string command, UserInfo info, List<string> args)

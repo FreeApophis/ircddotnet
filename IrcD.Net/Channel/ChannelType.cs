@@ -17,37 +17,22 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-using System.Collections.Generic;
-using IrcD.Channel;
-using IrcD.ServerReplies;
-
-namespace IrcD.Modes.ChannelModes
+namespace IrcD.Channel
 {
-    public class ModeTopic : ChannelMode
+    public class ChannelType
     {
-        public ModeTopic()
-            : base('t')
+        public ChannelType(char prefix, int maxJoinedAllowed)
         {
+            this.prefix = prefix;
+            MaxJoinedAllowed = maxJoinedAllowed;
         }
 
-        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        private readonly char prefix;
+        public char Prefix
         {
-            if (ircCommand == IrcCommandType.Topic)
-            {
-                UserPerChannelInfo upci;
-                if (!channel.UserPerChannelInfos.TryGetValue(user.Nick, out upci))
-                {
-                    user.IrcDaemon.Replies.SendNotOnChannel(user, channel.Name);
-                    return false;
-                }
-                if (upci.Modes.Level < 30)
-                {
-                    user.IrcDaemon.Replies.SendChannelOpPrivilegesNeeded(user, channel);
-                    return false;
-                }
-            }
-            return true;
+            get { return prefix; }
         }
+
+        public int MaxJoinedAllowed { get; set; }
     }
 }
