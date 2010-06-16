@@ -33,7 +33,7 @@ using IrcD.Utils;
 namespace IrcD
 {
 
-    public class UserInfo : InfoBase
+    public class UserInfo : ConnectionInfo
     {
         public UserInfo(IrcDaemon ircDaemon, Socket socket, string host, bool isAcceptSocket, bool passAccepted)
             : base(ircDaemon)

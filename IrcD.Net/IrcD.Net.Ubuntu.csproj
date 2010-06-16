@@ -140,6 +140,7 @@
     <Compile Include="Commands\User.cs" />
     <Compile Include="Commands\Knock.cs" />
     <Compile Include="Commands\Ping.cs" />
+    <Compile Include="ConnectionInfo.cs" />
     <Compile Include="Database\Channel.cs" />
     <Compile Include="Database\DatabaseCommon.cs" />
     <Compile Include="Database\DatabaseModel.cs" />

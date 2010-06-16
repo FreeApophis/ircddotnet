@@ -18,27 +18,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Text;
-
 namespace IrcD
 {
-    class ServerInfo : ConnectionInfo
+    public abstract class ConnectionInfo : InfoBase
     {
-        public ServerInfo(IrcDaemon ircDaemon)
+        protected ConnectionInfo(IrcDaemon ircDaemon)
             : base(ircDaemon)
         {
-
-        }
-
-        public override void WriteLine(StringBuilder line)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void WriteLine(StringBuilder line, UserInfo exception)
-        {
-            throw new NotImplementedException();
         }
     }
 }

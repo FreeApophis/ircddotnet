@@ -21,29 +21,81 @@
 
 namespace IrcD.Utils
 {
-    public class Tuple<TFirst, TSecond>
+    /// <summary>
+    /// Emulates the Tuple from the System Namespace for the non .NET 4.0 Build.
+    /// </summary>
+    public class Tuple
     {
-        public Tuple(TFirst first, TSecond second)
+        public static Tuple<T1> Create<T1>(T1 t1)
         {
-            First = first;
-            Second = second;
+            return new Tuple<T1>(t1);
         }
 
-        public TFirst First { get; set; }
-        public TSecond Second { get; set; }
+        public static Tuple<T1, T2> Create<T1, T2>(T1 t1, T2 t2)
+        {
+            return new Tuple<T1, T2>(t1, t2);
+        }
+
+        public static Tuple<T1, T2, T3> Create<T1, T2, T3>(T1 t1, T2 t2, T3 t3)
+        {
+            return new Tuple<T1, T2, T3>(t1, t2, t3);
+        }
+
+        public static Tuple<T1, T2, T3, T4> Create<T1, T2, T3, T4>(T1 t1, T2 t2, T3 t3, T4 t4)
+        {
+            return new Tuple<T1, T2, T3, T4>(t1, t2, t3, t4);
+        }
     }
 
-    public class Tuple<TFirst, TSecond, TThird>
+    public class Tuple<T1>
     {
-        public Tuple(TFirst first, TSecond second, TThird third)
+        public Tuple(T1 t1)
         {
-            First = first;
-            Second = second;
-            Third = third;
+            Item1 = t1;
         }
 
-        public TFirst First { get; set; }
-        public TSecond Second { get; set; }
-        public TThird Third { get; set; }
+        public T1 Item1 { get; private set; }
+    }
+
+    public class Tuple<T1, T2>
+    {
+        public Tuple(T1 t1, T2 t2)
+        {
+            Item1 = t1;
+            Item2 = t2;
+        }
+
+        public T1 Item1 { get; private set; }
+        public T2 Item2 { get; private set; }
+    }
+
+    public class Tuple<T1, T2, T3>
+    {
+        public Tuple(T1 t1, T2 t2, T3 t3)
+        {
+            Item1 = t1;
+            Item2 = t2;
+            Item3 = t3;
+        }
+
+        public T1 Item1 { get; private set; }
+        public T2 Item2 { get; private set; }
+        public T3 Item3 { get; private set; }
+    }
+
+    public class Tuple<T1, T2, T3, T4>
+    {
+        public Tuple(T1 t1, T2 t2, T3 t3, T4 t4)
+        {
+            Item1 = t1;
+            Item2 = t2;
+            Item3 = t3;
+            Item4 = t4;
+        }
+
+        public T1 Item1 { get; private set; }
+        public T2 Item2 { get; private set; }
+        public T3 Item3 { get; private set; }
+        public T4 Item4 { get; private set; }
     }
 }

@@ -145,7 +145,7 @@ namespace IrcD.Utils
                 {
                     throw new Exception((string)((Hashtable)jsonObj)["responseDetails"]);
                 }
-                return new Tuple<string, string>(HttpUtility.HtmlDecode(((string)((Hashtable)((Hashtable)jsonObj)["responseData"])["translatedText"])), HttpUtility.HtmlDecode(((string)((Hashtable)((Hashtable)jsonObj)["responseData"])["detectedSourceLanguage"])));
+                return Tuple.Create(HttpUtility.HtmlDecode(((string)((Hashtable)((Hashtable)jsonObj)["responseData"])["translatedText"])), HttpUtility.HtmlDecode(((string)((Hashtable)((Hashtable)jsonObj)["responseData"])["detectedSourceLanguage"])));
             }
             return null;
         }
@@ -182,7 +182,7 @@ namespace IrcD.Utils
                                 text = input;
                                 sourcelang = "F";
                             }
-                            result.Add(singleResponse.Target, new Tuple<string, string, string>(sourcelang, singleResponse.Target, text));
+                            result.Add(singleResponse.Target, Tuple.Create(sourcelang, singleResponse.Target, text));
                         }
                     }
                     else
@@ -200,7 +200,7 @@ namespace IrcD.Utils
                             text = input;
                             sourcelang = "F";
                         }
-                        result.Add(targetLanguages.First(), new Tuple<string, string, string>(sourcelang, targetLanguages.First(), text));
+                        result.Add(targetLanguages.First(), Tuple.Create(sourcelang, targetLanguages.First(), text));
                     }
                 }
             }
@@ -211,10 +211,10 @@ namespace IrcD.Utils
                     sourcelang = "F";
                     foreach (var targetLanguage in targetLanguages)
                     {
-                        result.Add(targetLanguage, new Tuple<string, string, string>("F", targetLanguage, input));
+                        result.Add(targetLanguage, Tuple.Create("F", targetLanguage, input));
                     }
                 }
-                result.Add(Original, new Tuple<string, string, string>(sourcelang, sourcelang, input));
+                result.Add(Original, Tuple.Create(sourcelang, sourcelang, input));
             }
             return result;
         }

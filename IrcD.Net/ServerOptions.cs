@@ -19,6 +19,8 @@
  */
 
 using System.Collections.Generic;
+using System.Net;
+using IrcD.Utils;
 
 namespace IrcD
 {
@@ -41,6 +43,9 @@ namespace IrcD
 
         public string ServerPass { get; set; }
 
+        public List<string> ConnectionPasses { get; set; }
+
+        public Tuple<IPEndPoint, string> ServerConnection { get; set; }
 
         private string serverName;
 

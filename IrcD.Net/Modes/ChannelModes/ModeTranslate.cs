@@ -62,20 +62,20 @@ namespace IrcD.Modes.ChannelModes
             var asyncDelegate = ((AsyncResult)asyncResult).AsyncDelegate;
             var result = ((GoogleTranslate.TranslateMultipleDelegate)asyncDelegate).EndInvoke(asyncResult);
 
-            foreach (var user in state.First.Users.Where(u => u != state.Second))
+            foreach (var user in state.Item1.Users.Where(u => u != state.Item2))
             {
                 Utils.Tuple<string, string, string> res;
-                if (user.Languages.Contains(result[GoogleTranslate.Original].First))
+                if (user.Languages.Contains(result[GoogleTranslate.Original].Item1))
                 {
-                    user.IrcDaemon.Send.PrivateMessage(state.Second, user, state.First.Name, "[" + result[GoogleTranslate.Original].First + "]" + result[GoogleTranslate.Original].Third);
+                    user.IrcDaemon.Send.PrivateMessage(state.Item2, user, state.Item1.Name, "[" + result[GoogleTranslate.Original].Item1 + "]" + result[GoogleTranslate.Original].Item3);
                 }
                 else if (result.TryGetValue(user.Languages.First(), out res))
                 {
-                    user.IrcDaemon.Send.PrivateMessage(state.Second, user, state.First.Name, "[" + res.First + "]" + res.Third);
+                    user.IrcDaemon.Send.PrivateMessage(state.Item2, user, state.Item1.Name, "[" + res.Item1 + "]" + res.Item3);
                 }
                 else
                 {
-                    user.IrcDaemon.Send.PrivateMessage(state.Second, user, state.First.Name, "Translation Failed");
+                    user.IrcDaemon.Send.PrivateMessage(state.Item2, user, state.Item1.Name, "Translation Failed");
                 }
             }
         }

@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IrcD.Commands
 {
@@ -44,6 +45,10 @@ namespace IrcD.Commands
             {
                 info.PassAccepted = true;
                 return;
+            }
+            if(IrcDaemon.Options.ConnectionPasses.Any(p => p == args[0]))
+            {
+                // This is an allowed Server connection
             }
             IrcDaemon.Replies.SendPasswordMismatch(info);
         }
