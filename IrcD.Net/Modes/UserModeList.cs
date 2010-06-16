@@ -27,6 +27,12 @@ namespace IrcD.Modes
 {
     public class UserModeList : ModeList<UserMode>
     {
+        public UserModeList(IrcDaemon ircDaemon)
+            : base(ircDaemon)
+        {
+
+        }
+
         public bool HandleEvent(IrcCommandType ircCommand, UserInfo user, List<string> args)
         {
             return Values.All(mode => mode.HandleEvent(ircCommand, user, args));
@@ -46,7 +52,7 @@ namespace IrcD.Modes
                     continue;
                 }
 
-                var umode = ModeFactory.GetUserMode(modechar);
+                var umode = IrcDaemon.ModeFactory.GetUserMode(modechar);
                 if (umode == null) continue;
                 if (plus)
                 {

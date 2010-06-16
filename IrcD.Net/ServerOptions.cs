@@ -31,12 +31,12 @@ namespace IrcD
             IrcCaseMapping = ircMode == IrcMode.Rfc1459 ? IrcCaseMapping.StrictRfc1459 : IrcCaseMapping.Rfc1459;
         }
 
-        private int serverPort = 6667;
+        private List<int> serverPorts = new List<int> { 6667 };
 
-        public int ServerPort
+        public List<int> ServerPorts
         {
-            get { return serverPort; }
-            set { serverPort = value; }
+            get { return serverPorts; }
+            set { serverPorts = value; }
         }
 
         public string ServerPass { get; set; }

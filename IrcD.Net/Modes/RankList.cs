@@ -25,6 +25,13 @@ namespace IrcD.Modes
 {
     public class RankList : ModeList<ChannelRank>
     {
+
+        public RankList(IrcDaemon ircDaemon)
+            : base(ircDaemon)
+        {
+
+        }
+
         public string ToPrefixList()
         {
             var ranks = new StringBuilder();

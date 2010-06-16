@@ -32,6 +32,7 @@ namespace IrcD.Channel
         {
             this.name = name;
             channelType = ircDaemon.SupportedChannelTypes[name[0]];
+            modes = new ChannelModeList(ircDaemon);
         }
 
         private readonly ChannelType channelType;
@@ -70,7 +71,7 @@ namespace IrcD.Channel
             }
         }
 
-        private readonly ChannelModeList modes = new ChannelModeList();
+        private readonly ChannelModeList modes;
 
         public ChannelModeList Modes
         {

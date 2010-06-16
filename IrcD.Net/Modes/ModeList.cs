@@ -26,6 +26,14 @@ namespace IrcD.Modes
 {
     public class ModeList<TMode> : SortedList<char, TMode> where TMode : Mode
     {
+
+        protected IrcDaemon IrcDaemon;
+
+        public ModeList(IrcDaemon ircDaemon)
+        {
+            IrcDaemon = ircDaemon;
+        }
+
         public void Add(TMode element)
         {
             Add(element.Char, element);

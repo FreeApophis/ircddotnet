@@ -22,9 +22,9 @@ using System.Collections.Generic;
 
 namespace IrcD.Modes
 {
-    class ModeFactory
+    public class ModeFactory
     {
-        public static T GetConstructor<T>() where T : Mode, new()
+        public T GetConstructor<T>() where T : Mode, new()
         {
             return new T();
         }
@@ -34,53 +34,53 @@ namespace IrcD.Modes
         public delegate UserMode ConstructUserMode();
 
         #region Channel Mode
-        private static readonly Dictionary<char, ConstructChannelMode> ChannelModeFactory = new Dictionary<char, ConstructChannelMode>();
+        private readonly Dictionary<char, ConstructChannelMode> channelModeFactory = new Dictionary<char, ConstructChannelMode>();
 
-        public static T AddChannelMode<T>() where T : ChannelMode, new()
+        public T AddChannelMode<T>() where T : ChannelMode, new()
         {
             var mode = new T();
-            ChannelModeFactory.Add(mode.Char, GetConstructor<T>);
+            channelModeFactory.Add(mode.Char, GetConstructor<T>);
             return mode;
         }
 
-        public static ChannelMode GetChannelMode(char c)
+        public ChannelMode GetChannelMode(char c)
         {
             ConstructChannelMode channelMode;
-            return ChannelModeFactory.TryGetValue(c, out channelMode) ? channelMode.Invoke() : null;
+            return channelModeFactory.TryGetValue(c, out channelMode) ? channelMode.Invoke() : null;
         }
         #endregion
 
         #region Channel Rank
-        private static readonly Dictionary<char, ConstructChannelRank> ChannelRankFactory = new Dictionary<char, ConstructChannelRank>();
+        private readonly Dictionary<char, ConstructChannelRank> channelRankFactory = new Dictionary<char, ConstructChannelRank>();
 
-        public static T AddChannelRank<T>() where T : ChannelRank, new()
+        public T AddChannelRank<T>() where T : ChannelRank, new()
         {
             var mode = new T();
-            ChannelRankFactory.Add(mode.Char, GetConstructor<T>);
+            channelRankFactory.Add(mode.Char, GetConstructor<T>);
             return mode;
         }
 
-        public static ChannelRank GetChannelRank(char c)
+        public ChannelRank GetChannelRank(char c)
         {
             ConstructChannelRank channelRank;
-            return ChannelRankFactory.TryGetValue(c, out channelRank) ? channelRank.Invoke() : null;
+            return channelRankFactory.TryGetValue(c, out channelRank) ? channelRank.Invoke() : null;
         }
         #endregion
 
         #region User Mode
-        private static readonly Dictionary<char, ConstructUserMode> UserModeFactory = new Dictionary<char, ConstructUserMode>();
+        private readonly Dictionary<char, ConstructUserMode> userModeFactory = new Dictionary<char, ConstructUserMode>();
 
-        public static T AddUserMode<T>() where T : UserMode, new()
+        public T AddUserMode<T>() where T : UserMode, new()
         {
             var mode = new T();
-            UserModeFactory.Add(mode.Char, GetConstructor<T>);
+            userModeFactory.Add(mode.Char, GetConstructor<T>);
             return mode;
         }
 
-        public static UserMode GetUserMode(char c)
+        public UserMode GetUserMode(char c)
         {
             ConstructUserMode userMode;
-            return UserModeFactory.TryGetValue(c, out userMode) ? userMode.Invoke() : null;
+            return userModeFactory.TryGetValue(c, out userMode) ? userMode.Invoke() : null;
         }
         #endregion
     }

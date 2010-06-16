@@ -81,7 +81,16 @@ namespace IrcD
         }
 
         #region Modes
-        private readonly RankList supportedRanks = new RankList();
+        private readonly ModeFactory modeFactory;
+        public ModeFactory ModeFactory
+        {
+            get
+            {
+                return modeFactory;
+            }
+        }
+
+        private readonly RankList supportedRanks;
         public RankList SupportedRanks
         {
             get
@@ -89,7 +98,8 @@ namespace IrcD
                 return supportedRanks;
             }
         }
-        private readonly ChannelModeList supportedChannelModes = new ChannelModeList();
+
+        private readonly ChannelModeList supportedChannelModes;
         public ChannelModeList SupportedChannelModes
         {
             get
@@ -97,7 +107,7 @@ namespace IrcD
                 return supportedChannelModes;
             }
         }
-        private readonly UserModeList supportedUserModes = new UserModeList();
+        private readonly UserModeList supportedUserModes;
         public UserModeList SupportedUserModes
         {
             get
@@ -173,6 +183,12 @@ namespace IrcD
             // The protocol version cannot be changed after construction, 
             // because the construction methods below use this Option
             options = new ServerOptions(ircMode);
+            
+            // Setup Modes Infrastructure
+            modeFactory = new ModeFactory();
+            supportedChannelModes = new ChannelModeList(this);
+            supportedRanks = new RankList(this);
+            supportedUserModes = new UserModeList(this);
 
             // The Protocol Objects 
             commands = new CommandList(this);
@@ -249,34 +265,34 @@ namespace IrcD
 
         private void SetupModes()
         {
-            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeBan>());
+            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeBan>());
             if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
-                supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeBanException>());
+                supportedChannelModes.Add(modeFactory.AddChannelMode<ModeBanException>());
 
             if (Options.IrcMode == IrcMode.Modern)
-                supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeColorless>());
+                supportedChannelModes.Add(modeFactory.AddChannelMode<ModeColorless>());
 
-            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeInvite>());
+            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeInvite>());
             if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
-                supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeInviteException>());
+                supportedChannelModes.Add(modeFactory.AddChannelMode<ModeInviteException>());
 
-            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeKey>());
-            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeLimit>());
-            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeModerated>());
-            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeNoExternal>());
-            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeSecret>());
-            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModePrivate>());
-            supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeTopic>());
+            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeKey>());
+            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeLimit>());
+            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeModerated>());
+            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeNoExternal>());
+            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeSecret>());
+            supportedChannelModes.Add(modeFactory.AddChannelMode<ModePrivate>());
+            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeTopic>());
             if (Options.IrcMode == IrcMode.Modern)
-                supportedChannelModes.Add(ModeFactory.AddChannelMode<ModeTranslate>());
+                supportedChannelModes.Add(modeFactory.AddChannelMode<ModeTranslate>());
 
-            if (Options.IrcMode == IrcMode.Modern) supportedRanks.Add(ModeFactory.AddChannelRank<ModeHalfOp>());
-            supportedRanks.Add(ModeFactory.AddChannelRank<ModeOp>());
-            supportedRanks.Add(ModeFactory.AddChannelRank<ModeVoice>());
+            if (Options.IrcMode == IrcMode.Modern) supportedRanks.Add(modeFactory.AddChannelRank<ModeHalfOp>());
+            supportedRanks.Add(modeFactory.AddChannelRank<ModeOp>());
+            supportedRanks.Add(modeFactory.AddChannelRank<ModeVoice>());
 
-            supportedUserModes.Add(ModeFactory.AddUserMode<ModeInvisible>());
-            supportedUserModes.Add(ModeFactory.AddUserMode<ModeRestricted>());
-            supportedUserModes.Add(ModeFactory.AddUserMode<ModeWallops>());
+            supportedUserModes.Add(modeFactory.AddUserMode<ModeInvisible>());
+            supportedUserModes.Add(modeFactory.AddUserMode<ModeRestricted>());
+            supportedUserModes.Add(modeFactory.AddUserMode<ModeWallops>());
         }
 
         private void SetupChannelTypes()
@@ -301,13 +317,16 @@ namespace IrcD
         private void MainLoop()
         {
 
-            localEp = new IPEndPoint(IPAddress.Any, Options.ServerPort);
-            var connectSocket = new Socket(localEp.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            foreach (var port in Options.ServerPorts)
+            {
+                localEp = new IPEndPoint(IPAddress.Any, port);
+                var connectSocket = new Socket(localEp.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-            connectSocket.Bind(localEp);
-            connectSocket.Listen(20);
+                connectSocket.Bind(localEp);
+                connectSocket.Listen(20);
 
-            sockets.Add(connectSocket, new UserInfo(this, connectSocket, Options.ServerName, true, true));
+                sockets.Add(connectSocket, new UserInfo(this, connectSocket, Options.ServerName, true, true));
+            }
 
             while (connected)
             {

@@ -29,6 +29,12 @@ namespace IrcD.Modes
 {
     public class ChannelModeList : ModeList<ChannelMode>
     {
+        public ChannelModeList(IrcDaemon ircDaemon)
+            : base(ircDaemon)
+        {
+
+        }
+
         public bool IsSecret()
         {
             return Values.Any(mode => mode is ModeSecret);
@@ -71,8 +77,8 @@ namespace IrcD.Modes
                     continue;
                 }
 
-                var cmode = ModeFactory.GetChannelMode(modechar);
-                var crank = ModeFactory.GetChannelRank(modechar);
+                var cmode = IrcDaemon.ModeFactory.GetChannelMode(modechar);
+                var crank = IrcDaemon.ModeFactory.GetChannelRank(modechar);
 
                 if (plus == null)
                 {

@@ -19,10 +19,11 @@
  */
 
 
+using System.Threading;
+
 #if !UBUNTU
 using System.Linq;
 using IrcD.Database;
-using System.Linq;
 #endif
 
 namespace IrcD
@@ -31,15 +32,28 @@ namespace IrcD
     {
         public static void Main(string[] args)
         {
-            var ircd = new IrcDaemon();
-            ircd.Options.MaxNickLength = 50;
+            var ircd1 = new IrcDaemon();
+
+            ircd1.Options.MaxNickLength = 50;
+            ircd1.Options.ServerPorts.Clear();
+            ircd1.Options.ServerPorts.Add(6667);
+            ircd1.Options.ServerPorts.Add(6668);
 
 #if !UBUNTU
-            ircd.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();
-            ircd.Options.ServerName = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerName" select setting.Value).SingleOrDefault();
-            ircd.Options.MOTD.AddRange(DatabaseCommon.Db.Settings.Where(setting => setting.Key == "MessageOfTheDay").Select(setting => setting.Value));
+            ircd1.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();
+            ircd1.Options.ServerName = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerName" select setting.Value).SingleOrDefault();
+            ircd1.Options.MOTD.AddRange(DatabaseCommon.Db.Settings.Where(setting => setting.Key == "MessageOfTheDay").Select(setting => setting.Value));
 #endif
-            ircd.Start();
+            var t = new Thread(ircd1.Start);
+            t.Start();
+
+            var ircd2 = new IrcDaemon();
+
+            ircd2.Options.MaxNickLength = 50;
+            ircd2.Options.ServerPorts.Clear();
+            ircd2.Options.ServerPorts.Add(6669);
+
+            ircd2.Start();
         }
     }
 }

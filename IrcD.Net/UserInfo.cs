@@ -24,13 +24,11 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 #if !UBUNTU
-using IrcD.Channel;
 using IrcD.Database;
 #endif
 using IrcD.Channel;
 using IrcD.Modes;
 using IrcD.Utils;
-using Enumerable = IrcD.Utils.Enumerable;
 
 namespace IrcD
 {
@@ -48,6 +46,8 @@ namespace IrcD
 
             this.isAcceptSocket = isAcceptSocket;
             this.socket = socket;
+
+            modes = new UserModeList(ircDaemon);
         }
 
         private readonly Socket socket;
@@ -256,7 +256,7 @@ namespace IrcD
             }
         }
 
-        private readonly UserModeList modes = new UserModeList();
+        private readonly UserModeList modes;
 
         public UserModeList Modes
         {

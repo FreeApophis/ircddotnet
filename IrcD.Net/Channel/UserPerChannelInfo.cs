@@ -51,10 +51,11 @@ namespace IrcD.Channel
         {
             this.userInfo = userInfo;
             this.channelInfo = channelInfo;
+            modes = new RankList(userInfo.IrcDaemon);
         }
 
 
-        private readonly RankList modes = new RankList();
+        private readonly RankList modes;
 
         public RankList Modes
         {
