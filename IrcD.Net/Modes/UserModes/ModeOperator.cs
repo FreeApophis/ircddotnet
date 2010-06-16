@@ -19,16 +19,28 @@
  */
 
 
-namespace IrcD.ServerReplies
+using System.Collections.Generic;
+using IrcD.ServerReplies;
+
+namespace IrcD.Modes.UserModes
 {
-    public enum IrcCommandType
+    class ModeOperator : UserMode
     {
-        Join,
-        PrivateMessage,
-        Notice,
-        List,
-        Topic,
-        Invite,
-        Kill
+        public ModeOperator()
+            : base('o')
+        {
+        }
+
+        public override bool HandleEvent(IrcCommandType ircCommand, UserInfo user, List<string> args)
+        {
+            if (ircCommand == IrcCommandType.Kill)
+            {
+                //TODO: Kill is not yet implemented
+                //user.IrcDaemon.Send.Kill();
+                return false;
+            }
+
+            return true;
+        }
     }
 }

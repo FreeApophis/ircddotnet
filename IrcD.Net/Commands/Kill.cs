@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {
@@ -30,6 +31,21 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+            if (args.Count < 1)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+            if (!info.Modes.HandleEvent(IrcCommandType.Kill, info, args))
+            {
+                return;
+            }
+            IrcDaemon.Replies.SendNoPrivileges(info);
         }
     }
 }

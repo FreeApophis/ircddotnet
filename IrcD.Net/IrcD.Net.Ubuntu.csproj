@@ -180,6 +180,8 @@
     <Compile Include="Modes\UserModeList.cs" />
     <Compile Include="Modes\UserModes\ModeAway.cs" />
     <Compile Include="Modes\UserModes\ModeInvisible.cs" />
+    <Compile Include="Modes\UserModes\ModeLocalOperator.cs" />
+    <Compile Include="Modes\UserModes\ModeOperator.cs" />
     <Compile Include="Modes\UserModes\ModeRestricted.cs" />
     <Compile Include="AlreadyCalledException.cs" />
     <Compile Include="Modes\UserModes\ModeWallops.cs" />

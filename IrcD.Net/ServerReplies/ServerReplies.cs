@@ -46,7 +46,7 @@ namespace IrcD.ServerReplies
             SendCreated(info);
             SendMyInfo(info);
             SendISupport(info);
-            if (ircDaemon.Options.MOTD.Count == 0)
+            if (string.IsNullOrEmpty(ircDaemon.Options.MessageOfTheDay))
             {
                 SendNoMotd(info);
             }
@@ -838,7 +838,7 @@ namespace IrcD.ServerReplies
         /// <param name="info"></param>
         public void SendMotd(UserInfo info)
         {
-            foreach (var motdLine in ircDaemon.Options.MOTD)
+            foreach (var motdLine in ircDaemon.Options.MessageOfTheDay.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 BuildMessageHeader(info, ReplyCode.Motd);
 

@@ -43,7 +43,7 @@ namespace IrcD
 #if !UBUNTU
             ircd1.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();
             ircd1.Options.ServerName = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerName" select setting.Value).SingleOrDefault();
-            ircd1.Options.MOTD.AddRange(DatabaseCommon.Db.Settings.Where(setting => setting.Key == "MessageOfTheDay").Select(setting => setting.Value));
+            ircd1.Options.MessageOfTheDay = (from setting in DatabaseCommon.Db.Settings where setting.Key == "MessageOfTheDay" select setting.Value).SingleOrDefault();
 #endif
             var t = new Thread(ircd1.Start);
             t.Start();

@@ -290,7 +290,9 @@ namespace IrcD
             supportedRanks.Add(modeFactory.AddChannelRank<ModeOp>());
             supportedRanks.Add(modeFactory.AddChannelRank<ModeVoice>());
 
+            supportedUserModes.Add(modeFactory.AddUserMode<ModeLocalOperator>());
             supportedUserModes.Add(modeFactory.AddUserMode<ModeInvisible>());
+            supportedUserModes.Add(modeFactory.AddUserMode<ModeOperator>());
             supportedUserModes.Add(modeFactory.AddUserMode<ModeRestricted>());
             supportedUserModes.Add(modeFactory.AddUserMode<ModeWallops>());
         }

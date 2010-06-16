@@ -120,13 +120,7 @@ namespace IrcD
         }
 
 
-        private List<string> motd = new List<string>();
-
-        public List<string> MOTD
-        {
-            get { return motd; }
-            set { motd = value; }
-        }
+        public string MessageOfTheDay { get; set; }
 
         private readonly Dictionary<string, string> oLine = new Dictionary<string, string>();
 

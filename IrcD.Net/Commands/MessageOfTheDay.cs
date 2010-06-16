@@ -38,7 +38,7 @@ namespace IrcD.Commands
 
             // TODO: parameter 1 parsing
 
-            if (IrcDaemon.Options.MOTD.Count == 0)
+            if (string.IsNullOrEmpty(IrcDaemon.Options.MessageOfTheDay))
             {
                 IrcDaemon.Replies.SendNoMotd(info);
             }

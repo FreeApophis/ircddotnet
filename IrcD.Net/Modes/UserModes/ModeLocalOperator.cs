@@ -19,16 +19,21 @@
  */
 
 
-namespace IrcD.ServerReplies
+using System;
+using System.Collections.Generic;
+using IrcD.ServerReplies;
+
+namespace IrcD.Modes.UserModes
 {
-    public enum IrcCommandType
+    class ModeLocalOperator : UserMode
     {
-        Join,
-        PrivateMessage,
-        Notice,
-        List,
-        Topic,
-        Invite,
-        Kill
+        public ModeLocalOperator() : base('O')
+        {
+        }
+
+        public override bool HandleEvent(IrcCommandType ircCommand, UserInfo user, List<string> args)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
