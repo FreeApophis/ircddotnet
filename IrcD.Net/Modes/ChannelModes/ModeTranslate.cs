@@ -22,11 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using IrcD.Channel;
 using IrcD.ServerReplies;
 using IrcD.Utils;
-using System.Runtime.Remoting.Messaging;
-using Enumerable = System.Linq.Enumerable;
 
 namespace IrcD.Modes.ChannelModes
 {
@@ -40,42 +39,72 @@ namespace IrcD.Modes.ChannelModes
             translator = new GoogleTranslate();
         }
 
+        private bool onlyOnce;
+
         public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
         {
+            if (onlyOnce) { return true; }
+            onlyOnce = true;
+
             if (ircCommand == IrcCommandType.Join)
             {
-
+                user.IrcDaemon.Send.Notice(user, user, channel.Name, "This channel automatically translates your messages, user the LANGUAGE command to set your preferred language");
             }
-            if (ircCommand == IrcCommandType.PrivateMessage)
+            if (ircCommand == IrcCommandType.PrivateMessage || ircCommand == IrcCommandType.Notice)
             {
-                var t = new GoogleTranslate.TranslateMultipleDelegate(translator.TranslateText);
-                t.BeginInvoke(args[1], channel.Users.Select(u => u.Languages.First()).Distinct(), TranslateCallBack, new Utils.Tuple<ChannelInfo, UserInfo>(channel, user));
+                if (!channel.Modes.HandleEvent(IrcCommandType.PrivateMessage, channel, user, args))
+                {
+                    onlyOnce = false;
+                    return false;
+                }
 
+                var t = new GoogleTranslate.TranslateMultipleDelegate(translator.TranslateText);
+                t.BeginInvoke(args[1], channel.Users.Select(u => u.Languages.First()).Distinct(), TranslateCallBack, Utils.Tuple.Create(channel, user, ircCommand));
+
+                onlyOnce = false;
                 return false;
             }
+
+            onlyOnce = false;
             return true;
         }
 
         private static void TranslateCallBack(IAsyncResult asyncResult)
         {
-            var state = (Utils.Tuple<ChannelInfo, UserInfo>)asyncResult.AsyncState;
+            var state = (Utils.Tuple<ChannelInfo, UserInfo, IrcCommandType>)asyncResult.AsyncState;
             var asyncDelegate = ((AsyncResult)asyncResult).AsyncDelegate;
             var result = ((GoogleTranslate.TranslateMultipleDelegate)asyncDelegate).EndInvoke(asyncResult);
 
             foreach (var user in state.Item1.Users.Where(u => u != state.Item2))
             {
                 Utils.Tuple<string, string, string> res;
+                string message;
+
                 if (user.Languages.Contains(result[GoogleTranslate.Original].Item1))
                 {
-                    user.IrcDaemon.Send.PrivateMessage(state.Item2, user, state.Item1.Name, "[" + result[GoogleTranslate.Original].Item1 + "]" + result[GoogleTranslate.Original].Item3);
+                    message = "[" + result[GoogleTranslate.Original].Item1 + "] " + result[GoogleTranslate.Original].Item3;
                 }
                 else if (result.TryGetValue(user.Languages.First(), out res))
                 {
-                    user.IrcDaemon.Send.PrivateMessage(state.Item2, user, state.Item1.Name, "[" + res.Item1 + "]" + res.Item3);
+                    message = "[" + res.Item1 + "] " + res.Item3;
+                }
+                else if (result.Any())
+                {
+                    message = "[" + result.Last().Value.Item1 + "] " + result.Last().Value.Item3;
                 }
                 else
                 {
-                    user.IrcDaemon.Send.PrivateMessage(state.Item2, user, state.Item1.Name, "Translation Failed");
+                    // This should never happen: There must be always at least the Original in the result
+                    message = "BUG: Translation failed miserably";
+                }
+                switch (state.Item3)
+                {
+                    case IrcCommandType.PrivateMessage:
+                        user.IrcDaemon.Send.PrivateMessage(state.Item2, user, state.Item1.Name, message);
+                        break;
+                    case IrcCommandType.Notice:
+                        user.IrcDaemon.Send.Notice(state.Item2, user, state.Item1.Name, message);
+                        break;
                 }
             }
         }

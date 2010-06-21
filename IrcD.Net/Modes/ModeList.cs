@@ -55,5 +55,11 @@ namespace IrcD.Modes
 
             return modes.ToString();
         }
+
+        public bool Exist<TExist>() where TExist : TMode
+        {
+            return Values.Any(m => m is TExist);
+        }
+
     }
 }

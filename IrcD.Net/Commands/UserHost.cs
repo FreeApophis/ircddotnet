@@ -30,6 +30,28 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+            if (args.Count < 1)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+
+            var users = new List<UserInfo>();
+            foreach (var arg in args)
+            {
+                UserInfo user;
+                if (IrcDaemon.Nicks.TryGetValue(arg, out user))
+                {
+                    users.Add(user);
+                }
+            }
+
+            IrcDaemon.Replies.SendUserHost(info, users);
         }
     }
 }

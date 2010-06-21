@@ -56,7 +56,7 @@ namespace IrcD.Commands
             IrcDaemon.Replies.SendWhoIsServer(info, user);
             if (user.AwayMessage != null)
             {
-                IrcDaemon.Replies.SendAwayMsg(info, user);
+                IrcDaemon.Replies.SendAwayMessage(info, user);
             }
 
             if (!info.Modes.HandleEvent(IrcCommandType.Join, info, args))

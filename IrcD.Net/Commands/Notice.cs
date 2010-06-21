@@ -74,7 +74,7 @@ namespace IrcD.Commands
 
                     if (user.AwayMessage != null)
                     {
-                        IrcDaemon.Replies.SendAwayMsg(info, user);
+                        IrcDaemon.Replies.SendAwayMessage(info, user);
                     }
 
                     // Send PM

@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IrcD.Channel;
+using IrcD.Modes.UserModes;
 using IrcD.Utils;
 
 namespace IrcD.ServerReplies
@@ -39,6 +40,7 @@ namespace IrcD.ServerReplies
             this.ircDaemon = ircDaemon;
         }
 
+        #region Helper Methods
         public void RegisterComplete(UserInfo info)
         {
             SendWelcome(info);
@@ -67,6 +69,79 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(info.Nick);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="prefix"></param>
+        /// <param name="info"></param>
+        /// <param name="features"></param>
+        /// <param name="postfix"></param>
+        private static void SendSplitted(string prefix, UserInfo info, IEnumerable<string> features, string postfix)
+        {
+            var daemon = info.IrcDaemon;
+            var currentLine = new StringBuilder();
+            var postfixlength = postfix != null ? 2 + postfix.Length : 0;
+
+            currentLine.Append(prefix);
+
+            var first = true;
+            foreach (var feature in features)
+            {
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    currentLine.Append(" ");
+                }
+                if (feature.StartsWith("LANGUAGE"))
+                {
+                    currentLine.Append(feature);
+
+                    foreach (var language in GoogleTranslate.Languages.Keys)
+                    {
+                        if (currentLine.Length + 1 + language.Length + postfixlength > daemon.Options.MaxLineLength)
+                        {
+                            if (postfix != null)
+                            {
+                                currentLine.Append(" :");
+                                currentLine.Append(postfix);
+                            }
+                            info.WriteLine(currentLine);
+                            currentLine.Length = 0;
+                            currentLine.Append(prefix);
+                            currentLine.Append(feature);
+                        }
+                        currentLine.Append(",");
+                        currentLine.Append(language);
+                    }
+                    continue;
+                }
+                if (currentLine.Length + 1 + feature.Length + postfixlength > daemon.Options.MaxLineLength)
+                {
+                    if (postfix != null)
+                    {
+                        currentLine.Append(" :");
+                        currentLine.Append(postfix);
+                    }
+                    info.WriteLine(currentLine);
+                    currentLine.Length = 0;
+                    currentLine.Append(prefix);
+                }
+                currentLine.Append(feature);
+            }
+
+            if (postfix != null)
+            {
+                currentLine.Append(" :");
+                currentLine.Append(postfix);
+            }
+            info.WriteLine(currentLine);
+
+        }
+        #endregion
 
         /// <summary>
         /// Reply Code 001
@@ -142,11 +217,8 @@ namespace IrcD.ServerReplies
             // ISUPPORT never went to an RFC, but this is based on draft03.
             const string version = "draft03";
 
-            var daemon = info.IrcDaemon;
-
-            // TODO: features supported by server
-
             var features = new List<string>();
+            var daemon = info.IrcDaemon;
 
             features.Add("STD=" + version);
             features.Add("PREFIX=" + daemon.SupportedRanks.ToPrefixList());
@@ -171,75 +243,10 @@ namespace IrcD.ServerReplies
             }
 
             BuildMessageHeader(info, ReplyCode.ISupport);
+            response.Append(" ");
+
             SendSplitted(response.ToString(), info, features, "are supported by this server");
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="prefix"></param>
-        /// <param name="info"></param>
-        /// <param name="features"></param>
-        /// <param name="postfix"></param>
-        private static void SendSplitted(string prefix, UserInfo info, IEnumerable<string> features, string postfix)
-        {
-            var daemon = info.IrcDaemon;
-            var currentLine = new StringBuilder();
-            var postfixlength = postfix != null ? 2 + postfix.Length : 0;
-
-            currentLine.Append(prefix);
-
-            foreach (var feature in features)
-            {
-                if (feature.StartsWith("LANGUAGE"))
-                {
-                    currentLine.Append(" ");
-                    currentLine.Append(feature);
-
-                    foreach (var language in GoogleTranslate.Languages.Keys)
-                    {
-                        if (currentLine.Length + 1 + language.Length + postfixlength > daemon.Options.MaxLineLength)
-                        {
-                            if (postfix != null)
-                            {
-                                currentLine.Append(" :");
-                                currentLine.Append(postfix);
-                            }
-                            info.WriteLine(currentLine);
-                            currentLine.Length = 0;
-                            currentLine.Append(prefix);
-                            currentLine.Append(" ");
-                            currentLine.Append(feature);
-                        }
-                        currentLine.Append(",");
-                        currentLine.Append(language);
-                    }
-                    continue;
-                }
-                if (currentLine.Length + 1 + feature.Length + postfixlength > daemon.Options.MaxLineLength)
-                {
-                    if (postfix != null)
-                    {
-                        currentLine.Append(" :");
-                        currentLine.Append(postfix);
-                    }
-                    info.WriteLine(currentLine);
-                    currentLine.Length = 0;
-                    currentLine.Append(prefix);
-                }
-                currentLine.Append(" ");
-                currentLine.Append(feature);
-            }
-
-            if (postfix != null)
-            {
-                currentLine.Append(" :");
-                currentLine.Append(postfix);
-            }
-            info.WriteLine(currentLine);
-
-        }
-
 
         /// <summary>
         /// Reply Code 005 / 010
@@ -344,7 +351,7 @@ namespace IrcD.ServerReplies
         /// </summary>
         /// <param name="info"></param>
         /// <param name="awayUser"></param>
-        public void SendAwayMsg(UserInfo info, UserInfo awayUser)
+        public void SendAwayMessage(UserInfo info, UserInfo awayUser)
         {
             BuildMessageHeader(info, ReplyCode.Away);
 
@@ -354,6 +361,44 @@ namespace IrcD.ServerReplies
             response.Append(awayUser.AwayMessage);
 
             info.WriteLine(response);
+        }
+
+
+        /// <summary>
+        /// Reply 302
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="userInfos"></param>
+        public void SendUserHost(UserInfo info, List<UserInfo> userInfos)
+        {
+            BuildMessageHeader(info, ReplyCode.UserHost);
+
+            response.Append(" :");
+
+            var userHosts = new List<string>();
+
+            foreach (var userInfo in userInfos)
+            {
+                var userHost = new StringBuilder();
+
+                userHost.Append(userInfo.Nick);
+
+                if (userInfo.Modes.Exist<ModeOperator>() || userInfo.Modes.Exist<ModeLocalOperator>())
+                {
+                    userHost.Append("*");
+                }
+
+                userHost.Append("=");
+                userHost.Append(userInfo.Modes.Exist<ModeAway>() ? "-" : "+");
+                userHost.Append(userInfo.User);
+                userHost.Append("@");
+                userHost.Append(userInfo.Host);
+
+                userHosts.Add(userHost.ToString());
+
+            }
+
+            SendSplitted(response.ToString(), info, userHosts, null);
         }
 
         /// <summary>
@@ -366,13 +411,8 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.IsOn);
 
             response.Append(" :");
-            // TODO: split
-            foreach (var nick in nickList)
-            {
-                response.Append(nick + " ");
-            }
 
-            info.WriteLine(response);
+            SendSplitted(response.ToString(), info, nickList, null);
         }
 
         /// <summary>
@@ -511,21 +551,13 @@ namespace IrcD.ServerReplies
         /// <param name="who"></param>
         public void SendWhoIsChannels(UserInfo info, UserInfo who)
         {
-            // TODO: Split at max length
             BuildMessageHeader(info, ReplyCode.WhoIsChannels);
 
             response.Append(" ");
             response.Append(who.Nick);
             response.Append(" :");
 
-            foreach (var upci in who.UserPerChannelInfos)
-            {
-                response.Append(upci.Modes.NickPrefix);
-                response.Append(upci.ChannelInfo.Name);
-                response.Append(" ");
-            }
-
-            info.WriteLine(response);
+            SendSplitted(response.ToString(), info, who.UserPerChannelInfos.Select(ucpi => ucpi.Modes.NickPrefix + ucpi.ChannelInfo.Name), null);
         }
 
         /// <summary>
@@ -749,7 +781,6 @@ namespace IrcD.ServerReplies
         /// <param name="chan"></param>
         public void SendNamesReply(UserInfo info, ChannelInfo chan)
         {
-            // TODO: Split at max length
             BuildMessageHeader(info, ReplyCode.NamesReply);
             response.Append(" ");
             response.Append(chan.NamesPrefix);
@@ -757,14 +788,7 @@ namespace IrcD.ServerReplies
             response.Append(chan.Name);
             response.Append(" :");
 
-            foreach (var upci in chan.UserPerChannelInfos.Values)
-            {
-                response.Append(upci.Modes.NickPrefix);
-                response.Append(upci.UserInfo.Nick);
-                response.Append(" ");
-            }
-
-            info.WriteLine(response);
+            SendSplitted(response.ToString(), info, chan.UserPerChannelInfos.Values.Select(upci => upci.Modes.NickPrefix + upci.UserInfo.Nick), null);
         }
 
         /// <summary>

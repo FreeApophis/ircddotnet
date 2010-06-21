@@ -30,8 +30,9 @@ namespace IrcD.ServerReplies
 	    YourHost =                       002,
 	    Created =                        003,
 	    MyInfo =                         004,
-	    ISupport =                       005,
-	    Bounce =                         005,
+	    ISupport =                       005,	    
+        //RFC says this is 005 - but no implementation exists - 010 is the alternative, cause 005 is used for RPL_ISUPPORT.
+        Bounce =                         010,
 	    TraceLink =                      200,
 	    TraceConnecting =                201,
 	    TraceHandshake =                 202,

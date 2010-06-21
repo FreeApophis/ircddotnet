@@ -20,7 +20,7 @@
 
 using System;
 using System.Collections.Generic;
-using IrcD.Channel;
+using IrcD.Modes.UserModes;
 using IrcD.ServerReplies;
 
 namespace IrcD.Commands
@@ -49,8 +49,9 @@ namespace IrcD.Commands
                 return;
             }
 
-            // Only Private Messages reset this
+            // Only Private Messages set this
             info.LastAction = DateTime.Now;
+
             if (IrcDaemon.ValidChannel(args[0]))
             {
                 if (IrcDaemon.Channels.ContainsKey(args[0]))
@@ -72,16 +73,15 @@ namespace IrcD.Commands
             }
             else if (IrcDaemon.ValidNick(args[0]))
             {
-                if (IrcDaemon.Nicks.ContainsKey(args[0]))
+                UserInfo user;
+                if (IrcDaemon.Nicks.TryGetValue(args[0], out user))
                 {
-                    var user = IrcDaemon.Nicks[args[0]];
-
-                    if (user.AwayMessage != null)
+                    if (user.Modes.Exist<ModeAway>())
                     {
-                        IrcDaemon.Replies.SendAwayMsg(info, user);
+                        IrcDaemon.Replies.SendAwayMessage(info, user);
                     }
 
-                    // Send PM
+                    // Send Private Message
                     IrcDaemon.Send.PrivateMessage(info, user, user.Nick, args[1]);
                 }
                 else
