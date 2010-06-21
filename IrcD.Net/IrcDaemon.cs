@@ -146,6 +146,8 @@ namespace IrcD
         }
 
         private bool connected;
+        private bool restart;
+
         private byte[] buffer = new byte[MaxBufferSize];
         private EndPoint ep = new IPEndPoint(0, 0);
         private EndPoint localEp;
@@ -183,7 +185,7 @@ namespace IrcD
             // The protocol version cannot be changed after construction, 
             // because the construction methods below use this Option
             options = new ServerOptions(ircMode);
-            
+
             // Setup Modes Infrastructure
             modeFactory = new ModeFactory();
             supportedChannelModes = new ChannelModeList(this);
@@ -307,13 +309,19 @@ namespace IrcD
         {
             if (connected) return;
 
-            connected = true;
-            MainLoop();
+            do
+            {
+                restart = false;
+                connected = true;
+
+                MainLoop();
+            } while (restart);
         }
 
-        public void Stop()
+        public void Stop(bool startAgain)
         {
             connected = false;
+            restart = startAgain;
         }
 
         private void MainLoop()
@@ -399,6 +407,22 @@ namespace IrcD
                 }
 
             }
+
+            // QUIT Server
+            foreach (var user in sockets.Values.Where(u => !u.IsAcceptSocket).ToArray())
+            {
+                user.Remove("Server Shutdown");
+            }
+
+            foreach (var serverSocket in sockets.Values)
+            {
+                serverSocket.Socket.Close(5);
+            }
+
+            sockets.Clear();
+            channels.Clear();
+            nicks.Clear();
+            GC.Collect();
         }
 
         private void Parser(string line, Socket sock, UserInfo info)
