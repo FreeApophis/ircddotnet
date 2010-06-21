@@ -30,6 +30,13 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+
+            IrcDaemon.Replies.SendSummonDisabled(info);
         }
     }
 }

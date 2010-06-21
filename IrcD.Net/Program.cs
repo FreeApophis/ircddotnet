@@ -44,6 +44,7 @@ namespace IrcD
             ircd1.Options.ServerName = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerName" select setting.Value).SingleOrDefault();
             ircd1.Options.MessageOfTheDay = (from setting in DatabaseCommon.Db.Settings where setting.Key == "MessageOfTheDay" select setting.Value).SingleOrDefault();
 #endif
+            ircd1.Options.ServerName = "test.ch";
             var t = new Thread(ircd1.Start);
             t.Start();
 

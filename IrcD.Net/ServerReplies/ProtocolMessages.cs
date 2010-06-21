@@ -159,6 +159,19 @@ namespace IrcD.ServerReplies
             receiver.WriteLine(command);
         }
 
+        internal void Knock(UserInfo sender, InfoBase receiver, ChannelInfo channel, string message)
+        {
+            BuildMessageHeader(sender);
+
+            command.Append(" KNOCK ");
+            command.Append(channel.Name);
+            command.Append(" :");
+            command.Append(message);
+
+            receiver.WriteLine(command);
+        }
+
+
         // PING and PONG are special, the sender is the server! 
         // BuildMessagHeader() cannot be used
 
@@ -182,5 +195,19 @@ namespace IrcD.ServerReplies
 
             receiver.WriteLine(command);
         }
+
+        internal void Notice(InfoBase receiver, string target, string message)
+        {
+            command.Length = 0;
+            command.Append(ircDaemon.ServerPrefix);
+
+            command.Append(" NOTICE ");
+            command.Append(target);
+            command.Append(" :");
+            command.Append(message);
+
+            receiver.WriteLine(command);
+        }
+
     }
 }

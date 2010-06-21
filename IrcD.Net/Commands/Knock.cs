@@ -20,6 +20,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using IrcD.Channel;
+using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {
@@ -31,6 +33,33 @@ namespace IrcD.Commands
 
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Registered)
+            {
+                IrcDaemon.Replies.SendNotRegistered(info);
+                return;
+            }
+            if (args.Count < 1)
+            {
+                IrcDaemon.Replies.SendNeedMoreParams(info);
+                return;
+            }
+            ChannelInfo chan;
+
+            if (IrcDaemon.Channels.TryGetValue(args[0], out chan))
+            {
+                if (!chan.Modes.HandleEvent(IrcCommandType.Knock, chan, info, args))
+                {
+                    return;
+                }
+
+                IrcDaemon.Send.Notice(chan, chan.Name, "[KNOCK] by " + info.Usermask + "(" + ((args.Count > 1) ? args[1] : "no reason specified") + ")");
+                IrcDaemon.Send.Notice(info, info.Nick, "Knocked on " + chan.Name);
+            }
+            else
+            {
+                IrcDaemon.Replies.SendNoSuchChannel(info, args[0]);
+            }
+
         }
 
         public override IEnumerable<string> Support(IrcDaemon ircDaemon)

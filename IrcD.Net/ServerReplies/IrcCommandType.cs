@@ -29,6 +29,7 @@ namespace IrcD.ServerReplies
         List,
         Topic,
         Invite,
-        Kill
+        Kill,
+        Knock
     }
 }

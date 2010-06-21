@@ -151,7 +151,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Welcome);
 
-            response.Append(" :Welcome to the Internet Relay Network ");
+            response.Append(" :Welcome to the ");
+            response.Append(info.IrcDaemon.Options.NetworkName);
+            response.Append(" IRC Network ");
             response.Append(info.Usermask);
 
             info.WriteLine(response);
@@ -498,6 +500,23 @@ namespace IrcD.ServerReplies
             info.WriteLine(response);
         }
 
+
+        /// <summary>
+        /// Reply 315
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="mask"></param>
+        public void SendEndOfWho(UserInfo info, string mask)
+        {
+            BuildMessageHeader(info, ReplyCode.EndOfWho);
+
+            response.Append(" ");
+            response.Append(mask);
+            response.Append(" :End of /WHO list.");
+
+            info.WriteLine(response);
+        }
+
         /// <summary>
         /// Reply 317
         /// </summary>
@@ -652,7 +671,8 @@ namespace IrcD.ServerReplies
 
             response.Append(" ");
             response.Append(chan.Name);
-            response.Append(" :" + chan.Topic);
+            response.Append(" :");
+            response.Append(chan.Topic);
 
             info.WriteLine(response);
         }
@@ -684,6 +704,22 @@ namespace IrcD.ServerReplies
                 response.Append(" ");
                 response.Append(channel);
             }
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 342
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="user"></param>
+        public void SendSummoning(UserInfo info, string user)
+        {
+            BuildMessageHeader(info, ReplyCode.Summoning);
+
+            response.Append(" ");
+            response.Append(user);
+            response.Append(" :User summoned to irc");
 
             info.WriteLine(response);
         }
@@ -770,6 +806,44 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(ircDaemon.Options.ServerName);
             response.Append(" :" + System.Reflection.Assembly.GetExecutingAssembly().FullName);
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 352
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="who"></param>
+        public void SendWhoReply(UserInfo info, UserPerChannelInfo who)
+        {
+            BuildMessageHeader(info, ReplyCode.WhoReply);
+
+            response.Append(" ");
+            response.Append(who.ChannelInfo.Name);
+            response.Append(" ");
+            response.Append(who.UserInfo.User);
+            response.Append(" ");
+            response.Append(who.UserInfo.Host);
+            response.Append(" ");
+
+            // TODO Server to Server
+            response.Append(ircDaemon.Options.ServerName);
+            response.Append(" ");
+            response.Append(who.UserInfo.Nick);
+            response.Append(" ");
+            response.Append(who.UserInfo.Modes.Exist<ModeAway>() ? "G" : "H");
+            response.Append(who.UserInfo.Modes.Exist<ModeOperator>() || who.UserInfo.Modes.Exist<ModeLocalOperator>() ? "*" : string.Empty);
+            response.Append(who.Modes.NickPrefix);
+            response.Append(" :");
+
+            // TODO: Server to Server
+            //response.Append(who.Server.Hops);            
+            response.Append(0);
+            response.Append(" ");
+            response.Append(who.UserInfo.RealName);
+
+            //TODO: append d if deaf - add Deaf (such as Mode X / W on undernet)
 
             info.WriteLine(response);
         }
@@ -1439,6 +1513,26 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append(mode);
             response.Append(" :Channel list is full");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply 480
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="channel"></param>
+        /// <param name="reason"></param>
+        public void SendCannotKnock(UserInfo info, string channel, string reason)
+        {
+            BuildMessageHeader(info, ReplyCode.ErrorCannotKnock);
+
+            response.Append(" :Cannot knock on ");
+            response.Append(channel);
+
+            response.Append(" (");
+            response.Append(reason);
+            response.Append(")");
 
             info.WriteLine(response);
         }
