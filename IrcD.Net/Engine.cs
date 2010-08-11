@@ -19,6 +19,10 @@
  */
 
 
+using System;
+using System.Configuration.Install;
+using System.Reflection;
+using System.ServiceProcess;
 using System.Threading;
 
 #if !UBUNTU
@@ -28,9 +32,41 @@ using IrcD.Database;
 
 namespace IrcD
 {
-    class Program
+    class Engine
     {
+
         public static void Main(string[] args)
+        {
+            if (Environment.UserInteractive)
+            {
+                var parameter = string.Concat(args);
+                switch (parameter)
+                {
+                    case "--install":
+                        ManagedInstallerClass.InstallHelper(new[] { Assembly.GetExecutingAssembly().Location });
+                        return;
+                    case "--uninstall":
+                        ManagedInstallerClass.InstallHelper(new[] { "/u", Assembly.GetExecutingAssembly().Location });
+                        return;
+                }
+
+                /* blocking */
+                Start();
+            }
+            else
+            {
+                try
+                {
+                    var servicesToRun = new ServiceBase[] { new ServiceEngine() };
+                    ServiceBase.Run(servicesToRun);
+                }
+                catch (Exception ex)
+                {
+                    //Log.Instance.Log(string.Format("Exception: {0} \n\nStack: {1}", ex.Message, ex.StackTrace), Level.Error);
+                }
+            }
+        }
+        public static void Start()
         {
             var ircd1 = new IrcDaemon();
 
