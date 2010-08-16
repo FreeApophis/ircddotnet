@@ -20,14 +20,14 @@
 
 
 using System;
-using System.Configuration.Install;
 using System.Reflection;
-using System.ServiceProcess;
 using System.Threading;
 
 #if !UBUNTU
 using System.Linq;
 using IrcD.Database;
+using System.Configuration.Install;
+using System.ServiceProcess;
 #endif
 
 namespace IrcD
@@ -39,6 +39,7 @@ namespace IrcD
         {
             if (Environment.UserInteractive)
             {
+#if !UBUNTU
                 var parameter = string.Concat(args);
                 switch (parameter)
                 {
@@ -49,10 +50,11 @@ namespace IrcD
                         ManagedInstallerClass.InstallHelper(new[] { "/u", Assembly.GetExecutingAssembly().Location });
                         return;
                 }
-
+#endif
                 /* blocking */
                 Start();
             }
+#if !UBUNTU
             else
             {
                 try
@@ -65,7 +67,9 @@ namespace IrcD
                     //Log.Instance.Log(string.Format("Exception: {0} \n\nStack: {1}", ex.Message, ex.StackTrace), Level.Error);
                 }
             }
+#endif
         }
+
         public static void Start()
         {
             var ircd1 = new IrcDaemon();

@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
+#if !UBUNTU
 using System.Diagnostics;
 using System.ServiceProcess;
 using System.Threading;
@@ -75,3 +75,4 @@ namespace IrcD
         }
     }
 }
+#endif

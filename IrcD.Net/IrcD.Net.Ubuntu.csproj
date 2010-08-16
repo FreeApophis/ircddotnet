@@ -147,7 +147,9 @@
     <Compile Include="Database\Log.cs" />
     <Compile Include="Database\Main.cs" />
     <Compile Include="Database\Setting.cs" />
+    <Compile Include="Engine.cs" />
     <Compile Include="IrcCaseMapping.cs" />
+    <Compile Include="IrcdServiceInstaller.cs" />
     <Compile Include="IrcMode.cs" />
     <Compile Include="InfoBase.cs" />
     <Compile Include="IrcDaemon.cs" />
@@ -185,7 +187,6 @@
     <Compile Include="Modes\UserModes\ModeRestricted.cs" />
     <Compile Include="AlreadyCalledException.cs" />
     <Compile Include="Modes\UserModes\ModeWallops.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerInfo.cs" />
     <Compile Include="ServerReplies\IrcCommandType.cs" />
@@ -193,6 +194,7 @@
     <Compile Include="ServerReplies\ReplyCode.cs" />
     <Compile Include="ServerOptions.cs" />
     <Compile Include="ServerReplies\ServerReplies.cs" />
+    <Compile Include="ServiceEngine.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\EnumDescription.cs" />

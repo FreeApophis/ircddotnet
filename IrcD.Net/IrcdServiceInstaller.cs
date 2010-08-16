@@ -19,6 +19,7 @@
  */
 
 
+#if !UBUNTU
 using System.ComponentModel;
 using System.Configuration.Install;
 using System.ServiceProcess;
@@ -49,5 +50,5 @@ namespace IrcD
             Installers.Add(serviceInstaller);
         }
     }
-
 }
+#endif
