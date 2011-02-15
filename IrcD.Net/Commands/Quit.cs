@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IrcD.Commands
 {
@@ -35,7 +36,7 @@ namespace IrcD.Commands
                 IrcDaemon.Replies.SendNotRegistered(info);
             }
 
-            var message = (args.Count > 0) ? args[0] : IrcDaemon.Options.StandardQuitMessage;
+            var message = (args.Count > 0) ? args.First() : IrcDaemon.Options.StandardQuitMessage;
             info.Remove(message);
         }
     }

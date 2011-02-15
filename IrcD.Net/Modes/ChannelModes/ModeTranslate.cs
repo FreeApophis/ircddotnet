@@ -48,7 +48,7 @@ namespace IrcD.Modes.ChannelModes
 
             if (ircCommand == IrcCommandType.Join)
             {
-                user.IrcDaemon.Send.Notice(user, user, channel.Name, "This channel automatically translates your messages, user the LANGUAGE command to set your preferred language");
+                user.IrcDaemon.Send.Notice(user, user, channel.Name, "This channel automatically translates your messages, use the LANGUAGE command to set your preferred language");
             }
             if (ircCommand == IrcCommandType.PrivateMessage || ircCommand == IrcCommandType.Notice)
             {
@@ -58,8 +58,8 @@ namespace IrcD.Modes.ChannelModes
                     return false;
                 }
 
-                var t = new GoogleTranslate.TranslateMultipleDelegate(translator.TranslateText);
-                t.BeginInvoke(args[1], channel.Users.Select(u => u.Languages.First()).Distinct(), TranslateCallBack, Utils.Tuple.Create(channel, user, ircCommand));
+                var translateDelegate = new GoogleTranslate.TranslateMultipleDelegate(translator.TranslateText);
+                translateDelegate.BeginInvoke(args[1], channel.Users.Select(u => u.Languages.First()).Distinct(), TranslateCallBack, Utils.Tuple.Create(channel, user, ircCommand));
 
                 onlyOnce = false;
                 return false;
@@ -97,6 +97,7 @@ namespace IrcD.Modes.ChannelModes
                     // This should never happen: There must be always at least the Original in the result
                     message = "BUG: Translation failed miserably";
                 }
+
                 switch (state.Item3)
                 {
                     case IrcCommandType.PrivateMessage:

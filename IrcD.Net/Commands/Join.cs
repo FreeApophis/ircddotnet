@@ -113,7 +113,7 @@ namespace IrcD.Commands
             }
             partargs.Add(command.ToString());
             partargs.Add(IrcDaemon.Options.StandardPartMessage);
-            IrcDaemon.Commands.Handle("PART", info, partargs);
+            IrcDaemon.Commands.Handle(info, info.Usermask, "PART", partargs);
         }
 
         private void SendTopic(UserInfo info, ChannelInfo chan)

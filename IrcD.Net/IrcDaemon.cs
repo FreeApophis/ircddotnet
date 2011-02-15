@@ -434,7 +434,7 @@ namespace IrcD
 
             string prefix = null;
             string command = null;
-            var replycode = ReplyCode.Null;
+            var replyCode = ReplyCode.Null;
             var args = new List<string>();
 
             try
@@ -458,7 +458,7 @@ namespace IrcD
                 /*command might be numeric (xxx) or command */
                 if (char.IsDigit(line[i + 1]) && char.IsDigit(line[i + 2]) && char.IsDigit(line[i + 3]))
                 {
-                    replycode = (ReplyCode)int.Parse(line.Substring(i + 1, 3));
+                    replyCode = (ReplyCode)int.Parse(line.Substring(i + 1, 3));
                     i += 4;
                 }
                 else
@@ -505,7 +505,14 @@ namespace IrcD
                 return;
 
             FilterArgs(args);
-            commands.Handle(command, info, args);
+            if (replyCode == ReplyCode.Null)
+            {
+                commands.Handle(info, prefix, command, args);    
+            }
+            else
+            {
+                commands.Handle(info, prefix, replyCode, args);                    
+            }
         }
 
 

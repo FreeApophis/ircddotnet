@@ -1,0 +1,6 @@
+*.crc
+_ReSharper.IrcD.Net
+bin
+obj
+/IrcD.Net.5.0.ReSharper.user
+/IrcD.Net.suo

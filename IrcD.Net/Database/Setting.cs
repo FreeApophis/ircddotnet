@@ -23,7 +23,10 @@ namespace IrcD.Database
 {
     partial class Setting
     {
-
+        public override string ToString()
+        {
+            return _key + " => " + _value;
+        }
     }
 }
 #endif

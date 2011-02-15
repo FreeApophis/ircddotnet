@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using IrcD.ServerReplies;
 using IrcD.Utils;
 
 namespace IrcD.Commands
@@ -47,7 +48,12 @@ namespace IrcD.Commands
             return commandList.SelectMany(m => m.Value.Support(ircDaemon));
         }
 
-        public void Handle(string command, UserInfo info, List<string> args)
+        public void Handle(UserInfo info, string prefix, ReplyCode replyCode, List<string> args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Handle(UserInfo info, string prefix, string command,  List<string> args)
         {
             CommandBase commandObject;
 

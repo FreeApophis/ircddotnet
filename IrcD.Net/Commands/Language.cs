@@ -49,6 +49,5 @@ namespace IrcD.Commands
         {
             return Enumerable.Repeat("LANGUAGE=" + ircDaemon.Options.MaxLanguages, 1);
         }
-
     }
 }
