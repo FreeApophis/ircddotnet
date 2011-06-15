@@ -24,7 +24,7 @@ using System.Text;
 
 namespace IrcD.Utils
 {
-    static class Enumerable
+    public static class Enumerable
     {
         public static IEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> func)
         {
@@ -47,8 +47,5 @@ namespace IrcD.Utils
             stringBuilder.Length = stringBuilder.Length - separator.Length;
             return stringBuilder.ToString();
         }
-
-
-
     }
 }

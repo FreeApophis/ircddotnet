@@ -38,7 +38,7 @@ namespace IrcD.Modes
 
         public T AddChannelMode<T>() where T : ChannelMode, new()
         {
-            var mode = new T();
+            var mode = GetConstructor<T>();
             channelModeFactory.Add(mode.Char, GetConstructor<T>);
             return mode;
         }
@@ -55,7 +55,7 @@ namespace IrcD.Modes
 
         public T AddChannelRank<T>() where T : ChannelRank, new()
         {
-            var mode = new T();
+            var mode = GetConstructor<T>();
             channelRankFactory.Add(mode.Char, GetConstructor<T>);
             return mode;
         }
@@ -72,7 +72,7 @@ namespace IrcD.Modes
 
         public T AddUserMode<T>() where T : UserMode, new()
         {
-            var mode = new T();
+            var mode = GetConstructor<T>();
             userModeFactory.Add(mode.Char, GetConstructor<T>);
             return mode;
         }

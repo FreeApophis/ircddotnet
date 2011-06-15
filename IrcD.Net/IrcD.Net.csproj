@@ -4,7 +4,7 @@
     <ProjectGuid>{733D306D-EE08-40CB-92F8-1B6545C51C9B}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>IrcD</RootNamespace>
     <AssemblyName>IrcD.Net</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
@@ -46,9 +46,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
@@ -60,7 +65,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Addin" />
-    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -72,7 +76,6 @@
     <Reference Include="System.Data.SQLite">
       <HintPath>lib\System.Data.SQLite.DLL</HintPath>
     </Reference>
-    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
@@ -140,9 +143,6 @@
     <Compile Include="Database\Main.cs" />
     <Compile Include="Database\Setting.cs" />
     <Compile Include="IrcCaseMapping.cs" />
-    <Compile Include="IrcdServiceInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="IrcMode.cs" />
     <Compile Include="InfoBase.cs" />
     <Compile Include="IrcDaemon.cs" />
@@ -180,7 +180,6 @@
     <Compile Include="Modes\UserModes\ModeRestricted.cs" />
     <Compile Include="AlreadyCalledException.cs" />
     <Compile Include="Modes\UserModes\ModeWallops.cs" />
-    <Compile Include="Engine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerInfo.cs" />
     <Compile Include="ServerReplies\IrcCommandType.cs" />
@@ -188,9 +187,6 @@
     <Compile Include="ServerReplies\ReplyCode.cs" />
     <Compile Include="ServerOptions.cs" />
     <Compile Include="ServerReplies\ServerReplies.cs" />
-    <Compile Include="ServiceEngine.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="UserInfo.cs" />
     <Compile Include="Channel\UserPerChannelInfo.cs" />
     <Compile Include="Utils\EnumExtension.cs" />
