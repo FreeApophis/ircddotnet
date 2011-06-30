@@ -34,6 +34,7 @@ namespace IrcD.Utils
             while (ie1.MoveNext() && ie2.MoveNext())
                 yield return func(ie1.Current, ie2.Current);
         }
+
         public static string Concatenate<T>(this IEnumerable<T> strings, string separator)
         {
             var stringBuilder = new StringBuilder();
@@ -47,5 +48,14 @@ namespace IrcD.Utils
             stringBuilder.Length = stringBuilder.Length - separator.Length;
             return stringBuilder.ToString();
         }
+
+        public static IEnumerable<EnumerableIndex<T>> EachIndex<T>(this IEnumerable<T> collection, int index = 0)
+        {
+            foreach (T value in collection)
+            {
+                yield return new EnumerableIndex<T>() { Value = value, Index = index++ };
+            }
+        }
+
     }
 }
