@@ -43,6 +43,8 @@ namespace IrcD.Commands
             }
 
             info.Languages = args[0].Split(new[] { ',' });
+
+            IrcDaemon.Replies.SendYourLanguageIs(info);
         }
 
         public override IEnumerable<string> Support(IrcDaemon ircDaemon)

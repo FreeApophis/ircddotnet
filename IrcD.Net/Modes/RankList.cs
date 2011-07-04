@@ -20,6 +20,7 @@
 
 using System.Linq;
 using System.Text;
+using IrcD.Modes.ChannelRanks;
 
 namespace IrcD.Modes
 {
@@ -68,6 +69,18 @@ namespace IrcD.Modes
             get
             {
                 return NickPrefixRaw != ' ' ? NickPrefixRaw.ToString() : string.Empty;
+            }
+        }
+
+        public ChannelRank CurrentRank
+        {
+            get
+            {
+                return this
+                    .OrderByDescending(rank => rank.Value.Level)
+                    .Select(rank => rank.Value)
+                    .DefaultIfEmpty(ModeNoRank.Instance)
+                    .First();
             }
         }
 

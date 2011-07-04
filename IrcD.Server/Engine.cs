@@ -23,13 +23,10 @@ using System;
 using System.Reflection;
 using System.Threading;
 using IrcD;
-
-#if !UBUNTU
 using System.Linq;
 using IrcD.Database;
 using System.Configuration.Install;
 using System.ServiceProcess;
-#endif
 
 namespace IrcD.Server
 {
@@ -40,7 +37,6 @@ namespace IrcD.Server
         {
             if (Environment.UserInteractive)
             {
-#if !UBUNTU
                 var parameter = string.Concat(args);
                 switch (parameter)
                 {
@@ -51,11 +47,9 @@ namespace IrcD.Server
                         ManagedInstallerClass.InstallHelper(new[] { "/u", Assembly.GetExecutingAssembly().Location });
                         return;
                 }
-#endif
                 /* blocking */
                 Start();
             }
-#if !UBUNTU
             else
             {
                 try
@@ -68,7 +62,6 @@ namespace IrcD.Server
                     //Log.Instance.Log(string.Format("Exception: {0} \n\nStack: {1}", ex.Message, ex.StackTrace), Level.Error);
                 }
             }
-#endif
         }
 
         public static void Start()
@@ -80,11 +73,10 @@ namespace IrcD.Server
             ircd1.Options.ServerPorts.Add(6667);
             ircd1.Options.ServerPorts.Add(6668);
 
-#if !UBUNTU
-            ircd1.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();
-            ircd1.Options.ServerName = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerName" select setting.Value).SingleOrDefault();
-            ircd1.Options.MessageOfTheDay = (from setting in DatabaseCommon.Db.Settings where setting.Key == "MessageOfTheDay" select setting.Value).SingleOrDefault();
-#endif
+            //ircd1.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();
+            //ircd1.Options.ServerName = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerName" select setting.Value).SingleOrDefault();
+            //ircd1.Options.MessageOfTheDay = (from setting in DatabaseCommon.Db.Settings where setting.Key == "MessageOfTheDay" select setting.Value).SingleOrDefault();
+
             ircd1.Options.ServerName = "test.ch";
             var t = new Thread(ircd1.Start);
             t.Start();

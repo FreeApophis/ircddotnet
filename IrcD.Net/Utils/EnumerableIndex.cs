@@ -20,7 +20,7 @@
 
 namespace IrcD.Utils
 {
-    class EnumerableIndex<T>
+    public class EnumerableIndex<T>
     {
         public T Value;
         public int Index;

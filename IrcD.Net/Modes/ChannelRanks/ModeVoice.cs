@@ -18,6 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using IrcD.ServerReplies;
 namespace IrcD.Modes.ChannelRanks
 {
     public class ModeVoice : ChannelRank
@@ -26,6 +27,16 @@ namespace IrcD.Modes.ChannelRanks
             : base('v', '+', 10)
         {
 
+        }
+
+        public override bool CanChangeChannelMode(ChannelMode mode)
+        {
+            return false;
+        }
+
+        public override bool CanChangeChannelRank(ChannelRank rank)
+        {
+            return false;
         }
     }
 }

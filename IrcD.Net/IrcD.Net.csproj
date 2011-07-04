@@ -46,7 +46,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
@@ -164,6 +164,7 @@
     <Compile Include="Modes\ChannelModes\ModeTopic.cs" />
     <Compile Include="Modes\ChannelModes\ModeTranslate.cs" />
     <Compile Include="Modes\ChannelRanks\ModeHalfOp.cs" />
+    <Compile Include="Modes\ChannelRanks\ModeNoRank.cs" />
     <Compile Include="Modes\ChannelRanks\ModeOp.cs" />
     <Compile Include="Modes\ChannelRanks\ModeVoice.cs" />
     <Compile Include="Modes\ChannelRank.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="ServerReplies\ServerReplies.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="Channel\UserPerChannelInfo.cs" />
+    <Compile Include="Utils\EnumerableIndex.cs" />
     <Compile Include="Utils\EnumExtension.cs" />
     <Compile Include="Utils\EnumDescription.cs" />
     <Compile Include="Utils\GoogleTranslate.cs" />

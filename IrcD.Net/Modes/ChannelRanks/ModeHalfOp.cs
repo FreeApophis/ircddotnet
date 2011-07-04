@@ -19,6 +19,7 @@
  */
 
 
+using IrcD.ServerReplies;
 namespace IrcD.Modes.ChannelRanks
 {
     class ModeHalfOp : ChannelRank
@@ -27,6 +28,21 @@ namespace IrcD.Modes.ChannelRanks
             : base('h', '%', 30)
         {
 
+        }
+
+        public override bool CanChangeChannelMode(ChannelMode mode)
+        {
+            return false;
+        }
+
+        public override bool CanChangeChannelRank(ChannelRank rank)
+        {
+            if (rank is ModeVoice)
+                return true;
+            if (rank is ModeHalfOp)
+                return true;
+
+            return false;
         }
     }
 }

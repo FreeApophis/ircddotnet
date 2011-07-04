@@ -18,7 +18,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !UBUNTU
 namespace IrcD.Database
 {
     partial class Main
@@ -30,4 +29,3 @@ namespace IrcD.Database
         }
     }
 }
-#endif

@@ -23,7 +23,7 @@ using IrcD.ServerReplies;
 
 namespace IrcD.Modes
 {
-    public class ChannelRank : Mode
+    public abstract class ChannelRank : Mode
     {
         private readonly char prefix;
 
@@ -51,5 +51,8 @@ namespace IrcD.Modes
                 return level;
             }
         }
+
+        public abstract bool CanChangeChannelMode(ChannelMode mode);
+        public abstract bool CanChangeChannelRank(ChannelRank rank);
     }
 }

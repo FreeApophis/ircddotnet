@@ -61,6 +61,7 @@ namespace IrcD.Modes
         internal void Update(UserInfo info, ChannelInfo chan, IEnumerable<string> args)
         {
             // In
+            var sentPrivNeeded = false;
             var plus = (args.First().Length == 1) ? (bool?)null : true;
             var parameterTail = args.Skip(1);
 
@@ -78,7 +79,26 @@ namespace IrcD.Modes
                 }
 
                 var cmode = IrcDaemon.ModeFactory.GetChannelMode(modechar);
+                if (cmode != null && !chan.UserPerChannelInfos[info.Nick].Modes.CurrentRank.CanChangeChannelMode(cmode))
+                {
+                    if (!sentPrivNeeded)
+                    {
+                        IrcDaemon.Replies.SendChannelOpPrivilegesNeeded(info, chan);
+                        sentPrivNeeded = true;
+                    }
+                    continue;
+                }
+
                 var crank = IrcDaemon.ModeFactory.GetChannelRank(modechar);
+                if (crank != null && !chan.UserPerChannelInfos[info.Nick].Modes.CurrentRank.CanChangeChannelRank(crank))
+                {
+                    if (!sentPrivNeeded)
+                    {
+                        IrcDaemon.Replies.SendChannelOpPrivilegesNeeded(info, chan);
+                        sentPrivNeeded = true;
+                    }
+                    continue;
+                }
 
                 if (plus == null)
                 {

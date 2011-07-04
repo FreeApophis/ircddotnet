@@ -1644,5 +1644,50 @@ namespace IrcD.ServerReplies
             info.WriteLine(response);
         }
 
+        /// <summary>
+        /// Reply Code 687
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendYourLanguageIs(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.YourLanguageIs);
+
+            response.Append(info.Languages.Concatenate(","));
+            response.Append(" :Your languages have been set");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 688
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendLanguage(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.Language);
+
+            response.Append(" <code> <revision> <maintainer> <flags> * :<info>");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 690
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendWhoIsLanguage(UserInfo info, UserInfo who)
+        {
+            BuildMessageHeader(info, ReplyCode.WhoIsLanguage);
+
+            response.Append(" ");
+            response.Append(who.Nick);
+            response.Append(" ");
+            response.Append(who.Languages.Concatenate(","));
+            response.Append(" : ");
+            response.Append(who.Languages.Select(l => GoogleTranslate.Languages[l]).Concatenate(", "));
+
+            info.WriteLine(response);
+        }
+
     }
 }

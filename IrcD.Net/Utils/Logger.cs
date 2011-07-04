@@ -19,32 +19,23 @@
  */
 
 using System.Diagnostics;
-#if UBUNTU
-using System.IO;
-#else
 using System;
 using IrcD.Database;
-#endif
 
 namespace IrcD.Utils
 {
     class Logger
     {
-#if UBUNTU
-        static readonly TextWriter LogFile = new StreamWriter("ircd.log", true);
-#endif
         public static void Log(string message, int level = 4, string location = null)
         {
             var stackTrace = new StackTrace();
             var callerFrame = stackTrace.GetFrame(1);
-#if UBUNTU
-            LogFile.WriteLine(location ?? callerFrame + ": " + message);
-            LogFile.Flush();
-#else
-            var entity = new Log { Level = level, Message = message, Location = location ?? callerFrame.ToString(), Time = DateTime.Now };
-            DatabaseCommon.Db.Logs.InsertOnSubmit(entity);
-            DatabaseCommon.Db.SubmitChanges();
-#endif
+
+            Console.WriteLine(string.Format("{0} in {2}: {1}", level, message, location ?? callerFrame.ToString()));
+
+            //var entity = new Log { Level = level, Message = message, Location = location ?? callerFrame.ToString(), Time = DateTime.Now };
+            //DatabaseCommon.Db.Logs.InsertOnSubmit(entity);
+            //DatabaseCommon.Db.SubmitChanges();
         }
     }
 }

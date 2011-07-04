@@ -59,6 +59,11 @@ namespace IrcD.Commands
                 IrcDaemon.Replies.SendAwayMessage(info, user);
             }
 
+            if (IrcDaemon.Options.IrcMode == IrcMode.Modern)
+            {
+                IrcDaemon.Replies.SendWhoIsLanguage(info, user);
+            }
+
             if (!info.Modes.HandleEvent(IrcCommandType.Join, info, args))
             {
                 return;

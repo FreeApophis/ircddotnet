@@ -8,8 +8,6 @@
 // Auto-generated from main on 2010-05-31 16:31:13Z.
 // Please visit http://code.google.com/p/dblinq2007/ for more information.
 //
-#if !UBUNTU
-
 namespace IrcD.Database
 {
 	using System;
@@ -751,4 +749,3 @@ namespace IrcD.Database
 		}
 	}
 }
-#endif

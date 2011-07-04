@@ -166,6 +166,10 @@ namespace IrcD.ServerReplies
 	    ErrorUniqueOpPrivilegesNeeded =  485,
 	    ErrorNoOperHost =                491,
 	    ErrorUserModeUnknownFlag =       501,
-	    ErrorUsersDoNotMatch =           502
-	}
+	    ErrorUsersDoNotMatch =           502,
+        // kircd codes language
+        YourLanguageIs =                 687,
+        Language =                       688,
+        WhoIsLanguage =                  690
+}
 }

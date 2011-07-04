@@ -63,6 +63,7 @@ namespace IrcD.Commands
 
             chan.Topic = args[1];
 
+            // Some Mode might want to handle the command
             if (!chan.Modes.HandleEvent(IrcCommandType.Topic, chan, info, args))
             {
                 return;
