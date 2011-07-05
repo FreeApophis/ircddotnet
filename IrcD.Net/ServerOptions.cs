@@ -53,7 +53,7 @@ namespace IrcD
         {
             get
             {
-                return string.IsNullOrEmpty(serverName) ? "ircd.net" : serverName;
+                return string.IsNullOrEmpty(serverName) ? "irc#d" : serverName;
             }
             set
             {
@@ -182,7 +182,7 @@ namespace IrcD
         {
             get
             {
-                return networkName ?? "apophis.NET";
+                return networkName ?? "irc#d.NET";
             }
             set
             {

@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using IrcD.Database;
 using IrcD.Channel;
 using IrcD.Modes;
 using IrcD.Utils;
@@ -137,7 +136,6 @@ namespace IrcD
             {
                 IrcDaemon.Replies.RegisterComplete(this);
             }
-            LogUser();
         }
 
 
@@ -172,21 +170,6 @@ namespace IrcD
             }
 
             Nick = newNick;
-            LogUser();
-        }
-
-        private void LogUser()
-        {
-            var userLog = new UserLog
-            {
-                Host = Host,
-                Nick = Nick,
-                RealName = RealName,
-                User = User
-            };
-
-            DatabaseCommon.Db.UserLogs.InsertOnSubmit(userLog);
-            DatabaseCommon.Db.SubmitChanges();
         }
 
         public string Usermask
@@ -327,10 +310,15 @@ namespace IrcD
 
             // Clean up server
 
-            IrcDaemon.Nicks.Remove(Nick);
-            IrcDaemon.Sockets.Remove(socket);
+            if (Nick != null && IrcDaemon.Nicks.ContainsKey(Nick))
+            {
+                IrcDaemon.Nicks.Remove(Nick);
+            }
 
-            // TODO: do I need to send a quit if I am in no channel?
+            if (IrcDaemon.Sockets.ContainsKey(socket))
+            {
+                IrcDaemon.Sockets.Remove(socket);
+            }
 
             // Close connection
             socket.Close();

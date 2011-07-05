@@ -20,13 +20,10 @@
 
 
 using System;
-using System.Reflection;
-using System.Threading;
-using IrcD;
-using System.Linq;
-using IrcD.Database;
 using System.Configuration.Install;
+using System.Reflection;
 using System.ServiceProcess;
+using System.Threading;
 
 namespace IrcD.Server
 {
@@ -66,28 +63,16 @@ namespace IrcD.Server
 
         public static void Start()
         {
-            var ircd1 = new IrcDaemon();
+            var settings = new Settings();
+            var ircDaemon = new IrcDaemon(settings.GetIrcMode());
+            settings.setDaemon(ircDaemon);
+            settings.LoadSettings();
 
-            ircd1.Options.MaxNickLength = 50;
-            ircd1.Options.ServerPorts.Clear();
-            ircd1.Options.ServerPorts.Add(6667);
-            ircd1.Options.ServerPorts.Add(6668);
-
-            //ircd1.Options.ServerPass = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerPass" select setting.Value).SingleOrDefault();
-            //ircd1.Options.ServerName = (from setting in DatabaseCommon.Db.Settings where setting.Key == "ServerName" select setting.Value).SingleOrDefault();
-            //ircd1.Options.MessageOfTheDay = (from setting in DatabaseCommon.Db.Settings where setting.Key == "MessageOfTheDay" select setting.Value).SingleOrDefault();
-
-            ircd1.Options.ServerName = "test.ch";
-            var t = new Thread(ircd1.Start);
-            t.Start();
-
-            var ircd2 = new IrcDaemon();
-
-            ircd2.Options.MaxNickLength = 50;
-            ircd2.Options.ServerPorts.Clear();
-            ircd2.Options.ServerPorts.Add(6669);
-
-            ircd2.Start();
+            var serverThread = new Thread(ircDaemon.Start);
+            serverThread.IsBackground = false;
+            serverThread.Name = "serverThread-1";
+            
+            serverThread.Start();
         }
     }
 }

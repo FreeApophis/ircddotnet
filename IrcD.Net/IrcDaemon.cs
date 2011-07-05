@@ -259,6 +259,7 @@ namespace IrcD
 
             if (Options.IrcMode == IrcMode.Modern)
             {
+                commands.Add(new Capabilities(this));
                 commands.Add(new Knock(this));
                 commands.Add(new Language(this));
                 commands.Add(new Silence(this));
@@ -431,6 +432,11 @@ namespace IrcD
 #if DEBUG
             Logger.Log(line, location: "IN:" + info.Nick);
 #endif
+            
+            if (line.Length > Options.MaxLineLength)
+            {
+                return;  // invalid message
+            }
 
             string prefix = null;
             string command = null;
@@ -507,11 +513,11 @@ namespace IrcD
             FilterArgs(args);
             if (replyCode == ReplyCode.Null)
             {
-                commands.Handle(info, prefix, command, args);    
+                commands.Handle(info, prefix, command, args);
             }
             else
             {
-                commands.Handle(info, prefix, replyCode, args);                    
+                commands.Handle(info, prefix, replyCode, args);
             }
         }
 

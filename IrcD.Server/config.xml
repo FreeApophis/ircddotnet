@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+  <!--The same server can listen on multiple interfaces, only port is currently used-->
+  <interface>
+    <ip>127.0.0.1</ip>
+    <port>6666</port>
+  </interface>  
+  <interface>
+    <ip>127.0.0.1</ip>
+    <port>6667</port>
+  </interface>
+
+  <!--IRC Network name-->
+  <network_name>pirate-net</network_name>
+  
+  <!--IRC Server name-->
+  <server_name>apophis.ch</server_name>
+  
+  <!--Password to the server, empty or missing means no password-->
+  <server_pass></server_pass>
+
+  <!--This setting defines the rfc compliantness of the server, it is not recommendet, but you can set it either to rfc2810, rfc1459, standard is modern
+  modern tries to be as usefull as possible without breaking anything. -->
+  <irc_mode>modern</irc_mode>
+  
+  <!--Some clients have big problems with correct parsing of the RFC, this setting rearranges commands that even X-Chat and MIRC have
+      a correct behaviour, however their implementation of the RFC especially their parsers are just stupid!-->
+  <client_compatibility>false</client_compatibility>
+
+  <!--Case mapping used for nick- and channel name comparing. Current possible values: ascii, rfc1459, strictrfc1459-->
+  <case_mapping>ascii</case_mapping>
+  
+  <!--This value needs a buffer which is big enough, even though we work mostly with strings there is a hard limit MaxBufferSize = 2048, 
+    so no line can be longer than that without recompiling with a bigger buffer, most IRC Servers have a limit at 512. Keep in mind this is not only the message! -->
+  <max_line_length>510</max_line_length>
+  <!--To be on the safe side for the length sinle lines there are restrictions for the away, topic, kick messages-->
+  <max_away_length>300</max_away_length>
+  <max_kick_length>300</max_kick_length>
+  <max_topic_length>300</max_topic_length>
+  
+  <!-- This sets how many languages you can set at the same time as your languages -->
+  <max_languages>5</max_languages>
+  
+  <!--Initialy Nicknames could have been only 9 characters long according to the RFC-->
+  <max_nick_length>9</max_nick_length>
+  
+  <!--Also for channelnames a limit makes sense-->
+  <max_channel_length>40</max_channel_length>
+  
+  <!--How many users you can silence-->
+  <max_silence>25</max_silence>
+
+  <!--Some standard Texts-->
+  <standard_kick_message>Kicked</standard_kick_message>
+  <standard_part_message>Leaving</standard_part_message>
+  <standard_quit_message>Quit</standard_quit_message>
+
+  <!--Message of the day: can have Mirc colors but, diplayed on connect-->  
+  <motd>
+    &#x03;14\|||/
+    &#x03;2_           _  _       _ &#x02;             _&#x02;               &#x03;14(&#x03;2o o&#x03;14)
+    &#x03;2(_)        _| || |_    | |&#x02;            | |&#x02;      &#x03;14,~~~ooO~~(_)~~~~~~~~~,
+    &#x03;2_ _ __ __|_  __  _| __| |&#x02;  _ __   ___| |_&#x02;     &#x03;14|&#x03;    apophis.ch&#x03;14      |
+    &#x03;2| | '__/ __|| || |_ / _` |&#x02; | '_ \ / _ \ __|&#x02;    &#x03;14|&#x03;   Thomas Bruderer&#x03;14  |
+    &#x03;2| | | | (_|_  __  _| (_| |&#x02;_| | | |  __/ |_&#x02;     &#x03;14|&#x03;      2009 - 2010&#x03;14   |
+    &#x03;2|_|_|  \___||_||_|  \__,_&#x02;(_)_| |_|\___|\__|&#x02;    &#x03;14'~~~~~~~~~~~~~~ooO~~~'
+    &#x03;14|__|__|
+    &#x02;Complete IRC Daemon for .NET and Mono&#x02;                  &#x03;14|| ||
+    &#x03;4______________________________________________________&#x03;14ooO Ooo&#x03;4__________&#x03;
+    &#x03;4'&#x03;                                                                       &#x03;4'&#x03;
+    &#x03;4|&#x03;                                                                       &#x03;4|&#x03;
+    &#x03;4|&#x03;  Small Code Footprint, 100% clean C# code, Fully compliant with RFC   &#x03;4|&#x03;
+    &#x03;4|&#x03;                                                                       &#x03;4|&#x03;
+    &#x03;4'_______________________________________________________________________'&#x03;
+  </motd>
+
+</config>

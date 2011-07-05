@@ -1115,6 +1115,21 @@ namespace IrcD.ServerReplies
         }
 
         /// <summary>
+        /// Reply Code 410
+        /// </summary>
+        /// <param name="info"></param>
+        internal void SendInvalidCapabilitiesCommand(UserInfo info, string command)
+        {
+            BuildMessageHeader(info, ReplyCode.ErrorInvalidCapabilitesCommand);
+
+            response.Append(" ");
+            response.Append(command);
+            response.Append(" :Invalid CAP subcommand");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
         /// Reply Code 411
         /// </summary>
         /// <param name="info"></param>
@@ -1688,6 +1703,5 @@ namespace IrcD.ServerReplies
 
             info.WriteLine(response);
         }
-
     }
 }

@@ -20,7 +20,6 @@
 
 using System.Diagnostics;
 using System;
-using IrcD.Database;
 
 namespace IrcD.Utils
 {
@@ -32,10 +31,6 @@ namespace IrcD.Utils
             var callerFrame = stackTrace.GetFrame(1);
 
             Console.WriteLine(string.Format("{0} in {2}: {1}", level, message, location ?? callerFrame.ToString()));
-
-            //var entity = new Log { Level = level, Message = message, Location = location ?? callerFrame.ToString(), Time = DateTime.Now };
-            //DatabaseCommon.Db.Logs.InsertOnSubmit(entity);
-            //DatabaseCommon.Db.SubmitChanges();
         }
     }
 }

@@ -58,6 +58,11 @@ namespace IrcD.Commands
 
                         chan.UserPerChannelInfos.Remove(info.Nick);
                         info.UserPerChannelInfos.Remove(upci);
+
+                        if (!chan.UserPerChannelInfos.Any())
+                        {
+                            IrcDaemon.Channels.Remove(chan.Name);
+                        }
                     }
                     else
                     {

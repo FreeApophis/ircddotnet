@@ -57,14 +57,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
-    <Reference Include="DbLinq">
-      <HintPath>lib\DbLinq.dll</HintPath>
-    </Reference>
-    <Reference Include="DbLinq.Sqlite">
-      <HintPath>lib\DbLinq.Sqlite.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Addin" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -73,9 +66,6 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Data.SQLite">
-      <HintPath>lib\System.Data.SQLite.DLL</HintPath>
-    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
@@ -86,6 +76,7 @@
     <Compile Include="Channel\ChannelInfo.cs" />
     <Compile Include="Channel\ChannelType.cs" />
     <Compile Include="Channel\NormalChannel.cs" />
+    <Compile Include="Commands\Capabilities.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\CommandList.cs" />
     <Compile Include="Commands\Die.cs" />
@@ -136,17 +127,10 @@
     <Compile Include="Commands\Knock.cs" />
     <Compile Include="Commands\Ping.cs" />
     <Compile Include="ConnectionInfo.cs" />
-    <Compile Include="Database\Channel.cs" />
-    <Compile Include="Database\DatabaseCommon.cs" />
-    <Compile Include="Database\DatabaseModel.cs" />
-    <Compile Include="Database\Log.cs" />
-    <Compile Include="Database\Main.cs" />
-    <Compile Include="Database\Setting.cs" />
     <Compile Include="IrcCaseMapping.cs" />
     <Compile Include="IrcMode.cs" />
     <Compile Include="InfoBase.cs" />
     <Compile Include="IrcDaemon.cs" />
-    <Compile Include="IrcServer.cs" />
     <Compile Include="Modes\ChannelMode.cs" />
     <Compile Include="Modes\ChannelModeList.cs" />
     <Compile Include="Modes\ChannelModes\ModeInviteException.cs" />
