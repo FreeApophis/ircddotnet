@@ -29,22 +29,16 @@ namespace IrcD.Commands
             : base(ircDaemon, "DIE")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-
             if (!info.Modes.Exist<ModeOperator>() && !info.Modes.Exist<ModeLocalOperator>())
             {
                 IrcDaemon.Replies.SendNoPrivileges(info);
+                return;
             }
-            else
-            {
-                IrcDaemon.Stop(false);
-            }
+
+            IrcDaemon.Stop(false);
         }
     }
 }

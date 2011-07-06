@@ -77,6 +77,8 @@
     <Compile Include="Channel\ChannelType.cs" />
     <Compile Include="Channel\NormalChannel.cs" />
     <Compile Include="Commands\Capabilities.cs" />
+    <Compile Include="CheckRegisteredAttribute.cs" />
+    <Compile Include="CheckParamCount.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\CommandList.cs" />
     <Compile Include="Commands\Die.cs" />
@@ -166,12 +168,14 @@
     <Compile Include="AlreadyCalledException.cs" />
     <Compile Include="Modes\UserModes\ModeWallops.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RehashEventArgs.cs" />
     <Compile Include="ServerInfo.cs" />
     <Compile Include="ServerReplies\IrcCommandType.cs" />
     <Compile Include="ServerReplies\ProtocolMessages.cs" />
     <Compile Include="ServerReplies\ReplyCode.cs" />
     <Compile Include="ServerOptions.cs" />
     <Compile Include="ServerReplies\ServerReplies.cs" />
+    <Compile Include="ServerStats.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="Channel\UserPerChannelInfo.cs" />
     <Compile Include="Utils\EnumerableIndex.cs" />
@@ -193,6 +197,7 @@
     <None Include="app.config" />
   </ItemGroup>
   <PropertyGroup>
-    <PreBuildEvent>xcopy ..\..\ircd.db  . /y</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

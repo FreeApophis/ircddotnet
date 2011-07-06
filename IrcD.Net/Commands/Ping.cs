@@ -29,14 +29,9 @@ namespace IrcD.Commands
             : base(ircDaemon, "PING")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-
             IrcDaemon.Send.Pong(info, args.FirstOrDefault());
         }
     }

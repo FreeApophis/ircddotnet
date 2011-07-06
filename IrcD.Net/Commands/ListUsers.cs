@@ -28,14 +28,9 @@ namespace IrcD.Commands
             : base(ircDaemon, "LUSERS")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-
             IrcDaemon.Replies.SendListUserClient(info);
             IrcDaemon.Replies.SendListUserOp(info);
             IrcDaemon.Replies.SendListUserUnknown(info);

@@ -30,18 +30,10 @@ namespace IrcD.Commands
             : base(ircDaemon, "LANGUAGE")
         { }
 
+        [CheckRegistered]
+        [CheckParamCount(1)]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-            if (args.Count < 1)
-            {
-                return;
-            }
-
             info.Languages = args[0].Split(new[] { ',' });
 
             IrcDaemon.Replies.SendYourLanguageIs(info);

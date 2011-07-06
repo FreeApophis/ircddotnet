@@ -32,18 +32,10 @@ namespace IrcD.Commands
             : base(ircDaemon, "JOIN")
         { }
 
+        [CheckRegistered]
+        [CheckParamCount(1)]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-            if (args.Count < 1)
-            {
-                IrcDaemon.Replies.SendNeedMoreParams(info);
-                return;
-            }
             if (args[0] == "0")
             {
                 PartAll(info);

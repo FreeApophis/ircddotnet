@@ -28,16 +28,12 @@ namespace IrcD.Commands
             : base(ircDaemon, "SERVICE")
         { }
 
+        [CheckParamCount(6)]
         public override void Handle(UserInfo info, List<string> args)
         {
             if (info.Registered)
             {
                 IrcDaemon.Replies.SendAlreadyRegistered(info);
-                return;
-            }
-            if (args.Count < 6)
-            {
-                IrcDaemon.Replies.SendNeedMoreParams(info);
                 return;
             }
             if (!IrcDaemon.ValidNick(args[0]))

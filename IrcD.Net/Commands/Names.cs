@@ -28,14 +28,9 @@ namespace IrcD.Commands
             : base(ircDaemon, "NAMES")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-
             if (args.Count < 1)
             {
                 // TODO: list all visible users

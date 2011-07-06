@@ -29,19 +29,10 @@ namespace IrcD.Commands
             : base(ircDaemon, "ISON")
         { }
 
+        [CheckRegistered]
+        [CheckParamCount(1)]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-            if (args.Count < 1)
-            {
-                IrcDaemon.Replies.SendNeedMoreParams(info);
-                return;
-            }
-
             IrcDaemon.Replies.SendIsOn(info, args.Where(nick => IrcDaemon.Nicks.ContainsKey(nick)));
         }
     }

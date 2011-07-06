@@ -29,30 +29,19 @@ namespace IrcD.Commands
             : base(ircDaemon, "AWAY")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-
             if (args.Count == 0)
             {
                 info.AwayMessage = null;
-                if (info.Modes.ContainsKey('a'))
-                {
-                    info.Modes.Remove('a');
-                }
+                info.Modes.RemoveMode<ModeAway>();
                 IrcDaemon.Replies.SendUnAway(info);
             }
             else
             {
                 info.AwayMessage = args[0];
-                if (info.Modes.GetMode<ModeAway>() == null)
-                {
-                    info.Modes.Add(new ModeAway());
-                }
+                info.Modes.Add(new ModeAway());
                 IrcDaemon.Replies.SendNowAway(info);
             }
         }

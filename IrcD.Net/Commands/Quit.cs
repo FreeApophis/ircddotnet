@@ -29,13 +29,9 @@ namespace IrcD.Commands
             : base(ircDaemon, "QUIT")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-            }
-
             var message = (args.Count > 0) ? args.First() : IrcDaemon.Options.StandardQuitMessage;
             info.Remove(message);
         }

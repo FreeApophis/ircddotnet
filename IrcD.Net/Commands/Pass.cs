@@ -29,16 +29,12 @@ namespace IrcD.Commands
             : base(ircDaemon, "PASS")
         { }
 
+        [CheckParamCount(1)]
         public override void Handle(UserInfo info, List<string> args)
         {
             if (info.PassAccepted)
             {
                 IrcDaemon.Replies.SendAlreadyRegistered(info);
-                return;
-            }
-            if (args.Count < 1)
-            {
-                IrcDaemon.Replies.SendNeedMoreParams(info);
                 return;
             }
             if (args[0] == IrcDaemon.Options.ServerPass)

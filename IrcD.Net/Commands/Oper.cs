@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.Modes.UserModes;
 
 namespace IrcD.Commands
 {
@@ -28,19 +29,10 @@ namespace IrcD.Commands
             : base(ircDaemon, "OPER")
         { }
 
+        [CheckRegistered]
+        [CheckParamCount(2)]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-            if (args.Count < 2)
-            {
-                IrcDaemon.Replies.SendNeedMoreParams(info);
-                return;
-            }
-
             // TODO: deny certain hosts OPER status
             if (false)
             {
@@ -50,9 +42,9 @@ namespace IrcD.Commands
 
             if (info.ValidOpLine(args[0], args[1]))
             {
-                // TODO: new modes
-                //info.Mode_o = true;
-                //info.Mode_O = true;
+                info.Modes.Add(new ModeLocalOperator());
+                info.Modes.Add(new ModeOperator());
+
                 IrcDaemon.Replies.SendYouAreOper(info);
             }
             else

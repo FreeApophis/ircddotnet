@@ -32,18 +32,10 @@ namespace IrcD.Commands
             : base(ircDaemon, "MODE")
         { }
 
+        [CheckRegistered]
+        [CheckParamCount(1)]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-            if (args.Count == 0)
-            {
-                IrcDaemon.Replies.SendNeedMoreParams(info);
-                return;
-            }
             // Check if its a channel
             if (IrcDaemon.ValidChannel(args[0]))
             {

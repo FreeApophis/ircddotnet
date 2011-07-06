@@ -122,6 +122,12 @@ namespace IrcD
 
         public string MessageOfTheDay { get; set; }
 
+        public string AdminLocation1 { get; set; }
+
+        public string AdminLocation2 { get; set; }
+
+        public string AdminEmail { get; set; }
+
         private readonly Dictionary<string, string> oLine = new Dictionary<string, string>();
 
         public Dictionary<string, string> OLine

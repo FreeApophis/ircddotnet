@@ -20,40 +20,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace IrcD.Commands
+namespace IrcD
 {
-    public class Capabilities : CommandBase
+    public class CheckRegisteredAttribute : Attribute
     {
-        public Capabilities(IrcDaemon ircDaemon)
-            : base(ircDaemon, "CAP")
-        { }
-
-        [CheckParamCount(1)]
-        public override void Handle(UserInfo info, List<string> args)
-        {
-            var subcommand = args[0];
-
-            switch (subcommand)
-            {
-                case "LS":
-                    break;
-                case "LIST":
-                    break;
-                case "REQ":
-                    break;
-                case "ACK":
-                    break;
-                case "NAK":
-                    break;
-                case "CLEAR":
-                    break;
-                case "END":
-                    break;
-                default:
-                    IrcDaemon.Replies.SendInvalidCapabilitiesCommand(info, subcommand);
-                    break;
-            }
-        }
     }
 }

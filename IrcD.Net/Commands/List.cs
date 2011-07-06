@@ -29,14 +29,9 @@ namespace IrcD.Commands
             : base(ircDaemon, "LIST")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-
             if (info.IrcDaemon.Options.IrcMode == IrcMode.Rfc1459)
                 IrcDaemon.Replies.SendListStart(info);
 

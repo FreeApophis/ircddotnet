@@ -30,19 +30,10 @@ namespace IrcD.Commands
             : base(ircDaemon, "KICK")
         { }
 
+        [CheckRegistered]
+        [CheckParamCount(2)]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-            if (args.Count < 2)
-            {
-                IrcDaemon.Replies.SendNeedMoreParams(info);
-                return;
-            }
-
             var message = (args.Count > 2) ? args[2] : null;
 
 

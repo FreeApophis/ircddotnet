@@ -58,6 +58,15 @@ namespace IrcD.ServerReplies
                 SendMotd(info);
                 SendMotdEnd(info);
             }
+
+            if (ircDaemon.Options.IrcMode == IrcMode.Modern)
+            {
+                SendListUserClient(info);
+                SendListUserOp(info);
+                SendListUserUnknown(info);
+                SendListUserChannels(info);
+                SendListUserMe(info);
+            }
         }
 
         private void BuildMessageHeader(UserInfo info, ReplyCode code)
@@ -67,7 +76,7 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.AppendFormat(NumericFormat, (int)code);
             response.Append(" ");
-            response.Append(info.Nick);
+            response.Append(info.Nick ?? "-");
         }
 
         /// <summary>
@@ -286,8 +295,13 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ListUserClient);
 
-            // TODO: implement this
-            response.Append(":There are <integer> users and <integer> services on <integer> servers");
+            response.Append(" :There are ");
+            response.Append(ircDaemon.Stats.UserCount);
+            response.Append(" users and ");
+            response.Append(ircDaemon.Stats.ServiceCount);
+            response.Append(" services on ");
+            response.Append(ircDaemon.Stats.ServerCount);
+            response.Append(" servers");
 
             info.WriteLine(response);
         }
@@ -300,8 +314,8 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ListUserOp);
 
-            // TODO: implement this
-            response.Append("<integer> :operator(s) online");
+            response.Append(ircDaemon.Stats.OperatorCount);
+            response.Append(" :operator(s) online");
 
             info.WriteLine(response);
         }
@@ -314,8 +328,8 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ListUserUnknown);
 
-            // TODO: implement this
-            response.Append("<integer> :unknown connection(s)");
+            response.Append(ircDaemon.Stats.UnknowConnectionCount);
+            response.Append(" :unknown connection(s)");
 
             info.WriteLine(response);
         }
@@ -328,8 +342,8 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ListUserChannels);
 
-            // TODO: implement this
-            response.Append("<integer> :channels formed");
+            response.Append(ircDaemon.Stats.ChannelCount);
+            response.Append(" :channels formed");
 
             info.WriteLine(response);
         }
@@ -342,8 +356,69 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ListUserMe);
 
-            // TODO: implement this
-            response.Append(":I have <integer> clients and <integer> servers");
+            response.Append(" :I have ");
+            response.Append(ircDaemon.Stats.ClientCount);
+            response.Append(" clients and ");
+            response.Append(ircDaemon.Stats.ServerCount);
+            response.Append(" servers");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 256
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendAdminMe(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.AdminMe);
+
+            response.Append(" ");
+            response.Append(ircDaemon.Options.ServerName);
+            response.Append(" :Administrative info");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 257
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendAdminLocation1(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.AdminLocation1);
+
+            response.Append(" :");
+            response.Append(ircDaemon.Options.AdminLocation1);
+
+            info.WriteLine(response);
+        }
+
+
+        /// <summary>
+        /// Reply Code 258
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendAdminLocation2(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.AdminLocation2);
+
+            response.Append(" :");
+            response.Append(ircDaemon.Options.AdminLocation2);
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 259
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendAdminEmail(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.AdminEmail);
+
+            response.Append(" :");
+            response.Append(ircDaemon.Options.AdminEmail);
 
             info.WriteLine(response);
         }

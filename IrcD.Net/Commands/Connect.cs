@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.Modes.UserModes;
 
 namespace IrcD.Commands
 {
@@ -28,8 +29,18 @@ namespace IrcD.Commands
             : base(ircDaemon, "CONNECT")
         { }
 
+        [CheckRegistered]
+        [CheckParamCount(1)]
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (!info.Modes.Exist<ModeOperator>() && !info.Modes.Exist<ModeLocalOperator>())
+            {
+                IrcDaemon.Replies.SendNoPrivileges(info);
+                return;
+            }
+
+
+            IrcDaemon.Replies.SendNoSuchServer(info, "single server only");
         }
     }
 }

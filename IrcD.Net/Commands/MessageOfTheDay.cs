@@ -28,14 +28,9 @@ namespace IrcD.Commands
             : base(ircDaemon, "MOTD")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-
             // TODO: parameter 1 parsing
 
             if (string.IsNullOrEmpty(IrcDaemon.Options.MessageOfTheDay))

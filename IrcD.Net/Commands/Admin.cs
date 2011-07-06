@@ -28,8 +28,15 @@ namespace IrcD.Commands
             : base(ircDaemon, "ADMIN")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
+            //Todo: parse target parameter
+
+            IrcDaemon.Replies.SendAdminMe(info);
+            IrcDaemon.Replies.SendAdminLocation1(info);
+            IrcDaemon.Replies.SendAdminLocation2(info);
+            IrcDaemon.Replies.SendAdminEmail(info);
         }
     }
 }

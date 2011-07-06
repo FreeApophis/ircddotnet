@@ -19,6 +19,8 @@
  */
 
 using System.Collections.Generic;
+using System;
+using IrcD.Modes.UserModes;
 
 namespace IrcD.Commands
 {
@@ -28,8 +30,13 @@ namespace IrcD.Commands
             : base(ircDaemon, "REHASH")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
+            if (info.Modes.Exist<ModeOperator>() || info.Modes.Exist<ModeLocalOperator>())
+            {
+                IrcDaemon.OnRehashEvent(this, new RehashEventArgs(IrcDaemon, info));
+            }
         }
     }
 }

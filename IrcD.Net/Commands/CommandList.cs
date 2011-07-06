@@ -24,6 +24,7 @@ using System.Linq;
 using System.Text;
 using IrcD.ServerReplies;
 using IrcD.Utils;
+using System.Reflection;
 
 namespace IrcD.Commands
 {
@@ -53,14 +54,43 @@ namespace IrcD.Commands
             throw new NotImplementedException();
         }
 
-        public void Handle(UserInfo info, string prefix, string command,  List<string> args)
+
+
+        public void Handle(UserInfo info, string prefix, string command, List<string> args)
         {
             CommandBase commandObject;
 
             if (commandList.TryGetValue(command, out commandObject))
             {
-                commandObject.Handle(info, args);
-                info.LastAlive = DateTime.Now;
+                bool skipHandle = false;
+                var handleMethodInfo = commandObject.GetType().GetMethod("Handle");
+
+                var checkRegistered = Attribute.GetCustomAttribute(handleMethodInfo, typeof(CheckRegisteredAttribute)) as CheckRegisteredAttribute;
+                if (checkRegistered != null)
+                {
+                    if (!info.Registered)
+                    {
+                        ircDaemon.Replies.SendNotRegistered(info);
+                        skipHandle = true;
+                    }
+                }
+
+                var checkParamCount = Attribute.GetCustomAttribute(handleMethodInfo, typeof(CheckParamCountAttribute)) as CheckParamCountAttribute;
+                if (checkParamCount != null)
+                {
+                    if (args.Count < checkParamCount.MinimumParameterCount)
+                    {
+                        ircDaemon.Replies.SendNeedMoreParams(info);
+                        skipHandle = true;
+                    }
+                }
+
+
+                if (!skipHandle)
+                {
+                    commandObject.Handle(info, args);
+                    info.LastAlive = DateTime.Now;
+                }
             }
             else
             {

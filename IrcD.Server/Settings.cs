@@ -15,9 +15,11 @@ namespace IrcD.Server
         {
             var readerSettings = new XmlReaderSettings();
             readerSettings.CheckCharacters = false;
-            var reader = XmlReader.Create("config.xml", readerSettings);
+            using (var reader = XmlReader.Create("config.xml", readerSettings))
+            {
+                configFile = XDocument.Load(reader);
+            }
 
-            configFile = XDocument.Load(reader);
         }
 
         public void LoadSettings()
@@ -40,6 +42,23 @@ namespace IrcD.Server
             ircDaemon.Options.StandardKickMessage = GetString("standard_kick_message", "Kicked");
             ircDaemon.Options.StandardPartMessage = GetString("standard_part_message", "Leaving");
             ircDaemon.Options.StandardQuitMessage = GetString("standard_quit_message", "Quit");
+
+            ircDaemon.Options.AdminLocation1 = GetString("admin", "location1", "no admin set");
+            ircDaemon.Options.AdminLocation2 = GetString("admin", "location2", "no admin set");
+            ircDaemon.Options.AdminEmail = GetString("admin", "email", "no admin set");
+
+            LoadOper();
+        }
+
+        private void LoadOper()
+        {
+            foreach (var oper in configFile.Descendants("oper"))
+            {
+                if (!string.IsNullOrEmpty(oper.Element("user").Value) && !string.IsNullOrEmpty(oper.Element("pass").Value))
+                {
+                    ircDaemon.Options.OLine.Add(oper.Element("user").Value, oper.Element("pass").Value);
+                }
+            }
         }
 
         private List<int> GetPorts()
@@ -121,6 +140,22 @@ namespace IrcD.Server
             if (match.Any())
             {
                 return match.First().Value;
+            }
+
+            return standard;
+        }
+
+        private string GetString(string key, string specifier, string standard)
+        {
+            var match = configFile.Descendants(key);
+
+            if (match.Any())
+            {
+                var element = match.First().Element(specifier);
+                if (element != null && !string.IsNullOrEmpty(element.Value))
+                {
+                    return element.Value;
+                }
             }
 
             return standard;

@@ -30,19 +30,10 @@ namespace IrcD.Commands
             : base(ircDaemon, "INVITE")
         { }
 
+        [CheckRegistered]
+        [CheckParamCount(2)]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-            if (args.Count < 2)
-            {
-                IrcDaemon.Replies.SendNeedMoreParams(info);
-                return;
-            }
-
             UserInfo invited;
             if (!IrcDaemon.Nicks.TryGetValue(args[0], out invited))
             {

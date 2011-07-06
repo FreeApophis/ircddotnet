@@ -29,13 +29,9 @@ namespace IrcD.Commands
             : base(ircDaemon, "NOTICE")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
             if (args.Count < 1)
             {
                 IrcDaemon.Replies.SendNoRecipient(info, Name);

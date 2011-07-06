@@ -68,11 +68,20 @@ namespace IrcD.Server
             settings.setDaemon(ircDaemon);
             settings.LoadSettings();
 
+            ircDaemon.ServerRehash += ServerRehash;
+
             var serverThread = new Thread(ircDaemon.Start);
             serverThread.IsBackground = false;
             serverThread.Name = "serverThread-1";
-            
+
             serverThread.Start();
+        }
+
+        static void ServerRehash(object sender, RehashEventArgs e)
+        {
+            var settings = new Settings();
+            settings.setDaemon(e.IrcDaemon);
+            settings.LoadSettings();
         }
     }
 }

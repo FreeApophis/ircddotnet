@@ -28,14 +28,9 @@ namespace IrcD.Commands
             : base(ircDaemon, "TIME")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-
             //TODO: Parse Server Argument
             IrcDaemon.Replies.SendTimeReply(info);
         }

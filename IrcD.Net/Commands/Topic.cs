@@ -29,18 +29,10 @@ namespace IrcD.Commands
             : base(ircDaemon, "TOPIC")
         { }
 
+        [CheckRegistered]
+        [CheckParamCount(1)]
         public override void Handle(UserInfo info, List<string> args)
         {
-            if (!info.Registered)
-            {
-                IrcDaemon.Replies.SendNotRegistered(info);
-                return;
-            }
-            if (args.Count < 1)
-            {
-                IrcDaemon.Replies.SendNeedMoreParams(info);
-                return;
-            }
             if (!IrcDaemon.Channels.ContainsKey(args[0]))
             {
                 IrcDaemon.Replies.SendNoSuchChannel(info, args[0]);

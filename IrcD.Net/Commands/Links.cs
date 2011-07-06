@@ -28,6 +28,7 @@ namespace IrcD.Commands
             : base(ircDaemon, "LINKS")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
         }

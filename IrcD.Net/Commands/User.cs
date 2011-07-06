@@ -29,6 +29,7 @@ namespace IrcD.Commands
             : base(ircDaemon, "USER")
         { }
 
+        [CheckParamCount(4)]
         public override void Handle(UserInfo info, List<string> args)
         {
 
@@ -40,11 +41,6 @@ namespace IrcD.Commands
             if (info.UserExists)
             {
                 IrcDaemon.Replies.SendAlreadyRegistered(info);
-                return;
-            }
-            if (args.Count < 4)
-            {
-                IrcDaemon.Replies.SendNeedMoreParams(info);
                 return;
             }
 

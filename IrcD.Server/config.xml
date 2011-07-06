@@ -10,6 +10,18 @@
     <port>6667</port>
   </interface>
 
+  <!--OLine: you really should change that. Everyone in this list gets OPER privilege-->
+  <oper>
+    <user>admin</user>
+    <pass>pass4u</pass>
+  </oper>
+
+  <admin>
+    <location1>If you need an OP go to #admin</location1>
+    <location2>Visit: http://www.apophis.ch</location2>
+    <email>apophis@apophis.ch</email>
+  </admin>
+  
   <!--IRC Network name-->
   <network_name>pirate-net</network_name>
   
@@ -42,7 +54,7 @@
   <max_languages>5</max_languages>
   
   <!--Initialy Nicknames could have been only 9 characters long according to the RFC-->
-  <max_nick_length>9</max_nick_length>
+  <max_nick_length>20</max_nick_length>
   
   <!--Also for channelnames a limit makes sense-->
   <max_channel_length>40</max_channel_length>
@@ -57,14 +69,14 @@
 
   <!--Message of the day: can have Mirc colors but, diplayed on connect-->  
   <motd>
-    &#x03;14\|||/
-    &#x03;2_           _  _       _ &#x02;             _&#x02;               &#x03;14(&#x03;2o o&#x03;14)
+    &#x03;14                                                       \|||/
+    &#x03;2 _           _  _       _ &#x02;             _&#x02;               &#x03;14(&#x03;2o o&#x03;14)
     &#x03;2(_)        _| || |_    | |&#x02;            | |&#x02;      &#x03;14,~~~ooO~~(_)~~~~~~~~~,
-    &#x03;2_ _ __ __|_  __  _| __| |&#x02;  _ __   ___| |_&#x02;     &#x03;14|&#x03;    apophis.ch&#x03;14      |
+    &#x03;2 _ _ __ __|_  __  _| __| |&#x02;  _ __   ___| |_&#x02;     &#x03;14|&#x03;    apophis.ch&#x03;14      |
     &#x03;2| | '__/ __|| || |_ / _` |&#x02; | '_ \ / _ \ __|&#x02;    &#x03;14|&#x03;   Thomas Bruderer&#x03;14  |
     &#x03;2| | | | (_|_  __  _| (_| |&#x02;_| | | |  __/ |_&#x02;     &#x03;14|&#x03;      2009 - 2010&#x03;14   |
     &#x03;2|_|_|  \___||_||_|  \__,_&#x02;(_)_| |_|\___|\__|&#x02;    &#x03;14'~~~~~~~~~~~~~~ooO~~~'
-    &#x03;14|__|__|
+    &#x03;14                                                      |__|__|
     &#x02;Complete IRC Daemon for .NET and Mono&#x02;                  &#x03;14|| ||
     &#x03;4______________________________________________________&#x03;14ooO Ooo&#x03;4__________&#x03;
     &#x03;4'&#x03;                                                                       &#x03;4'&#x03;

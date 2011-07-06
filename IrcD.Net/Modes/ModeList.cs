@@ -34,14 +34,26 @@ namespace IrcD.Modes
             IrcDaemon = ircDaemon;
         }
 
-        public void Add(TMode element)
+        public void Add<T>(T element) where T : TMode
         {
-            Add(element.Char, element);
+            if (!Exist<T>())
+            {
+                Add(element.Char, element);
+            }
         }
 
         public T GetMode<T>() where T : TMode
         {
             return Values.Where(mode => mode is T).FirstOrDefault() as T;
+        }
+
+        public void RemoveMode<T>() where T : TMode
+        {
+            if (Exist<T>())
+            {
+                var mode = GetMode<T>();
+                Remove(mode.Char);
+            }
         }
 
         public override string ToString()

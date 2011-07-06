@@ -28,6 +28,7 @@ namespace IrcD.Commands
             : base(ircDaemon, "WHOWAS")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
         }

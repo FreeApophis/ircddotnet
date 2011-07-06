@@ -32,6 +32,7 @@ namespace IrcD.Commands
             : base(ircDaemon, "WHO")
         { }
 
+        [CheckRegistered]
         public override void Handle(UserInfo info, List<string> args)
         {
             IEnumerable<UserPerChannelInfo> whoList;

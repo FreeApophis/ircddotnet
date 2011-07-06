@@ -153,12 +153,20 @@ namespace IrcD
         private EndPoint localEp;
 
         private readonly ServerOptions options;
-
         public ServerOptions Options
         {
             get
             {
                 return options;
+            }
+        }
+
+        private readonly ServerStats stats;
+        public ServerStats Stats
+        {
+            get
+            {
+                return stats;
             }
         }
 
@@ -179,12 +187,24 @@ namespace IrcD
             }
         }
 
+        #region Events
+        public event EventHandler<RehashEventArgs> ServerRehash;
+        internal void OnRehashEvent(object sender, RehashEventArgs e)
+        {
+            if (ServerRehash != null)
+                ServerRehash(sender, e);
+        }
+        #endregion
+
         public IrcDaemon(IrcMode ircMode = IrcMode.Modern)
         {
             // Create Optionobject & Set the proper IRC Protocol Version
             // The protocol version cannot be changed after construction, 
             // because the construction methods below use this Option
             options = new ServerOptions(ircMode);
+            
+            //Clean Interface to statistics, it needs the IrcDaemon Object to gather this information.
+            stats = new ServerStats(this);
 
             // Setup Modes Infrastructure
             modeFactory = new ModeFactory();
@@ -432,7 +452,7 @@ namespace IrcD
 #if DEBUG
             Logger.Log(line, location: "IN:" + info.Nick);
 #endif
-            
+
             if (line.Length > Options.MaxLineLength)
             {
                 return;  // invalid message
