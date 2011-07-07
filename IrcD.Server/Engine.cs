@@ -56,7 +56,7 @@ namespace IrcD.Server
                 }
                 catch (Exception ex)
                 {
-                    //Log.Instance.Log(string.Format("Exception: {0} \n\nStack: {1}", ex.Message, ex.StackTrace), Level.Error);
+                    Console.WriteLine(string.Format("Exception: {0} \n\nStack: {1}", ex.Message, ex.StackTrace));
                 }
             }
         }

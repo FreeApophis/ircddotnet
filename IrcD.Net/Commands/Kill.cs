@@ -19,7 +19,7 @@
  */
 
 using System.Collections.Generic;
-using IrcD.ServerReplies;
+using IrcD.Modes.UserModes;
 
 namespace IrcD.Commands
 {
@@ -31,15 +31,24 @@ namespace IrcD.Commands
 
         [CheckRegistered]
         [CheckParamCount(1)]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
-            if (!info.Modes.HandleEvent(IrcCommandType.Kill, info, args))
+            if (!info.Modes.Exist<ModeOperator>() && !info.Modes.Exist<ModeLocalOperator>())
             {
+                IrcDaemon.Replies.SendNoPrivileges(info);
                 return;
             }
 
-            // TODO Implement
-            IrcDaemon.Replies.SendNoPrivileges(info);
+            UserInfo killUser;
+            if (!IrcDaemon.Nicks.TryGetValue(args[0], out killUser))
+            {
+                IrcDaemon.Replies.SendNoSuchNick(info, args[0]);
+            }
+
+            var message = (args.Count > 1) ? args[1] : IrcDaemon.Options.StandardKillMessage;
+
+            IrcDaemon.Send.Kill(info, killUser, message);
+            killUser.Remove(IrcDaemon.Options.StandardKillMessage);
         }
     }
 }

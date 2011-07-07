@@ -19,7 +19,7 @@
  */
 
 using System.Collections.Generic;
-using IrcD.ServerReplies;
+using IrcD.Commands;
 
 namespace IrcD.Modes.UserModes
 {
@@ -29,8 +29,7 @@ namespace IrcD.Modes.UserModes
             : base('a')
         { }
 
-
-        public override bool HandleEvent(IrcCommandType ircCommand, UserInfo user, List<string> args)
+        public override bool HandleEvent(CommandBase command, UserInfo user, List<string> args)
         {
             return true;
         }

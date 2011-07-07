@@ -29,7 +29,7 @@ namespace IrcD.Commands
         { }
 
         [CheckParamCount(6)]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             if (info.Registered)
             {

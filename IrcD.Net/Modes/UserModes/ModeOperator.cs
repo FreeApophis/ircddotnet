@@ -18,9 +18,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 using System.Collections.Generic;
-using IrcD.ServerReplies;
+using IrcD.Commands;
 
 namespace IrcD.Modes.UserModes
 {
@@ -28,18 +27,10 @@ namespace IrcD.Modes.UserModes
     {
         public ModeOperator()
             : base('o')
-        {
-        }
+        { }
 
-        public override bool HandleEvent(IrcCommandType ircCommand, UserInfo user, List<string> args)
+        public override bool HandleEvent(CommandBase command, UserInfo user, List<string> args)
         {
-            if (ircCommand == IrcCommandType.Kill)
-            {
-                //TODO: Kill is not yet implemented
-                //user.IrcDaemon.Send.Kill();
-                return false;
-            }
-
             return true;
         }
     }

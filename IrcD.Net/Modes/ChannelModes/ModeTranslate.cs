@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using IrcD.Channel;
-using IrcD.ServerReplies;
+using IrcD.Commands;
 using IrcD.Utils;
 
 namespace IrcD.Modes.ChannelModes
@@ -41,25 +41,25 @@ namespace IrcD.Modes.ChannelModes
 
         private bool onlyOnce;
 
-        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        public override bool HandleEvent(CommandBase command, ChannelInfo channel, UserInfo user, List<string> args)
         {
             if (onlyOnce) { return true; }
             onlyOnce = true;
 
-            if (ircCommand == IrcCommandType.Join)
+            if (command is Join)
             {
                 user.IrcDaemon.Send.Notice(user, user, channel.Name, "This channel automatically translates your messages, use the LANGUAGE command to set your preferred language");
             }
-            if (ircCommand == IrcCommandType.PrivateMessage || ircCommand == IrcCommandType.Notice)
+            if (!channel.Modes.HandleEvent(command, channel, user, args))
             {
-                if (!channel.Modes.HandleEvent(IrcCommandType.PrivateMessage, channel, user, args))
-                {
-                    onlyOnce = false;
-                    return false;
-                }
+                onlyOnce = false;
+                return false;
+            }
+            if (command is PrivateMessage || command is Notice)
+            {
 
                 var translateDelegate = new GoogleTranslate.TranslateMultipleDelegate(translator.TranslateText);
-                translateDelegate.BeginInvoke(args[1], channel.Users.Select(u => u.Languages.First()).Distinct(), TranslateCallBack, Utils.Tuple.Create(channel, user, ircCommand));
+                translateDelegate.BeginInvoke(args[1], channel.Users.Select(u => u.Languages.First()).Distinct(), TranslateCallBack, Utils.Tuple.Create(channel, user, command));
 
                 onlyOnce = false;
                 return false;
@@ -71,7 +71,7 @@ namespace IrcD.Modes.ChannelModes
 
         private static void TranslateCallBack(IAsyncResult asyncResult)
         {
-            var state = (Utils.Tuple<ChannelInfo, UserInfo, IrcCommandType>)asyncResult.AsyncState;
+            var state = (Utils.Tuple<ChannelInfo, UserInfo, CommandBase>)asyncResult.AsyncState;
             var asyncDelegate = ((AsyncResult)asyncResult).AsyncDelegate;
             var result = ((GoogleTranslate.TranslateMultipleDelegate)asyncDelegate).EndInvoke(asyncResult);
 
@@ -98,14 +98,13 @@ namespace IrcD.Modes.ChannelModes
                     message = "BUG: Translation failed miserably";
                 }
 
-                switch (state.Item3)
+                if (state.Item3 is PrivateMessage)
                 {
-                    case IrcCommandType.PrivateMessage:
-                        user.IrcDaemon.Send.PrivateMessage(state.Item2, user, state.Item1.Name, message);
-                        break;
-                    case IrcCommandType.Notice:
-                        user.IrcDaemon.Send.Notice(state.Item2, user, state.Item1.Name, message);
-                        break;
+                    user.IrcDaemon.Send.PrivateMessage(state.Item2, user, state.Item1.Name, message);
+                }
+                if (state.Item3 is Notice)
+                {
+                    user.IrcDaemon.Send.Notice(state.Item2, user, state.Item1.Name, message);
                 }
             }
         }

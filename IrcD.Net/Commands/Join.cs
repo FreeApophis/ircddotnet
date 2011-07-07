@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IrcD.Channel;
-using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {
@@ -34,7 +33,7 @@ namespace IrcD.Commands
 
         [CheckRegistered]
         [CheckParamCount(1)]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             if (args[0] == "0")
             {
@@ -52,7 +51,7 @@ namespace IrcD.Commands
                 {
                     chan = IrcDaemon.Channels[channel];
 
-                    if (!chan.Modes.HandleEvent(IrcCommandType.Join, chan, info, args))
+                    if (!chan.Modes.HandleEvent(this, chan, info, args))
                     {
                         continue;
                     }

@@ -21,7 +21,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IrcD.Channel;
-using IrcD.ServerReplies;
+using IrcD.Commands;
 
 namespace IrcD.Modes.ChannelModes
 {
@@ -48,7 +48,7 @@ namespace IrcD.Modes.ChannelModes
             info.IrcDaemon.Replies.SendEndOfExceptionList(info, chan);
         }
 
-        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        public override bool HandleEvent(CommandBase command, ChannelInfo channel, UserInfo user, List<string> args)
         {
             // Handling JOIN is done in the ModeBan class
             return true;

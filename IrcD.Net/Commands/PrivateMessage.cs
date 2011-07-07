@@ -32,7 +32,7 @@ namespace IrcD.Commands
         { }
 
         [CheckRegistered]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             if (args.Count < 1)
             {
@@ -54,7 +54,7 @@ namespace IrcD.Commands
                 {
                     var chan = IrcDaemon.Channels[args[0]];
 
-                    if (!chan.Modes.HandleEvent(IrcCommandType.PrivateMessage, chan, info, args))
+                    if (!chan.Modes.HandleEvent(this, chan, info, args))
                     {
                         return;
                     }

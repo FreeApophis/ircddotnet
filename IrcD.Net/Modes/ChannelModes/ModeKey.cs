@@ -18,12 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using IrcD.Channel;
 using IrcD.Commands;
-using IrcD.ServerReplies;
 
 namespace IrcD.Modes.ChannelModes
 {
@@ -48,9 +46,9 @@ namespace IrcD.Modes.ChannelModes
             }
         }
 
-        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        public override bool HandleEvent(CommandBase command, ChannelInfo channel, UserInfo user, List<string> args)
         {
-            if (ircCommand == IrcCommandType.Join)
+            if (command is Join)
             {
                 var keys = args.Count > 1 ? (IEnumerable<string>)CommandBase.GetSubArgument(args[1]) : new List<string>();
 

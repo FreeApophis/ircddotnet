@@ -19,7 +19,6 @@
  */
 
 using System.Collections.Generic;
-using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {
@@ -31,7 +30,7 @@ namespace IrcD.Commands
 
         [CheckRegistered]
         [CheckParamCount(1)]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             if (!IrcDaemon.Channels.ContainsKey(args[0]))
             {
@@ -56,7 +55,7 @@ namespace IrcD.Commands
             chan.Topic = args[1];
 
             // Some Mode might want to handle the command
-            if (!chan.Modes.HandleEvent(IrcCommandType.Topic, chan, info, args))
+            if (!chan.Modes.HandleEvent(this, chan, info, args))
             {
                 return;
             }

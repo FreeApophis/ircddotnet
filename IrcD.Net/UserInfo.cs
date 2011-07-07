@@ -265,7 +265,7 @@ namespace IrcD
 #if DEBUG
             Logger.Log(line.ToString(), location: "OUT:" + Nick);
 #endif
-            socket.Send(Encoding.UTF8.GetBytes(line + IrcDaemon.ServerCrLf));
+            var bytes = socket.Send(Encoding.UTF8.GetBytes(line + IrcDaemon.ServerCrLf));
         }
 
         public override void WriteLine(StringBuilder line, UserInfo exception)
@@ -275,23 +275,6 @@ namespace IrcD
                 WriteLine(line);
             }
 
-        }
-
-        /// <summary>
-        /// Check if an IRC Operatur status can be granted upon user and pass
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="pass"></param>
-        /// <returns></returns>
-        public bool ValidOpLine(string user, string pass)
-        {
-            string realpass;
-            if (IrcDaemon.Options.OLine.TryGetValue(user, out realpass))
-            {
-                if (pass == realpass)
-                    return true;
-            }
-            return false;
         }
 
         // Cleanly Quit a user, in any case, Connection dropped, QuitMesssage, all traces of 'this' mus be removed.

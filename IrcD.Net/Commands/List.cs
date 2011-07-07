@@ -30,7 +30,7 @@ namespace IrcD.Commands
         { }
 
         [CheckRegistered]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             if (info.IrcDaemon.Options.IrcMode == IrcMode.Rfc1459)
                 IrcDaemon.Replies.SendListStart(info);

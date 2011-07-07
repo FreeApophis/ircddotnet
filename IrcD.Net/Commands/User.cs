@@ -30,9 +30,8 @@ namespace IrcD.Commands
         { }
 
         [CheckParamCount(4)]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
-
             if (!info.PassAccepted)
             {
                 IrcDaemon.Replies.SendPasswordMismatch(info);

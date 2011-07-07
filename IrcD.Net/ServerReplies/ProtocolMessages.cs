@@ -171,6 +171,18 @@ namespace IrcD.ServerReplies
             receiver.WriteLine(command);
         }
 
+        internal void Kill(UserInfo sender, UserInfo receiver, string message)
+        {
+            BuildMessageHeader(sender);
+
+            command.Append(" KILL ");
+            command.Append(receiver.Nick);
+            command.Append(" :");
+            command.Append(message);
+
+            receiver.WriteLine(command);
+        }
+
 
         // PING and PONG are special, the sender is the server! 
         // BuildMessagHeader() cannot be used

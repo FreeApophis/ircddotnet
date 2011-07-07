@@ -21,7 +21,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IrcD.Channel;
-using IrcD.ServerReplies;
+using IrcD.Commands;
 using IrcD.Utils;
 
 namespace IrcD.Modes.ChannelModes
@@ -33,9 +33,9 @@ namespace IrcD.Modes.ChannelModes
         {
         }
 
-        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        public override bool HandleEvent(CommandBase command, ChannelInfo channel, UserInfo user, List<string> args)
         {
-            if(ircCommand == IrcCommandType.PrivateMessage || ircCommand == IrcCommandType.Notice)
+            if (command is PrivateMessage || command is Notice)
             {
                 if (args[1].Any(c => c == IrcConstants.IrcColor))
                 {

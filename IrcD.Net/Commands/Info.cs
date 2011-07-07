@@ -28,9 +28,10 @@ namespace IrcD.Commands
             : base(ircDaemon, "INFO")
         { }
 
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
-            // TODO: Parsing target
+            //ToDo: parse target parameter
+
             IrcDaemon.Replies.SendInfo(info);
             IrcDaemon.Replies.SendEndOfInfo(info);
         }

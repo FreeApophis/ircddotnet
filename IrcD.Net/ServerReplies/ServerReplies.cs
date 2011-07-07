@@ -26,6 +26,7 @@ using System.Text;
 using IrcD.Channel;
 using IrcD.Modes.UserModes;
 using IrcD.Utils;
+using IrcD.Commands;
 
 namespace IrcD.ServerReplies
 {
@@ -272,6 +273,110 @@ namespace IrcD.ServerReplies
 
             info.WriteLine(response);
         }
+
+        /// <summary>
+        /// Reply Code 211
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendStatsLinkInfo(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.StatsLinkInfo);
+            //<linkname> <sendq> <sent messages> <sent Kbytes> <received messages> <received Kbytes> <time open>
+
+            response.Append(" ");
+            response.Append(info.Socket.ToString());
+            response.Append(" ");
+            response.Append("0");
+            response.Append(" ");
+            response.Append("0");
+            response.Append(" ");
+            response.Append("0");
+            response.Append(" ");
+            response.Append("0");
+            response.Append(" ");
+            response.Append("0");
+            response.Append(" ");
+            response.Append((long)(DateTime.Now - info.Created).TotalSeconds);
+
+
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 212
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendStatsCommands(UserInfo info, CommandBase command)
+        {
+            BuildMessageHeader(info, ReplyCode.StatsCommands);
+
+            // TODO: Stats
+            response.Append(" ");
+            response.Append(command.Name);
+            response.Append(" ");
+            response.Append(command.CallCount);
+            response.Append(" ");
+            response.Append(command.ByteCount);
+            response.Append(" ");
+            response.Append(command.CallCount);
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 219
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendEndOfStats(UserInfo info, string query)
+        {
+            BuildMessageHeader(info, ReplyCode.EndOfStats);
+
+            response.Append(" ");
+            response.Append(query);
+            response.Append(" :End of STATS report");
+
+            info.WriteLine(response);
+        }
+
+        /// <summary>
+        /// Reply Code 242
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendStatsUptime(UserInfo info)
+        {
+            BuildMessageHeader(info, ReplyCode.StatsUptime);
+
+            response.Append(" :Server Up ");
+            response.Append(ircDaemon.Stats.Uptime.Days);
+            response.Append(" days ");
+            response.Append(string.Format("{0:00}", ircDaemon.Stats.Uptime.Hours));
+            response.Append(":");
+            response.Append(string.Format("{0:00}", ircDaemon.Stats.Uptime.Minutes));
+            response.Append(":");
+            response.Append(string.Format("{0:00}", ircDaemon.Stats.Uptime.Seconds));
+
+            info.WriteLine(response);
+        }
+
+
+        /// <summary>
+        /// Reply Code 243
+        /// </summary>
+        /// <param name="info"></param>
+        public void SendStatsOLine(UserInfo info, UserInfo op)
+        {
+            BuildMessageHeader(info, ReplyCode.StatsOLine);
+
+            response.Append(" O ");
+            response.Append(op.Host);
+            response.Append(" * ");
+            response.Append(op.Nick);
+
+            info.WriteLine(response);
+        }
+
+
 
         /// <summary>
         /// Reply Code 221

@@ -20,7 +20,6 @@
 
 using System.Collections.Generic;
 using IrcD.Channel;
-using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {
@@ -32,7 +31,7 @@ namespace IrcD.Commands
 
         [CheckRegistered]
         [CheckParamCount(2)]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             UserInfo invited;
             if (!IrcDaemon.Nicks.TryGetValue(args[0], out invited))
@@ -50,11 +49,11 @@ namespace IrcD.Commands
                     return;
                 }
 
-                if (!chan.Modes.HandleEvent(IrcCommandType.Invite, chan, info, args))
+                if (!chan.Modes.HandleEvent(this, chan, info, args))
                 {
                     return;
                 }
-                
+
                 if (!invited.Invited.Contains(chan))
                 {
                     invited.Invited.Add(chan);
@@ -63,7 +62,6 @@ namespace IrcD.Commands
 
             IrcDaemon.Replies.SendInviting(info, invited, channel);
             IrcDaemon.Send.Invite(info, invited, invited, channel);
-
         }
     }
 }

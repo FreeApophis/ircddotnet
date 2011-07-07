@@ -29,7 +29,7 @@ using System.Reflection;
 namespace IrcD.Commands
 {
 
-    public class CommandList
+    public class CommandList : IEnumerable<CommandBase>
     {
         private readonly Dictionary<string, CommandBase> commandList;
         private readonly IrcDaemon ircDaemon;
@@ -49,12 +49,11 @@ namespace IrcD.Commands
             return commandList.SelectMany(m => m.Value.Support(ircDaemon));
         }
 
+
         public void Handle(UserInfo info, string prefix, ReplyCode replyCode, List<string> args)
         {
             throw new NotImplementedException();
         }
-
-
 
         public void Handle(UserInfo info, string prefix, string command, List<string> args)
         {
@@ -117,6 +116,22 @@ namespace IrcD.Commands
 
             Logger.Log(parsedLine.ToString());
 #endif
+        }
+
+        public IEnumerator<CommandBase> GetEnumerator()
+        {
+            foreach (var command in commandList)
+            {
+                yield return command.Value;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            foreach (var command in commandList)
+            {
+                yield return command.Value;
+            }
         }
     }
 }

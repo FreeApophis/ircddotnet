@@ -31,16 +31,15 @@ namespace IrcD.Commands
 
         [CheckRegistered]
         [CheckParamCount(2)]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
-            // TODO: deny certain hosts OPER status
-            if (false)
+            if (DenyOper(info))
             {
                 IrcDaemon.Replies.SendNoOperHost(info);
                 return;
             }
 
-            if (info.ValidOpLine(args[0], args[1]))
+            if (ValidOperLine(args[0], args[1]))
             {
                 info.Modes.Add(new ModeLocalOperator());
                 info.Modes.Add(new ModeOperator());
@@ -51,6 +50,42 @@ namespace IrcD.Commands
             {
                 IrcDaemon.Replies.SendPasswordMismatch(info);
             }
+        }
+
+        /// <summary>
+        /// Check if an IRC Operatur status can be granted upon user and pass
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
+        /// <returns></returns>
+        public bool ValidOperLine(string user, string pass)
+        {
+            string realpass;
+            if (IrcDaemon.Options.OLine.TryGetValue(user, out realpass))
+            {
+                if (pass == realpass)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Check if the Host of the user is allowed to use the OPER command
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        private bool DenyOper(UserInfo info)
+        {
+            var allow = false;
+            foreach (var operHost in IrcDaemon.Options.OperHosts)
+            {
+                if (!allow && operHost.Allow)
+                    allow = operHost.WildcardHostMask.IsMatch(info.Host);
+
+                if (allow && !operHost.Allow)
+                    allow = !operHost.WildcardHostMask.IsMatch(info.Host);
+            }
+            return !allow;
         }
     }
 }

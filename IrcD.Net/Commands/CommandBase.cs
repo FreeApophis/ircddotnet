@@ -43,7 +43,32 @@ namespace IrcD.Commands
             }
         }
 
-        public abstract void Handle(UserInfo info, List<string> args);
+        private long callCount;
+        public long CallCount
+        {
+            get
+            {
+                return callCount;
+            }
+        }
+
+        private long byteCount;
+        public long ByteCount
+        {
+            get
+            {
+                return byteCount;
+            }
+        }
+
+        public void Handle(UserInfo info, List<string> args)
+        {
+            callCount++;
+            byteCount += 0;
+            PrivateHandle(info, args);
+        }
+
+        abstract protected void PrivateHandle(UserInfo info, List<string> args);
 
         public static string[] GetSubArgument(string arg)
         {
@@ -59,6 +84,5 @@ namespace IrcD.Commands
         {
             return Enumerable.Empty<string>();
         }
-
     }
 }

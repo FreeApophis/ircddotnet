@@ -135,6 +135,16 @@ namespace IrcD
             get { return oLine; }
         }
 
+        private readonly List<OperHost> operHosts = new List<OperHost>();
+
+        public List<OperHost> OperHosts
+        {
+            get
+            {
+                return operHosts;
+            }
+        }
+
         private bool clientCompatibilityMode = true;
 
         /// <summary>
@@ -182,6 +192,14 @@ namespace IrcD
             set { standardKickMessage = value; }
         }
 
+        private string standardKillMessage = "Killed";
+
+        public string StandardKillMessage
+        {
+            get { return standardKillMessage; }
+            set { standardKillMessage = value; }
+        }
+
         private string networkName;
 
         public string NetworkName
@@ -195,5 +213,6 @@ namespace IrcD
                 networkName = value;
             }
         }
+
     }
 }

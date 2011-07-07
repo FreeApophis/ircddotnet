@@ -29,7 +29,7 @@ namespace IrcD.Commands
         { }
 
         [CheckRegistered]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             // TODO: parameter 1 parsing
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using IrcD.Utils;
 
 namespace IrcD.Server
 {
@@ -42,12 +43,14 @@ namespace IrcD.Server
             ircDaemon.Options.StandardKickMessage = GetString("standard_kick_message", "Kicked");
             ircDaemon.Options.StandardPartMessage = GetString("standard_part_message", "Leaving");
             ircDaemon.Options.StandardQuitMessage = GetString("standard_quit_message", "Quit");
+            ircDaemon.Options.StandardKillMessage = GetString("standard_kill_message", "Killed");
 
             ircDaemon.Options.AdminLocation1 = GetString("admin", "location1", "no admin set");
             ircDaemon.Options.AdminLocation2 = GetString("admin", "location2", "no admin set");
             ircDaemon.Options.AdminEmail = GetString("admin", "email", "no admin set");
 
             LoadOper();
+            LoadOperHosts();
         }
 
         private void LoadOper()
@@ -57,6 +60,27 @@ namespace IrcD.Server
                 if (!string.IsNullOrEmpty(oper.Element("user").Value) && !string.IsNullOrEmpty(oper.Element("pass").Value))
                 {
                     ircDaemon.Options.OLine.Add(oper.Element("user").Value, oper.Element("pass").Value);
+                }
+            }
+        }
+
+        private void LoadOperHosts()
+        {
+            foreach (var host in configFile.Descendants("oper_hosts"))
+            {
+                foreach (var entry in host.Elements())
+                {
+                    switch (entry.Name.LocalName)
+                    {
+                        case "allow":
+                            ircDaemon.Options.OperHosts.Add(new OperHost { Allow = true, WildcardHostMask = new WildCard(entry.Value, WildcardMatch.Anywhere) });
+                            break;
+                        case "deny":
+                            ircDaemon.Options.OperHosts.Add(new OperHost { Allow = false, WildcardHostMask = new WildCard(entry.Value, WildcardMatch.Anywhere) });
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }

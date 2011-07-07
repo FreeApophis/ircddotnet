@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using IrcD.ServerReplies;
+using IrcD.Modes.UserModes;
 
 namespace IrcD.Commands
 {
@@ -31,7 +32,7 @@ namespace IrcD.Commands
 
         [CheckRegistered]
         [CheckParamCount(1)]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             if (!IrcDaemon.Nicks.ContainsKey(args[0]))
             {
@@ -56,16 +57,11 @@ namespace IrcD.Commands
                 IrcDaemon.Replies.SendWhoIsLanguage(info, user);
             }
 
-            if (!info.Modes.HandleEvent(IrcCommandType.Join, info, args))
-            {
-                return;
-            }
-            // TODO: User Modes Handle
 
-            //if (user.Mode_O || user.Mode_o)
-            //{
-            //    SendWhoIsOperator(info, user);
-            //}
+            if (user.Modes.Exist<ModeOperator>() || user.Modes.Exist<ModeLocalOperator>())
+            {
+                IrcDaemon.Replies.SendWhoIsOperator(info, user);
+            }
 
             IrcDaemon.Replies.SendWhoIsIdle(info, user);
             IrcDaemon.Replies.SendEndOfWhoIs(info, user);

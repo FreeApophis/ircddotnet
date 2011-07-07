@@ -79,5 +79,13 @@ namespace IrcD
                 return ircDaemon.Nicks.Count;
             }
         }
+
+        public TimeSpan Uptime
+        {
+            get
+            {
+                return DateTime.Now - ircDaemon.ServerCreated;
+            }
+        }
     }
 }

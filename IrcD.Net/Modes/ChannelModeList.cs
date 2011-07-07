@@ -22,8 +22,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IrcD.Channel;
+using IrcD.Commands;
 using IrcD.Modes.ChannelModes;
-using IrcD.ServerReplies;
 
 namespace IrcD.Modes
 {
@@ -53,9 +53,9 @@ namespace IrcD.Modes
         /// <param name="user"></param>
         /// <param name="args"></param>
         /// <returns>returns true if all Modes return true and therefore don't stop the execution of the Command</returns>
-        public bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        public bool HandleEvent(CommandBase command, ChannelInfo channel, UserInfo user, List<string> args)
         {
-            return Values.All(mode => mode.HandleEvent(ircCommand, channel, user, args));
+            return Values.All(mode => mode.HandleEvent(command, channel, user, args));
         }
 
         internal void Update(UserInfo info, ChannelInfo chan, IEnumerable<string> args)

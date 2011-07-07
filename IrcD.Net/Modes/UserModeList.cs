@@ -21,7 +21,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using IrcD.ServerReplies;
+using IrcD.Commands;
 
 namespace IrcD.Modes
 {
@@ -33,9 +33,9 @@ namespace IrcD.Modes
 
         }
 
-        public bool HandleEvent(IrcCommandType ircCommand, UserInfo user, List<string> args)
+        public bool HandleEvent(CommandBase command, UserInfo user, List<string> args)
         {
-            return Values.All(mode => mode.HandleEvent(ircCommand, user, args));
+            return Values.All(mode => mode.HandleEvent(command, user, args));
         }
 
         internal void Update(UserInfo info, IEnumerable<string> args)

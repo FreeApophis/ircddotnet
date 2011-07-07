@@ -30,7 +30,7 @@ namespace IrcD.Commands
 
         [CheckRegistered]
         [CheckParamCount(1)]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             var users = new List<UserInfo>();
             foreach (var arg in args)

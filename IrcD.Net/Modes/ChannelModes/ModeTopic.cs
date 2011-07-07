@@ -20,7 +20,7 @@
 
 using System.Collections.Generic;
 using IrcD.Channel;
-using IrcD.ServerReplies;
+using IrcD.Commands;
 
 namespace IrcD.Modes.ChannelModes
 {
@@ -31,9 +31,9 @@ namespace IrcD.Modes.ChannelModes
         {
         }
 
-        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        public override bool HandleEvent(CommandBase command, ChannelInfo channel, UserInfo user, List<string> args)
         {
-            if (ircCommand == IrcCommandType.Topic)
+            if (command is Topic)
             {
                 UserPerChannelInfo upci;
                 if (!channel.UserPerChannelInfos.TryGetValue(user.Nick, out upci))

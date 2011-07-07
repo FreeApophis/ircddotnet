@@ -32,7 +32,7 @@ namespace IrcD.Commands
 
         [CheckRegistered]
         [CheckParamCount(2)]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             var message = (args.Count > 2) ? args[2] : null;
 

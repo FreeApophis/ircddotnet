@@ -18,22 +18,21 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-using System;
 using System.Collections.Generic;
 using IrcD.ServerReplies;
+using IrcD.Commands;
 
 namespace IrcD.Modes.UserModes
 {
     class ModeLocalOperator : UserMode
     {
-        public ModeLocalOperator() : base('O')
-        {
-        }
+        public ModeLocalOperator()
+            : base('O')
+        { }
 
-        public override bool HandleEvent(IrcCommandType ircCommand, UserInfo user, List<string> args)
+        public override bool HandleEvent(CommandBase command, UserInfo user, List<string> args)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

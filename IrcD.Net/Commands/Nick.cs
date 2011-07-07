@@ -28,7 +28,7 @@ namespace IrcD.Commands
             : base(ircDaemon, "NICK")
         { }
 
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             if (!info.PassAccepted)
             {
@@ -63,13 +63,13 @@ namespace IrcD.Commands
 
             // Announce nick change to itself
             IrcDaemon.Send.Nick(info, info, args[0]);
-            
+
             // Announce nick change to all channels it is in
             foreach (var channelInfo in info.Channels)
             {
                 IrcDaemon.Send.Nick(info, channelInfo, args[0]);
             }
-            
+
             info.Rename(args[0]);
         }
     }

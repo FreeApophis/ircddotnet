@@ -30,7 +30,7 @@ namespace IrcD.Commands
         { }
 
         [CheckParamCount(1)]
-        public override void Handle(UserInfo info, List<string> args)
+        protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             var subcommand = args[0];
 

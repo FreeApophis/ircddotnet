@@ -20,8 +20,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using IrcD.ServerReplies;
 using IrcD.Channel;
+using IrcD.Commands;
 
 namespace IrcD.Modes
 {
@@ -43,7 +43,7 @@ namespace IrcD.Modes
         /// <param name="args"></param>
         /// <returns>Handle Event should return true when the command is allowed to proceed normally. 
         /// It should return false, if the Mode forbids the further execution of the Command.</returns>
-        public abstract bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args);
+        public abstract bool HandleEvent(CommandBase command, ChannelInfo channel, UserInfo user, List<string> args);
 
         /// <summary>
         ///  Returns a list of ISUPPORT / Numeric 005 information this Mode is providing. 

@@ -21,7 +21,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IrcD.Channel;
-using IrcD.ServerReplies;
+using IrcD.Commands;
 using IrcD.Utils;
 
 namespace IrcD.Modes.ChannelModes
@@ -48,9 +48,9 @@ namespace IrcD.Modes.ChannelModes
             info.IrcDaemon.Replies.SendEndOfBanList(info, chan);
         }
 
-        public override bool HandleEvent(IrcCommandType ircCommand, ChannelInfo channel, UserInfo user, List<string> args)
+        public override bool HandleEvent(CommandBase command, ChannelInfo channel, UserInfo user, List<string> args)
         {
-            if (ircCommand == IrcCommandType.Join)
+            if (command is Join)
             {
                 if (banList.Select(ban => new WildCard(ban, WildcardMatch.Exact)).Any(usermask => usermask.IsMatch(user.Usermask)))
                 {
@@ -59,7 +59,7 @@ namespace IrcD.Modes.ChannelModes
                 }
             }
 
-            if (ircCommand == IrcCommandType.PrivateMessage || ircCommand == IrcCommandType.Notice)
+            if (command is PrivateMessage || command is Notice)
             {
                 if (banList.Select(ban => new WildCard(ban, WildcardMatch.Exact)).Any(usermask => usermask.IsMatch(user.Usermask)))
                 {
