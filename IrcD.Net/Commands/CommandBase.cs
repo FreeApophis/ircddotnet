@@ -20,6 +20,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -61,6 +63,7 @@ namespace IrcD.Commands
             }
         }
 
+        abstract protected void PrivateHandle(UserInfo info, List<string> args);
         public void Handle(UserInfo info, List<string> args)
         {
             callCount++;
@@ -68,7 +71,32 @@ namespace IrcD.Commands
             PrivateHandle(info, args);
         }
 
-        abstract protected void PrivateHandle(UserInfo info, List<string> args);
+        abstract protected void PrivateSend(CommandArgument argument);
+        public void Send(CommandArgument argument)
+        {
+            if (argument.Name == this.Name)
+            {
+                PrivateSend(argument);
+            }
+        }
+
+        protected readonly StringBuilder command = new StringBuilder();
+
+        protected void BuildMessageHeader(CommandArgument commandArgument)
+        {
+            command.Length = 0;
+            if (commandArgument.Sender == null)
+            {
+                command.Append(IrcDaemon.ServerPrefix);
+            }
+            else
+            {
+                command.Append(commandArgument.Sender.Prefix);
+            }
+            command.Append(" ");
+            command.Append(commandArgument.Name);
+            command.Append(" ");
+        }
 
         public static string[] GetSubArgument(string arg)
         {
@@ -84,5 +112,6 @@ namespace IrcD.Commands
         {
             return Enumerable.Empty<string>();
         }
+
     }
 }

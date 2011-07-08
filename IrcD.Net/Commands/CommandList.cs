@@ -22,9 +22,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using IrcD.Commands.Arguments;
 using IrcD.ServerReplies;
 using IrcD.Utils;
-using System.Reflection;
 
 namespace IrcD.Commands
 {
@@ -116,6 +116,12 @@ namespace IrcD.Commands
 
             Logger.Log(parsedLine.ToString());
 #endif
+        }
+
+        public void Send(CommandArgument argument)
+        {
+            CommandBase commandObject = commandList[argument.Name];
+            commandObject.Send(argument);
         }
 
         public IEnumerator<CommandBase> GetEnumerator()

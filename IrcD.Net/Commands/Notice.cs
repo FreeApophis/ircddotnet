@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -54,7 +55,7 @@ namespace IrcD.Commands
                     }
 
                     // Send Channel Message
-                    IrcDaemon.Send.Notice(info, chan, chan.Name, args[1]);
+                    Send(new NoticeArgument(info, chan, chan.Name, args[1]));
                 }
                 else
                 {
@@ -73,7 +74,7 @@ namespace IrcD.Commands
                     }
 
                     // Send PM
-                    IrcDaemon.Send.Notice(info, user, user.Nick, args[1]);
+                    Send(new NoticeArgument(info, user, user.Nick, args[1]));
                 }
                 else
                 {
@@ -83,6 +84,26 @@ namespace IrcD.Commands
             else
             {
                 IrcDaemon.Replies.SendNoSuchNick(info, args[0]);
+            }
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as NoticeArgument;
+
+            BuildMessageHeader(arg);
+
+            command.Append(arg.Target);
+            command.Append(" :");
+            command.Append(arg.Message);
+
+            if (arg.Sender == null)
+            {
+                arg.Receiver.WriteLine(command);
+            }
+            else
+            {
+                arg.Receiver.WriteLine(command, arg.Sender);
             }
         }
     }

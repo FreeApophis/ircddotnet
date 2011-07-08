@@ -20,8 +20,8 @@
 
 using System;
 using System.Collections.Generic;
+using IrcD.Commands.Arguments;
 using IrcD.Modes.UserModes;
-using IrcD.ServerReplies;
 
 namespace IrcD.Commands
 {
@@ -60,7 +60,7 @@ namespace IrcD.Commands
                     }
 
                     // Send Channel Message
-                    IrcDaemon.Send.PrivateMessage(info, chan, chan.Name, args[1]);
+                    Send(new PrivateMessageArgument(info, chan, chan.Name, args[1]));
                 }
                 else
                 {
@@ -78,7 +78,7 @@ namespace IrcD.Commands
                     }
 
                     // Send Private Message
-                    IrcDaemon.Send.PrivateMessage(info, user, user.Nick, args[1]);
+                    Send(new PrivateMessageArgument(info, user, user.Nick, args[1]));
                 }
                 else
                 {
@@ -89,6 +89,19 @@ namespace IrcD.Commands
             {
                 IrcDaemon.Replies.SendNoSuchNick(info, args[0]);
             }
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as PrivateMessageArgument;
+
+            BuildMessageHeader(arg);
+
+            command.Append(arg.Target);
+            command.Append(" :");
+            command.Append(arg.Message);
+
+            arg.Receiver.WriteLine(command, arg.Sender);
         }
     }
 }

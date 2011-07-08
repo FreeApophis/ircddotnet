@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using IrcD.Channel;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -60,8 +61,23 @@ namespace IrcD.Commands
                 }
             }
 
+            //TODO channel does not exist? ... clean up below
+
             IrcDaemon.Replies.SendInviting(info, invited, channel);
-            IrcDaemon.Send.Invite(info, invited, invited, channel);
+            Send(new InviteArgument(info, invited, invited, chan));
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as InviteArgument;
+
+            BuildMessageHeader(arg);
+
+            command.Append(arg.Invited.Nick);
+            command.Append(" ");
+            command.Append(arg.Channel.Name);
+
+            arg.Receiver.WriteLine(command);
         }
     }
 }

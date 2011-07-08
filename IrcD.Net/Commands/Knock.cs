@@ -21,6 +21,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IrcD.Channel;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -43,14 +44,27 @@ namespace IrcD.Commands
                     return;
                 }
 
-                IrcDaemon.Send.Notice(chan, chan.Name, "[KNOCK] by " + info.Usermask + "(" + ((args.Count > 1) ? args[1] : "no reason specified") + ")");
-                IrcDaemon.Send.Notice(info, info.Nick, "Knocked on " + chan.Name);
+                Send(new NoticeArgument(chan, chan.Name, "[KNOCK] by " + info.Usermask + "(" + ((args.Count > 1) ? args[1] : "no reason specified") + ")"));
+                Send(new NoticeArgument(info, info.Nick, "Knocked on " + chan.Name));
             }
             else
             {
                 IrcDaemon.Replies.SendNoSuchChannel(info, args[0]);
             }
 
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as KnockArgument;
+
+            BuildMessageHeader(arg);
+
+            command.Append(arg.Channel.Name);
+            command.Append(" :");
+            command.Append(arg.Message);
+
+            arg.Receiver.WriteLine(command);
         }
 
         public override IEnumerable<string> Support(IrcDaemon ircDaemon)

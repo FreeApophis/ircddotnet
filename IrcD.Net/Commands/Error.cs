@@ -18,7 +18,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -31,6 +33,11 @@ namespace IrcD.Commands
         protected override void PrivateHandle(UserInfo info, List<string> args)
         {
             
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            throw new NotImplementedException();
         }
     }
 }

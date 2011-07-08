@@ -19,8 +19,10 @@
  */
 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -37,6 +39,11 @@ namespace IrcD.Commands
             info.Languages = args[0].Split(new[] { ',' });
 
             IrcDaemon.Replies.SendYourLanguageIs(info);
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            throw new NotImplementedException();
         }
 
         public override IEnumerable<string> Support(IrcDaemon ircDaemon)

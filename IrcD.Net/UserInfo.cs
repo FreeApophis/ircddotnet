@@ -24,6 +24,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using IrcD.Channel;
+using IrcD.Commands.Arguments;
 using IrcD.Modes;
 using IrcD.Utils;
 
@@ -286,7 +287,7 @@ namespace IrcD
                 // Important: remove nick first! or we end in a exception-catch endless loop
                 upci.ChannelInfo.UserPerChannelInfos.Remove(Nick);
 
-                IrcDaemon.Send.Quit(this, upci.ChannelInfo, message);
+                IrcDaemon.Commands.Send(new QuitArgument(this, upci.ChannelInfo, message));
             }
 
             UserPerChannelInfos.Clear();

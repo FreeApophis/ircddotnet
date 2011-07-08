@@ -18,8 +18,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using IrcD.Commands.Arguments;
 using IrcD.Modes.UserModes;
 
 namespace IrcD.Commands
@@ -37,6 +38,11 @@ namespace IrcD.Commands
             {
                 IrcDaemon.OnRehashEvent(this, new RehashEventArgs(IrcDaemon, info));
             }
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            throw new NotImplementedException();
         }
     }
 }

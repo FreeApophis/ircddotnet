@@ -20,6 +20,8 @@
 
 using System.Collections.Generic;
 using IrcD.Modes.UserModes;
+using System;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -44,6 +46,11 @@ namespace IrcD.Commands
                 info.Modes.Add(new ModeAway());
                 IrcDaemon.Replies.SendNowAway(info);
             }
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            throw new NotImplementedException();
         }
     }
 }

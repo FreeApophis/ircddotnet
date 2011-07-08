@@ -22,7 +22,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using IrcD.Channel;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -74,6 +74,19 @@ namespace IrcD.Commands
                 // You cannot use Mode on any user but yourself
                 IrcDaemon.Replies.SendUsersDoNotMatch(info);
             }
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as ModeArgument;
+
+            BuildMessageHeader(arg);
+
+            command.Append(arg.Target);
+            command.Append(" ");
+            command.Append(arg.ModeString);
+
+            arg.Receiver.WriteLine(command);
         }
     }
 }

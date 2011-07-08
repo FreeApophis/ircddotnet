@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using IrcD.Channel;
+using IrcD.Commands.Arguments;
 using IrcD.Utils;
 
 namespace IrcD.Commands
@@ -66,7 +67,7 @@ namespace IrcD.Commands
                 UserPerChannelInfo kickUser;
                 if (chan.UserPerChannelInfos.TryGetValue(subarg.Nick, out kickUser))
                 {
-                    IrcDaemon.Send.Kick(info, chan, chan, kickUser.UserInfo, message);
+                    Send(new KickArgument(info, chan, chan, kickUser.UserInfo, message));
 
                     chan.UserPerChannelInfos.Remove(kickUser.UserInfo.Nick);
                     kickUser.UserInfo.UserPerChannelInfos.Remove(kickUser);
@@ -77,6 +78,20 @@ namespace IrcD.Commands
                     IrcDaemon.Replies.SendUserNotInChannel(info, subarg.Channel, subarg.Nick);
                 }
             }
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as KickArgument;
+            BuildMessageHeader(arg);
+
+            command.Append(arg.Channel.Name);
+            command.Append(" ");
+            command.Append(arg.User.Nick);
+            command.Append(" :");
+            command.Append(arg.Message ?? IrcDaemon.Options.StandardKickMessage);
+
+            arg.Receiver.WriteLine(command);
         }
     }
 }

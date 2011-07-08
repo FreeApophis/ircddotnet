@@ -26,6 +26,7 @@ using System.Runtime.Remoting.Messaging;
 using IrcD.Channel;
 using IrcD.Commands;
 using IrcD.Utils;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Modes.ChannelModes
 {
@@ -48,7 +49,7 @@ namespace IrcD.Modes.ChannelModes
 
             if (command is Join)
             {
-                user.IrcDaemon.Send.Notice(user, user, channel.Name, "This channel automatically translates your messages, use the LANGUAGE command to set your preferred language");
+                user.IrcDaemon.Commands.Send(new NoticeArgument(user, user, channel.Name, "This channel automatically translates your messages, use the LANGUAGE command to set your preferred language"));
             }
             if (!channel.Modes.HandleEvent(command, channel, user, args))
             {
@@ -100,11 +101,11 @@ namespace IrcD.Modes.ChannelModes
 
                 if (state.Item3 is PrivateMessage)
                 {
-                    user.IrcDaemon.Send.PrivateMessage(state.Item2, user, state.Item1.Name, message);
+                    user.IrcDaemon.Commands.Send(new PrivateMessageArgument(state.Item2, user, state.Item1.Name, message));
                 }
                 if (state.Item3 is Notice)
                 {
-                    user.IrcDaemon.Send.Notice(state.Item2, user, state.Item1.Name, message);
+                    user.IrcDaemon.Commands.Send(new PrivateMessageArgument(state.Item2, user, state.Item1.Name, message));
                 }
             }
         }

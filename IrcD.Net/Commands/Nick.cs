@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -62,15 +63,27 @@ namespace IrcD.Commands
             }
 
             // Announce nick change to itself
-            IrcDaemon.Send.Nick(info, info, args[0]);
+
+            Send(new NickArgument(info, info, args[0]));
 
             // Announce nick change to all channels it is in
             foreach (var channelInfo in info.Channels)
             {
-                IrcDaemon.Send.Nick(info, channelInfo, args[0]);
+                Send(new NickArgument(info, channelInfo, args[0]));
             }
 
             info.Rename(args[0]);
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as NickArgument;
+
+            BuildMessageHeader(arg);
+
+            command.Append(arg.NewNick);
+
+            arg.Receiver.WriteLine(command);
         }
     }
 }

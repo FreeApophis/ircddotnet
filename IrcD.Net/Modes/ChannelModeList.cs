@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using IrcD.Channel;
 using IrcD.Commands;
+using IrcD.Commands.Arguments;
 using IrcD.Modes.ChannelModes;
 
 namespace IrcD.Modes
@@ -260,7 +261,7 @@ namespace IrcD.Modes
                 validmode.Append(" ");
                 validmode.Append(param);
             }
-            info.IrcDaemon.Send.Mode(info, chan, chan.Name, validmode.ToString());
+            info.IrcDaemon.Commands.Send(new ModeArgument(info, chan, chan.Name, validmode.ToString()));
         }
 
         public string ToParameterList()

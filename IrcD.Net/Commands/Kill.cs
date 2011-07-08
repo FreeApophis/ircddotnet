@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.Commands.Arguments;
 using IrcD.Modes.UserModes;
 
 namespace IrcD.Commands
@@ -47,8 +48,21 @@ namespace IrcD.Commands
 
             var message = (args.Count > 1) ? args[1] : IrcDaemon.Options.StandardKillMessage;
 
-            IrcDaemon.Send.Kill(info, killUser, message);
+            Send(new KillArgument(info, killUser, message));
             killUser.Remove(IrcDaemon.Options.StandardKillMessage);
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as KillArgument;
+
+            BuildMessageHeader(arg);
+            var user = arg.Receiver as UserInfo;
+            command.Append((user != null) ? user.Nick : "nobody");
+            command.Append(" :");
+            command.Append(arg.Message);
+
+            arg.Receiver.WriteLine(command);
         }
     }
 }

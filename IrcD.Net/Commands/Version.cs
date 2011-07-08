@@ -18,7 +18,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -34,6 +36,11 @@ namespace IrcD.Commands
             //ToDo: parse target parameter
 
             IrcDaemon.Replies.SendVersion(info);
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            throw new NotImplementedException();
         }
     }
 }

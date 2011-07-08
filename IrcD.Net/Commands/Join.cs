@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IrcD.Channel;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -80,7 +81,7 @@ namespace IrcD.Commands
 
                 chan.UserPerChannelInfos.Add(info.Nick, chanuser);
                 info.UserPerChannelInfos.Add(chanuser);
-                IrcDaemon.Send.Join(info, chan, chan);
+                Send(new JoinArgument(info, chan, chan));
                 SendTopic(info, chan);
                 IrcDaemon.Replies.SendNamesReply(chanuser.UserInfo, chan);
                 IrcDaemon.Replies.SendEndOfNamesReply(info, chan);
@@ -122,6 +123,16 @@ namespace IrcD.Commands
             {
                 IrcDaemon.Replies.SendTopicReply(info, chan);
             }
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as JoinArgument;
+            BuildMessageHeader(arg);
+
+            command.Append(arg.Channel.Name);
+
+            arg.Receiver.WriteLine(command);
         }
     }
 }

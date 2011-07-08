@@ -18,8 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -47,6 +49,11 @@ namespace IrcD.Commands
                 // This is an allowed Server connection
             }
             IrcDaemon.Replies.SendPasswordMismatch(info);
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            throw new NotImplementedException();
         }
     }
 }

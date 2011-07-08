@@ -18,8 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -41,6 +43,11 @@ namespace IrcD.Commands
                 IrcDaemon.Replies.SendListItem(info, ci);
             }
             IrcDaemon.Replies.SendListEnd(info);
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            throw new NotImplementedException();
         }
     }
 }

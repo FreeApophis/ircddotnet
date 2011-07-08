@@ -34,6 +34,7 @@ using IrcD.ServerReplies;
 using IrcD.Utils;
 using Mode = IrcD.Commands.Mode;
 using Version = IrcD.Commands.Version;
+using IrcD.Commands.Arguments;
 
 namespace IrcD
 {
@@ -127,15 +128,6 @@ namespace IrcD
             }
         }
 
-        private readonly ProtocolMessages protocolMessages;
-        public ProtocolMessages Send
-        {
-            get
-            {
-                return protocolMessages;
-            }
-        }
-
         private readonly ServerReplies.ServerReplies replies;
         public ServerReplies.ServerReplies Replies
         {
@@ -202,7 +194,7 @@ namespace IrcD
             // The protocol version cannot be changed after construction, 
             // because the construction methods below use this Option
             options = new ServerOptions(ircMode);
-            
+
             //Clean Interface to statistics, it needs the IrcDaemon Object to gather this information.
             stats = new ServerStats(this);
 
@@ -215,7 +207,6 @@ namespace IrcD
             // The Protocol Objects 
             commands = new CommandList(this);
             replies = new ServerReplies.ServerReplies(this);
-            protocolMessages = new ProtocolMessages(this);
             serverCreated = DateTime.Now;
 
             // Add Commands
@@ -417,7 +408,7 @@ namespace IrcD
                         else if (user.LastAlive < DateTime.Now.AddMinutes(-1) && user.LastPing < DateTime.Now.AddMinutes(-1))
                         {
                             user.LastPing = DateTime.Now;
-                            Send.Ping(user);
+                            Commands.Send(new PingArgument(user));
                         }
                     }
                 }

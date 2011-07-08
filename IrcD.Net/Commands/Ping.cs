@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -32,7 +33,18 @@ namespace IrcD.Commands
         [CheckRegistered]
         protected override void PrivateHandle(UserInfo info, List<string> args)
         {
-            IrcDaemon.Send.Pong(info, args.FirstOrDefault());
+            Send(new PongArgument(info, args.FirstOrDefault()));
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as PingArgument;
+
+            command.Length = 0;
+            command.Append("PING ");
+            command.Append(IrcDaemon.ServerPrefix);
+
+            arg.Receiver.WriteLine(command);
         }
     }
 }

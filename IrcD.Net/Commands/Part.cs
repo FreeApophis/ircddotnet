@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -45,7 +46,7 @@ namespace IrcD.Commands
 
                     if (info.Channels.Contains(chan))
                     {
-                        IrcDaemon.Send.Part(info, chan, chan, message);
+                        Send(new PartArgument(info, chan, chan, message));
 
                         chan.UserPerChannelInfos.Remove(info.Nick);
                         info.UserPerChannelInfos.Remove(upci);
@@ -67,6 +68,20 @@ namespace IrcD.Commands
                     continue;
                 }
             }
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as PartArgument;
+
+            BuildMessageHeader(arg);
+
+            command.Append(arg.Channel.Name);
+            command.Append(" :");
+            command.Append(arg.Message);
+
+            arg.Receiver.WriteLine(command);
+
         }
     }
 }

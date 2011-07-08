@@ -18,9 +18,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using IrcD.Channel;
+using IrcD.Commands.Arguments;
 using IrcD.Modes.UserModes;
 using IrcD.Utils;
 
@@ -81,6 +83,11 @@ namespace IrcD.Commands
                 IrcDaemon.Replies.SendWhoReply(info, who);
             }
             IrcDaemon.Replies.SendEndOfWho(info, mask);
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            throw new NotImplementedException();
         }
     }
 }

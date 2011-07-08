@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IrcD.Commands;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Modes
 {
@@ -82,7 +83,7 @@ namespace IrcD.Modes
                 }
             }
 
-            info.IrcDaemon.Send.Mode(info, info, info.Nick, validmode.ToString());
+            info.IrcDaemon.Commands.Send(new ModeArgument(info, info, info.Nick, validmode.ToString()));
         }
 
         public string ToUserModeString()

@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -30,6 +31,22 @@ namespace IrcD.Commands
 
         protected override void PrivateHandle(UserInfo info, List<string> args)
         {
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as PongArgument;
+
+            command.Length = 0;
+            command.Append(IrcDaemon.ServerPrefix);
+            command.Append(" ");
+            command.Append(arg.Name);
+            command.Append(" ");
+            command.Append(IrcDaemon.ServerPrefix);
+            command.Append(" ");
+            command.Append(arg.Parameter);
+
+            arg.Receiver.WriteLine(command);
         }
     }
 }

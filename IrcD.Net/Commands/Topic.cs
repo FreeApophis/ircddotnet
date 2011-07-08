@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -62,8 +63,22 @@ namespace IrcD.Commands
 
             foreach (var user in chan.Users)
             {
-                IrcDaemon.Send.Topic(info, user, chan.Name, chan.Topic);
+                Send(new TopicArgument(info, user, chan, chan.Topic));
             }
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as TopicArgument;
+
+            BuildMessageHeader(arg);
+
+            command.Append(arg.Channel.Name);
+            command.Append(" :");
+            command.Append(arg.NewTopic);
+
+            arg.Receiver.WriteLine(command);
+
         }
     }
 }

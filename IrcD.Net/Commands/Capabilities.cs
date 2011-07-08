@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -54,6 +55,11 @@ namespace IrcD.Commands
                     IrcDaemon.Replies.SendInvalidCapabilitiesCommand(info, subcommand);
                     break;
             }
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            throw new NotImplementedException();
         }
     }
 }

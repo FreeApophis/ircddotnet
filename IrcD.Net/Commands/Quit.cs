@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
 {
@@ -34,6 +35,17 @@ namespace IrcD.Commands
         {
             var message = (args.Count > 0) ? args.First() : IrcDaemon.Options.StandardQuitMessage;
             info.Remove(message);
+        }
+
+        protected override void PrivateSend(CommandArgument commandArgument)
+        {
+            var arg = commandArgument as QuitArgument;
+            BuildMessageHeader(arg);
+
+            command.Append(arg.Message);
+
+            arg.Receiver.WriteLine(command);
+
         }
     }
 }
