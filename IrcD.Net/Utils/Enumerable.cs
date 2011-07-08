@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace IrcD.Utils
@@ -51,11 +52,7 @@ namespace IrcD.Utils
 
         public static IEnumerable<EnumerableIndex<T>> EachIndex<T>(this IEnumerable<T> collection, int index = 0)
         {
-            foreach (T value in collection)
-            {
-                yield return new EnumerableIndex<T>() { Value = value, Index = index++ };
-            }
+            return collection.Select(value => new EnumerableIndex<T> { Value = value, Index = index++ });
         }
-
     }
 }

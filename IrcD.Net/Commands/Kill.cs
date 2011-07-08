@@ -54,15 +54,15 @@ namespace IrcD.Commands
 
         protected override void PrivateSend(CommandArgument commandArgument)
         {
-            var arg = commandArgument as KillArgument;
+            var arg = GetSaveArgument<KillArgument>(commandArgument);
 
             BuildMessageHeader(arg);
             var user = arg.Receiver as UserInfo;
-            command.Append((user != null) ? user.Nick : "nobody");
-            command.Append(" :");
-            command.Append(arg.Message);
+            Command.Append((user != null) ? user.Nick : "nobody");
+            Command.Append(" :");
+            Command.Append(arg.Message);
 
-            arg.Receiver.WriteLine(command);
+            arg.Receiver.WriteLine(Command);
         }
     }
 }

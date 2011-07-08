@@ -37,7 +37,7 @@ namespace IrcD.Modes
         /// This Method is called to check all the modes on a channel, each Mode has the chance to take control over a command.
         ///  If it takes control it should return false, therefore the other Commands are not checked, and the control flow will interupt.
         /// </summary>
-        /// <param name="ircCommand">Type of command</param>
+        /// <param name="command">Type of command</param>
         /// <param name="channel">The Channel the Mode is operating</param>
         /// <param name="user">The User which uses the Command on the channel</param>
         /// <param name="args"></param>

@@ -266,7 +266,7 @@ namespace IrcD
 #if DEBUG
             Logger.Log(line.ToString(), location: "OUT:" + Nick);
 #endif
-            var bytes = socket.Send(Encoding.UTF8.GetBytes(line + IrcDaemon.ServerCrLf));
+            socket.Send(Encoding.UTF8.GetBytes(line + IrcDaemon.ServerCrLf));
         }
 
         public override void WriteLine(StringBuilder line, UserInfo exception)

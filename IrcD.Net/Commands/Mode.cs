@@ -78,15 +78,16 @@ namespace IrcD.Commands
 
         protected override void PrivateSend(CommandArgument commandArgument)
         {
-            var arg = commandArgument as ModeArgument;
+            var arg = GetSaveArgument<ModeArgument>(commandArgument);
+
 
             BuildMessageHeader(arg);
 
-            command.Append(arg.Target);
-            command.Append(" ");
-            command.Append(arg.ModeString);
+            Command.Append(arg.Target);
+            Command.Append(" ");
+            Command.Append(arg.ModeString);
 
-            arg.Receiver.WriteLine(command);
+            arg.Receiver.WriteLine(Command);
         }
     }
 }

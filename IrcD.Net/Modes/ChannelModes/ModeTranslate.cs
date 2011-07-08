@@ -60,7 +60,7 @@ namespace IrcD.Modes.ChannelModes
             {
 
                 var translateDelegate = new GoogleTranslate.TranslateMultipleDelegate(translator.TranslateText);
-                translateDelegate.BeginInvoke(args[1], channel.Users.Select(u => u.Languages.First()).Distinct(), TranslateCallBack, Utils.Tuple.Create(channel, user, command));
+                translateDelegate.BeginInvoke(args[1], channel.Users.Select(u => u.Languages.First()).Distinct(), TranslateCallBack, Tuple.Create(channel, user, command));
 
                 onlyOnce = false;
                 return false;
@@ -72,13 +72,13 @@ namespace IrcD.Modes.ChannelModes
 
         private static void TranslateCallBack(IAsyncResult asyncResult)
         {
-            var state = (Utils.Tuple<ChannelInfo, UserInfo, CommandBase>)asyncResult.AsyncState;
+            var state = (Tuple<ChannelInfo, UserInfo, CommandBase>)asyncResult.AsyncState;
             var asyncDelegate = ((AsyncResult)asyncResult).AsyncDelegate;
             var result = ((GoogleTranslate.TranslateMultipleDelegate)asyncDelegate).EndInvoke(asyncResult);
 
             foreach (var user in state.Item1.Users.Where(u => u != state.Item2))
             {
-                Utils.Tuple<string, string, string> res;
+                Tuple<string, string, string> res;
                 string message;
 
                 if (user.Languages.Contains(result[GoogleTranslate.Original].Item1))

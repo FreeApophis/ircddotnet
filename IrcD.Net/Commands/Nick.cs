@@ -77,13 +77,14 @@ namespace IrcD.Commands
 
         protected override void PrivateSend(CommandArgument commandArgument)
         {
-            var arg = commandArgument as NickArgument;
+            var arg = GetSaveArgument<NickArgument>(commandArgument);
+
 
             BuildMessageHeader(arg);
 
-            command.Append(arg.NewNick);
+            Command.Append(arg.NewNick);
 
-            arg.Receiver.WriteLine(command);
+            arg.Receiver.WriteLine(Command);
         }
     }
 }

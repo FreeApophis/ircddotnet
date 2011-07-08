@@ -18,6 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -74,28 +75,32 @@ namespace IrcD.Commands
         abstract protected void PrivateSend(CommandArgument argument);
         public void Send(CommandArgument argument)
         {
-            if (argument.Name == this.Name)
+            if (argument.Name == Name)
             {
                 PrivateSend(argument);
             }
         }
 
-        protected readonly StringBuilder command = new StringBuilder();
+        protected readonly StringBuilder Command = new StringBuilder();
 
         protected void BuildMessageHeader(CommandArgument commandArgument)
         {
-            command.Length = 0;
-            if (commandArgument.Sender == null)
+            Command.Length = 0;
+            Command.Append(commandArgument.Sender == null ? IrcDaemon.ServerPrefix : commandArgument.Sender.Prefix);
+            Command.Append(" ");
+            Command.Append(commandArgument.Name);
+            Command.Append(" ");
+        }
+
+        protected T GetSaveArgument<T>(CommandArgument commandArgument) where T : CommandArgument
+        {
+            var argument = commandArgument as T;
+
+            if (argument == null)
             {
-                command.Append(IrcDaemon.ServerPrefix);
+                throw new InvalidCastException("this shall not happen");
             }
-            else
-            {
-                command.Append(commandArgument.Sender.Prefix);
-            }
-            command.Append(" ");
-            command.Append(commandArgument.Name);
-            command.Append(" ");
+            return argument;
         }
 
         public static string[] GetSubArgument(string arg)
@@ -112,6 +117,5 @@ namespace IrcD.Commands
         {
             return Enumerable.Empty<string>();
         }
-
     }
 }

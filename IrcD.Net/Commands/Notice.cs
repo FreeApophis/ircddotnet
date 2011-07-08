@@ -89,21 +89,22 @@ namespace IrcD.Commands
 
         protected override void PrivateSend(CommandArgument commandArgument)
         {
-            var arg = commandArgument as NoticeArgument;
+            var arg = GetSaveArgument<NoticeArgument>(commandArgument);
+
 
             BuildMessageHeader(arg);
 
-            command.Append(arg.Target);
-            command.Append(" :");
-            command.Append(arg.Message);
+            Command.Append(arg.Target);
+            Command.Append(" :");
+            Command.Append(arg.Message);
 
             if (arg.Sender == null)
             {
-                arg.Receiver.WriteLine(command);
+                arg.Receiver.WriteLine(Command);
             }
             else
             {
-                arg.Receiver.WriteLine(command, arg.Sender);
+                arg.Receiver.WriteLine(Command, arg.Sender);
             }
         }
     }

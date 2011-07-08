@@ -82,16 +82,17 @@ namespace IrcD.Commands
 
         protected override void PrivateSend(CommandArgument commandArgument)
         {
-            var arg = commandArgument as KickArgument;
+            var arg = GetSaveArgument<KickArgument>(commandArgument);
+
             BuildMessageHeader(arg);
 
-            command.Append(arg.Channel.Name);
-            command.Append(" ");
-            command.Append(arg.User.Nick);
-            command.Append(" :");
-            command.Append(arg.Message ?? IrcDaemon.Options.StandardKickMessage);
+            Command.Append(arg.Channel.Name);
+            Command.Append(" ");
+            Command.Append(arg.User.Nick);
+            Command.Append(" :");
+            Command.Append(arg.Message ?? IrcDaemon.Options.StandardKickMessage);
 
-            arg.Receiver.WriteLine(command);
+            arg.Receiver.WriteLine(Command);
         }
     }
 }

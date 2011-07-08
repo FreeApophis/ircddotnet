@@ -307,6 +307,7 @@ namespace IrcD.ServerReplies
         /// Reply Code 212
         /// </summary>
         /// <param name="info"></param>
+        /// <param name="command"></param>
         public void SendStatsCommands(UserInfo info, CommandBase command)
         {
             BuildMessageHeader(info, ReplyCode.StatsCommands);
@@ -328,6 +329,7 @@ namespace IrcD.ServerReplies
         /// Reply Code 219
         /// </summary>
         /// <param name="info"></param>
+        /// <param name="query"></param>
         public void SendEndOfStats(UserInfo info, string query)
         {
             BuildMessageHeader(info, ReplyCode.EndOfStats);
@@ -364,6 +366,7 @@ namespace IrcD.ServerReplies
         /// Reply Code 243
         /// </summary>
         /// <param name="info"></param>
+        /// <param name="op"></param>
         public void SendStatsOLine(UserInfo info, UserInfo op)
         {
             BuildMessageHeader(info, ReplyCode.StatsOLine);
@@ -1298,6 +1301,7 @@ namespace IrcD.ServerReplies
         /// Reply Code 410
         /// </summary>
         /// <param name="info"></param>
+        /// <param name="command"></param>
         internal void SendInvalidCapabilitiesCommand(UserInfo info, string command)
         {
             BuildMessageHeader(info, ReplyCode.ErrorInvalidCapabilitesCommand);
@@ -1870,6 +1874,7 @@ namespace IrcD.ServerReplies
         /// Reply Code 690
         /// </summary>
         /// <param name="info"></param>
+        /// <param name="who"></param>
         public void SendWhoIsLanguage(UserInfo info, UserInfo who)
         {
             BuildMessageHeader(info, ReplyCode.WhoIsLanguage);
