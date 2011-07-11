@@ -101,20 +101,24 @@ namespace IrcD.Channel
             }
         }
 
-        public override void WriteLine(StringBuilder line)
+        public override int WriteLine(StringBuilder line)
         {
+            int bytes = 0;
             foreach (var user in Users)
             {
-                user.WriteLine(line);
+                bytes += user.WriteLine(line);
             }
+            return bytes;
         }
 
-        public override void WriteLine(StringBuilder line, UserInfo exception)
+        public override int WriteLine(StringBuilder line, UserInfo exception)
         {
+            int bytes = 0;
             foreach (var user in Users)
             {
-                user.WriteLine(line, exception);
+                bytes += user.WriteLine(line, exception);
             }
+            return bytes;
         }
 
     }

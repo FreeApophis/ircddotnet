@@ -69,17 +69,18 @@ namespace IrcD.Channel
         /// This method just delegates the work to 
         /// </summary>
         /// <param name="line"></param>
-        public override void WriteLine(StringBuilder line)
+        public override int WriteLine(StringBuilder line)
         {
-            userInfo.WriteLine(line);
+            return userInfo.WriteLine(line);
         }
 
-        public override void WriteLine(StringBuilder line, UserInfo exception)
+        public override int WriteLine(StringBuilder line, UserInfo exception)
         {
             if (UserInfo != exception)
             {
-                userInfo.WriteLine(line);
+                return userInfo.WriteLine(line);
             }
+            return 0;
         }
     }
 }

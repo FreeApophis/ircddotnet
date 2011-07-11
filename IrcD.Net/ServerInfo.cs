@@ -31,12 +31,12 @@ namespace IrcD
 
         }
 
-        public override void WriteLine(StringBuilder line)
+        public override int WriteLine(StringBuilder line)
         {
             throw new NotImplementedException();
         }
 
-        public override void WriteLine(StringBuilder line, UserInfo exception)
+        public override int WriteLine(StringBuilder line, UserInfo exception)
         {
             throw new NotImplementedException();
         }

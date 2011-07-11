@@ -85,7 +85,7 @@ namespace IrcD.Commands
             IrcDaemon.Replies.SendEndOfWho(info, mask);
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             throw new NotImplementedException();
         }

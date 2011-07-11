@@ -36,7 +36,7 @@ namespace IrcD.Commands
             Send(new PongArgument(info, args.FirstOrDefault()));
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             var arg = commandArgument as PingArgument;
 
@@ -44,7 +44,7 @@ namespace IrcD.Commands
             command.Append("PING ");
             command.Append(IrcDaemon.ServerPrefix);
 
-            arg.Receiver.WriteLine(command);
+            return arg.Receiver.WriteLine(command);
         }
     }
 }

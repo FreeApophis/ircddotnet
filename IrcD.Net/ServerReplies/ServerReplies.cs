@@ -298,8 +298,6 @@ namespace IrcD.ServerReplies
             response.Append(" ");
             response.Append((long)(DateTime.Now - info.Created).TotalSeconds);
 
-
-
             info.WriteLine(response);
         }
 
@@ -311,15 +309,14 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.StatsCommands);
 
-            // TODO: Stats
             response.Append(" ");
             response.Append(command.Name);
             response.Append(" ");
-            response.Append(command.CallCount);
+            response.Append(command.CallCountIn);
             response.Append(" ");
-            response.Append(command.ByteCount);
+            response.Append(command.ByteCountIn + command.ByteCountOut);
             response.Append(" ");
-            response.Append(command.CallCount);
+            response.Append(command.CallCountOut);
 
             info.WriteLine(response);
         }

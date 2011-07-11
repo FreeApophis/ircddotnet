@@ -125,14 +125,14 @@ namespace IrcD.Commands
             }
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             var arg = commandArgument as JoinArgument;
             BuildMessageHeader(arg);
 
             command.Append(arg.Channel.Name);
 
-            arg.Receiver.WriteLine(command);
+            return arg.Receiver.WriteLine(command);
         }
     }
 }

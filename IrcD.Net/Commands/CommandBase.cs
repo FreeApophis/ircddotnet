@@ -45,38 +45,56 @@ namespace IrcD.Commands
             }
         }
 
-        private long callCount;
-        public long CallCount
+        private long callCountIn;
+        public long CallCountIn
         {
             get
             {
-                return callCount;
+                return callCountIn;
             }
         }
 
-        private long byteCount;
-        public long ByteCount
+        private long callCountOut;
+        public long CallCountOut
         {
             get
             {
-                return byteCount;
+                return callCountOut;
+            }
+        }
+
+        private long byteCountIn;
+        public long ByteCountIn
+        {
+            get
+            {
+                return byteCountIn;
+            }
+        }
+        private long byteCountOut;
+        public long ByteCountOut
+        {
+            get
+            {
+                return byteCountOut;
             }
         }
 
         abstract protected void PrivateHandle(UserInfo info, List<string> args);
         public void Handle(UserInfo info, List<string> args)
         {
-            callCount++;
-            byteCount += 0;
+            callCountIn++;
+            byteCountIn += 0;
             PrivateHandle(info, args);
         }
 
-        abstract protected void PrivateSend(CommandArgument argument);
+        abstract protected int PrivateSend(CommandArgument argument);
         public void Send(CommandArgument argument)
         {
+            callCountOut++;
             if (argument.Name == this.Name)
             {
-                PrivateSend(argument);
+                byteCountOut += PrivateSend(argument);
             }
         }
 

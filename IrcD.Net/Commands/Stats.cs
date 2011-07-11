@@ -71,7 +71,7 @@ namespace IrcD.Commands
             IrcDaemon.Replies.SendEndOfStats(info, args[0]);
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             throw new NotImplementedException();
         }

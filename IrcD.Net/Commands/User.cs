@@ -60,7 +60,7 @@ namespace IrcD.Commands
             info.InitUser(args[0], args[3]);
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             throw new NotImplementedException();
         }

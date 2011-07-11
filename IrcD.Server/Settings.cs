@@ -115,13 +115,24 @@ namespace IrcD.Server
             if (mode == default(string))
                 return IrcCaseMapping.Ascii;
 
+#if MONO_LTS
+            try
+            {
+                return (IrcCaseMapping)Enum.Parse(typeof(IrcCaseMapping), mode, true);
+            }
+            catch (ArgumentException)
+            {
+                return IrcCaseMapping.Ascii;
+            }
+#else
             IrcCaseMapping result;
             if (Enum.TryParse(mode, true, out result))
             {
                 return result;
             }
-
             return IrcCaseMapping.Ascii;
+#endif
+
 
         }
 
@@ -192,6 +203,16 @@ namespace IrcD.Server
             if (mode == default(string))
                 return IrcMode.Modern;
 
+#if MONO_LTS
+            try
+            {
+                return (IrcMode)Enum.Parse(typeof(IrcMode), mode, true);
+            }
+            catch (ArgumentException)
+            {
+                return IrcMode.Modern;
+            }
+#else
             IrcMode result;
             if (Enum.TryParse(mode, true, out result))
             {
@@ -199,6 +220,7 @@ namespace IrcD.Server
             }
 
             return IrcMode.Modern;
+#endif
         }
 
         internal void setDaemon(IrcDaemon ircDaemon)

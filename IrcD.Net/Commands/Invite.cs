@@ -67,7 +67,7 @@ namespace IrcD.Commands
             Send(new InviteArgument(info, invited, invited, chan));
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             var arg = commandArgument as InviteArgument;
 
@@ -77,7 +77,7 @@ namespace IrcD.Commands
             command.Append(" ");
             command.Append(arg.Channel.Name);
 
-            arg.Receiver.WriteLine(command);
+            return arg.Receiver.WriteLine(command);
         }
     }
 }

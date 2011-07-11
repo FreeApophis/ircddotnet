@@ -37,15 +37,14 @@ namespace IrcD.Commands
             info.Remove(message);
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             var arg = commandArgument as QuitArgument;
             BuildMessageHeader(arg);
 
             command.Append(arg.Message);
 
-            arg.Receiver.WriteLine(command);
-
+            return arg.Receiver.WriteLine(command);
         }
     }
 }

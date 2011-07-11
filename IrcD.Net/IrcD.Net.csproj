@@ -164,9 +164,11 @@
     <Compile Include="Modes\ChannelModes\ModeSecret.cs" />
     <Compile Include="Modes\ChannelModes\ModeTopic.cs" />
     <Compile Include="Modes\ChannelModes\ModeTranslate.cs" />
+    <Compile Include="Modes\ChannelRanks\ModeAdmin.cs" />
     <Compile Include="Modes\ChannelRanks\ModeHalfOp.cs" />
     <Compile Include="Modes\ChannelRanks\ModeNoRank.cs" />
     <Compile Include="Modes\ChannelRanks\ModeOp.cs" />
+    <Compile Include="Modes\ChannelRanks\ModeOwner.cs" />
     <Compile Include="Modes\ChannelRanks\ModeVoice.cs" />
     <Compile Include="Modes\ChannelRank.cs" />
     <Compile Include="Modes\Mode.cs" />

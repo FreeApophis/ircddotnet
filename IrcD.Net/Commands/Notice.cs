@@ -87,7 +87,7 @@ namespace IrcD.Commands
             }
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             var arg = commandArgument as NoticeArgument;
 
@@ -99,11 +99,11 @@ namespace IrcD.Commands
 
             if (arg.Sender == null)
             {
-                arg.Receiver.WriteLine(command);
+                return arg.Receiver.WriteLine(command);
             }
             else
             {
-                arg.Receiver.WriteLine(command, arg.Sender);
+                return arg.Receiver.WriteLine(command, arg.Sender);
             }
         }
     }

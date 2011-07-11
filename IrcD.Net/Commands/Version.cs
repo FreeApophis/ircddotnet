@@ -38,7 +38,7 @@ namespace IrcD.Commands
             IrcDaemon.Replies.SendVersion(info);
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             throw new NotImplementedException();
         }

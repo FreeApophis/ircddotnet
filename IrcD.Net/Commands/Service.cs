@@ -56,7 +56,7 @@ namespace IrcD.Commands
             IrcDaemon.Nicks.Add(info.Nick, info);
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             throw new NotImplementedException();
         }

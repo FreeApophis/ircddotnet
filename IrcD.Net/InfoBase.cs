@@ -42,8 +42,8 @@ namespace IrcD
         /// <summary>
         /// Write a Line to the abstract object (hide the socket better)
         /// </summary>
-        public abstract void WriteLine(StringBuilder line);
+        public abstract int WriteLine(StringBuilder line);
 
-        public abstract void WriteLine(StringBuilder line, UserInfo exception);
+        public abstract int WriteLine(StringBuilder line, UserInfo exception);
     }
 }

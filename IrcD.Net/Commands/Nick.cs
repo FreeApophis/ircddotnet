@@ -75,7 +75,7 @@ namespace IrcD.Commands
             info.Rename(args[0]);
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             var arg = commandArgument as NickArgument;
 
@@ -83,7 +83,7 @@ namespace IrcD.Commands
 
             command.Append(arg.NewNick);
 
-            arg.Receiver.WriteLine(command);
+            return arg.Receiver.WriteLine(command);
         }
     }
 }

@@ -261,20 +261,21 @@ namespace IrcD
             return Nick + "!" + User + "@" + Host;
         }
 
-        public override void WriteLine(StringBuilder line)
+        public override int WriteLine(StringBuilder line)
         {
 #if DEBUG
             Logger.Log(line.ToString(), location: "OUT:" + Nick);
 #endif
-            var bytes = socket.Send(Encoding.UTF8.GetBytes(line + IrcDaemon.ServerCrLf));
+            return socket.Send(Encoding.UTF8.GetBytes(line + IrcDaemon.ServerCrLf));
         }
 
-        public override void WriteLine(StringBuilder line, UserInfo exception)
+        public override int WriteLine(StringBuilder line, UserInfo exception)
         {
             if (this != exception)
             {
-                WriteLine(line);
+                return WriteLine(line);
             }
+            return 0;
 
         }
 

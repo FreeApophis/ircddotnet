@@ -47,7 +47,7 @@ namespace IrcD.Commands
             IrcDaemon.Replies.SendUserHost(info, users);
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             throw new NotImplementedException();
         }

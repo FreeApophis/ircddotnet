@@ -70,7 +70,7 @@ namespace IrcD.Commands
             }
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             var arg = commandArgument as PartArgument;
 
@@ -80,7 +80,7 @@ namespace IrcD.Commands
             command.Append(" :");
             command.Append(arg.Message);
 
-            arg.Receiver.WriteLine(command);
+            return arg.Receiver.WriteLine(command);
 
         }
     }
