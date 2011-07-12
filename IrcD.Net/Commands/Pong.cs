@@ -18,6 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using IrcD.Commands.Arguments;
 
@@ -35,18 +36,18 @@ namespace IrcD.Commands
 
         protected override int PrivateSend(CommandArgument commandArgument)
         {
-            var arg = commandArgument as PongArgument;
+            var arg = GetSaveArgument<PongArgument>(commandArgument);
 
-            command.Length = 0;
-            command.Append(IrcDaemon.ServerPrefix);
-            command.Append(" ");
-            command.Append(arg.Name);
-            command.Append(" ");
-            command.Append(IrcDaemon.ServerPrefix);
-            command.Append(" ");
-            command.Append(arg.Parameter);
+            Command.Length = 0;
+            Command.Append(IrcDaemon.ServerPrefix);
+            Command.Append(" ");
+            Command.Append(arg.Name);
+            Command.Append(" ");
+            Command.Append(IrcDaemon.ServerPrefix);
+            Command.Append(" ");
+            Command.Append(arg.Parameter);
 
-            return arg.Receiver.WriteLine(command);
+            return arg.Receiver.WriteLine(Command);
         }
     }
 }

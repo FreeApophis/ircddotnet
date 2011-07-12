@@ -38,13 +38,14 @@ namespace IrcD.Commands
 
         protected override int PrivateSend(CommandArgument commandArgument)
         {
-            var arg = commandArgument as PingArgument;
+            var arg = GetSaveArgument<PingArgument>(commandArgument);
 
-            command.Length = 0;
-            command.Append("PING ");
-            command.Append(IrcDaemon.ServerPrefix);
 
-            return arg.Receiver.WriteLine(command);
+            Command.Length = 0;
+            Command.Append("PING ");
+            Command.Append(IrcDaemon.ServerPrefix);
+
+            return arg.Receiver.WriteLine(Command);
         }
     }
 }

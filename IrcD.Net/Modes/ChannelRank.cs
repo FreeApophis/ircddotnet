@@ -33,7 +33,7 @@ namespace IrcD.Modes
             }
         }
 
-        public ChannelRank(char mode, char prefix, int level)
+        protected ChannelRank(char mode, char prefix, int level)
             : base(mode)
         {
             this.prefix = prefix;

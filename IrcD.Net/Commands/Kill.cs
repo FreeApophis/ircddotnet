@@ -52,17 +52,17 @@ namespace IrcD.Commands
             killUser.Remove(IrcDaemon.Options.StandardKillMessage);
         }
 
-        protected override int PrivateSend(CommandArgument commandArgument)
+        protected override void PrivateSend(CommandArgument commandArgument)
         {
-            var arg = commandArgument as KillArgument;
+            var arg = GetSaveArgument<KillArgument>(commandArgument);
 
             BuildMessageHeader(arg);
             var user = arg.Receiver as UserInfo;
-            command.Append((user != null) ? user.Nick : "nobody");
-            command.Append(" :");
-            command.Append(arg.Message);
+            Command.Append((user != null) ? user.Nick : "nobody");
+            Command.Append(" :");
+            Command.Append(arg.Message);
 
-            return arg.Receiver.WriteLine(command);
+            return arg.Receiver.WriteLine(Command);
         }
     }
 }

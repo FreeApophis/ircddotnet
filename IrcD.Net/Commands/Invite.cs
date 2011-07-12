@@ -69,15 +69,16 @@ namespace IrcD.Commands
 
         protected override int PrivateSend(CommandArgument commandArgument)
         {
-            var arg = commandArgument as InviteArgument;
+            var arg = GetSaveArgument<InviteArgument>(commandArgument);
+
 
             BuildMessageHeader(arg);
 
-            command.Append(arg.Invited.Nick);
-            command.Append(" ");
-            command.Append(arg.Channel.Name);
+            Command.Append(arg.Invited.Nick);
+            Command.Append(" ");
+            Command.Append(arg.Channel.Name);
 
-            return arg.Receiver.WriteLine(command);
+            return arg.Receiver.WriteLine(Command);
         }
     }
 }

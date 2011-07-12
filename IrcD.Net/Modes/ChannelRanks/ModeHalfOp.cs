@@ -19,7 +19,6 @@
  */
 
 
-using IrcD.ServerReplies;
 namespace IrcD.Modes.ChannelRanks
 {
     class ModeHalfOp : ChannelRank

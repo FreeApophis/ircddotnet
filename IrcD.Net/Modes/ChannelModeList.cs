@@ -49,7 +49,7 @@ namespace IrcD.Modes
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="ircCommand"></param>
+        /// <param name="command"></param>
         /// <param name="channel"></param>
         /// <param name="user"></param>
         /// <param name="args"></param>

@@ -39,12 +39,12 @@ namespace IrcD.Commands
 
         protected override int PrivateSend(CommandArgument commandArgument)
         {
-            var arg = commandArgument as QuitArgument;
+            var arg = GetSaveArgument<QuitArgument>(commandArgument);
             BuildMessageHeader(arg);
 
-            command.Append(arg.Message);
+            Command.Append(arg.Message);
 
-            return arg.Receiver.WriteLine(command);
+            return arg.Receiver.WriteLine(Command);
         }
     }
 }

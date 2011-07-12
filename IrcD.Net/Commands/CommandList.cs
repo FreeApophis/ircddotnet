@@ -21,10 +21,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using IrcD.Commands.Arguments;
 using IrcD.ServerReplies;
-using IrcD.Utils;
 
 namespace IrcD.Commands
 {
@@ -126,18 +124,12 @@ namespace IrcD.Commands
 
         public IEnumerator<CommandBase> GetEnumerator()
         {
-            foreach (var command in commandList)
-            {
-                yield return command.Value;
-            }
+            return commandList.Select(command => command.Value).GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            foreach (var command in commandList)
-            {
-                yield return command.Value;
-            }
+            return commandList.Select(command => command.Value).GetEnumerator();
         }
     }
 }

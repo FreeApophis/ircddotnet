@@ -56,15 +56,15 @@ namespace IrcD.Commands
 
         protected override int PrivateSend(CommandArgument commandArgument)
         {
-            var arg = commandArgument as KnockArgument;
+            var arg = GetSaveArgument<KnockArgument>(commandArgument);
 
             BuildMessageHeader(arg);
 
-            command.Append(arg.Channel.Name);
-            command.Append(" :");
-            command.Append(arg.Message);
+            Command.Append(arg.Channel.Name);
+            Command.Append(" :");
+            Command.Append(arg.Message);
 
-            return arg.Receiver.WriteLine(command);
+            return arg.Receiver.WriteLine(Command);
         }
 
         public override IEnumerable<string> Support(IrcDaemon ircDaemon)
