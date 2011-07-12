@@ -52,7 +52,7 @@ namespace IrcD.Commands
             killUser.Remove(IrcDaemon.Options.StandardKillMessage);
         }
 
-        protected override void PrivateSend(CommandArgument commandArgument)
+        protected override int PrivateSend(CommandArgument commandArgument)
         {
             var arg = GetSaveArgument<KillArgument>(commandArgument);
 

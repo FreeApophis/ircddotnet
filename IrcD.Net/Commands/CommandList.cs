@@ -24,6 +24,11 @@ using System.Linq;
 using IrcD.Commands.Arguments;
 using IrcD.ServerReplies;
 
+#if DEBUG
+using System.Text;
+using IrcD.Utils;
+#endif
+
 namespace IrcD.Commands
 {
 
