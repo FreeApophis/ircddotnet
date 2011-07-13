@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IrcD.Server</RootNamespace>
     <AssemblyName>IrcD.Server</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -35,11 +35,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Mono_2_6_7|x86'">
-    <OutputPath>bin\x86\Mono_2_6_7\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\Mono_2_6_7\</OutputPath>
+    <DefineConstants>TRACE;MONO_LTS</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisFailOnMissingRules>true</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
@@ -48,9 +48,10 @@
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml.Linq">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>

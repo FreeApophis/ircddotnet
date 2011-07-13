@@ -57,11 +57,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Mono_2_6_7|AnyCPU'">
     <OutputPath>bin\Mono_2_6_7\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;MONO_LTS</DefineConstants>
     <Optimize>true</Optimize>
     <FileAlignment>4096</FileAlignment>
     <DebugType>None</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
@@ -101,8 +101,8 @@
     <Compile Include="Commands\Arguments\QuitArgument.cs" />
     <Compile Include="Commands\Arguments\TopicArgument.cs" />
     <Compile Include="Commands\Capabilities.cs" />
-    <Compile Include="CheckRegisteredAttribute.cs" />
-    <Compile Include="CheckParamCountAttribute.cs" />
+    <Compile Include="Core\Utils\CheckRegisteredAttribute.cs" />
+    <Compile Include="Core\Utils\CheckParamCountAttribute.cs" />
     <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\CommandList.cs" />
     <Compile Include="Commands\Die.cs" />
@@ -152,11 +152,11 @@
     <Compile Include="Commands\User.cs" />
     <Compile Include="Commands\Knock.cs" />
     <Compile Include="Commands\Ping.cs" />
-    <Compile Include="ConnectionInfo.cs" />
-    <Compile Include="IrcCaseMapping.cs" />
-    <Compile Include="IrcMode.cs" />
-    <Compile Include="InfoBase.cs" />
-    <Compile Include="IrcDaemon.cs" />
+    <Compile Include="Core\ConnectionInfo.cs" />
+    <Compile Include="Core\Utils\IrcCaseMapping.cs" />
+    <Compile Include="Core\Utils\IrcMode.cs" />
+    <Compile Include="Core\InfoBase.cs" />
+    <Compile Include="Core\IrcDaemon.cs" />
     <Compile Include="Modes\ChannelMode.cs" />
     <Compile Include="Modes\ChannelModeList.cs" />
     <Compile Include="Modes\ChannelModes\ModeInviteException.cs" />
@@ -191,29 +191,29 @@
     <Compile Include="Modes\UserModes\ModeLocalOperator.cs" />
     <Compile Include="Modes\UserModes\ModeOperator.cs" />
     <Compile Include="Modes\UserModes\ModeRestricted.cs" />
-    <Compile Include="AlreadyCalledException.cs" />
+    <Compile Include="Core\Utils\AlreadyCalledException.cs" />
     <Compile Include="Modes\UserModes\ModeWallops.cs" />
-    <Compile Include="OperHost.cs" />
+    <Compile Include="Core\Utils\OperHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RehashEventArgs.cs" />
-    <Compile Include="ServerInfo.cs" />
+    <Compile Include="Core\Utils\RehashEventArgs.cs" />
+    <Compile Include="Core\ServerInfo.cs" />
     <Compile Include="ServerReplies\ReplyCode.cs" />
-    <Compile Include="ServerOptions.cs" />
+    <Compile Include="Core\ServerOptions.cs" />
     <Compile Include="ServerReplies\ServerReplies.cs" />
-    <Compile Include="ServerStats.cs" />
-    <Compile Include="UserInfo.cs" />
+    <Compile Include="Core\ServerStats.cs" />
+    <Compile Include="Core\UserInfo.cs" />
     <Compile Include="Channel\UserPerChannelInfo.cs" />
-    <Compile Include="Utils\EnumerableIndex.cs" />
-    <Compile Include="Utils\EnumExtension.cs" />
-    <Compile Include="Utils\EnumDescription.cs" />
-    <Compile Include="Utils\GoogleTranslate.cs" />
-    <Compile Include="Utils\IrcConstants.cs" />
-    <Compile Include="Utils\DateTimeUtils.cs" />
-    <Compile Include="Utils\Enumerable.cs" />
-    <Compile Include="Utils\JSON.cs" />
-    <Compile Include="Utils\Logger.cs" />
-    <Compile Include="Utils\Tuple.cs" />
-    <Compile Include="Utils\WildCard.cs" />
+    <Compile Include="Tools\EnumerableIndex.cs" />
+    <Compile Include="Tools\EnumExtension.cs" />
+    <Compile Include="Tools\EnumDescription.cs" />
+    <Compile Include="Tools\GoogleTranslate.cs" />
+    <Compile Include="Tools\IrcConstants.cs" />
+    <Compile Include="Tools\DateTimeUtils.cs" />
+    <Compile Include="Tools\Enumerable.cs" />
+    <Compile Include="Tools\JSON.cs" />
+    <Compile Include="Tools\Logger.cs" />
+    <Compile Include="Tools\Tuple.cs" />
+    <Compile Include="Tools\WildCard.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

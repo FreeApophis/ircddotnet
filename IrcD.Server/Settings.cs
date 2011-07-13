@@ -115,7 +115,14 @@ namespace IrcD.Server
             if (mode == default(string))
                 return IrcCaseMapping.Ascii;
 
-#if MONO_LTS
+#if NET4 
+            IrcCaseMapping result;
+            if (Enum.TryParse(mode, true, out result))
+            {
+                return result;
+            }
+            return IrcCaseMapping.Ascii;
+#else
             try
             {
                 return (IrcCaseMapping)Enum.Parse(typeof(IrcCaseMapping), mode, true);
@@ -124,13 +131,6 @@ namespace IrcD.Server
             {
                 return IrcCaseMapping.Ascii;
             }
-#else
-            IrcCaseMapping result;
-            if (Enum.TryParse(mode, true, out result))
-            {
-                return result;
-            }
-            return IrcCaseMapping.Ascii;
 #endif
 
 
@@ -203,7 +203,15 @@ namespace IrcD.Server
             if (mode == default(string))
                 return IrcMode.Modern;
 
-#if MONO_LTS
+#if NET4
+            IrcMode result;
+            if (Enum.TryParse(mode, true, out result))
+            {
+                return result;
+            }
+
+            return IrcMode.Modern;
+#else
             try
             {
                 return (IrcMode)Enum.Parse(typeof(IrcMode), mode, true);
@@ -212,14 +220,6 @@ namespace IrcD.Server
             {
                 return IrcMode.Modern;
             }
-#else
-            IrcMode result;
-            if (Enum.TryParse(mode, true, out result))
-            {
-                return result;
-            }
-
-            return IrcMode.Modern;
 #endif
         }
 

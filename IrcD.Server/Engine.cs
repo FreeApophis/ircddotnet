@@ -30,6 +30,12 @@ namespace IrcD.Server
     class Engine
     {
 
+#if MONO_LTS
+        public static void Main(string[] args)
+        {
+            Start();
+        }
+#else
         public static void Main(string[] args)
         {
             if (Environment.UserInteractive)
@@ -60,6 +66,7 @@ namespace IrcD.Server
                 }
             }
         }
+#endif
 
         public static void Start()
         {

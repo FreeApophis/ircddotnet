@@ -94,7 +94,13 @@ namespace IrcD.Commands
         {
             callCountOut++;
             if (argument.Name == Name)
-            {                byteCountOut += PrivateSend(argument);
+            {
+                byteCountOut += PrivateSend(argument);
+            }
+            else
+            {
+                // if the wrong Send is called, we requeue argument in the Servers CommandList
+                IrcDaemon.Commands.Send(argument);
             }
         }
 
