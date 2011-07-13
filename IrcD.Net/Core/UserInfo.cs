@@ -126,6 +126,8 @@ namespace IrcD
 
         private void RegisterComplete()
         {
+            Logger.Log(string.Format("New User: {0}", this.Usermask));
+
             Registered = true;
             if (IsService)
             {

@@ -41,8 +41,14 @@ namespace IrcD.Commands
                 return;
             }
 
+            int port;
+            if (int.TryParse(args[1], out port))
+            {
+                IrcDaemon.Connect(args[0], port);
+            }
 
-            IrcDaemon.Replies.SendNoSuchServer(info, "single server only");
+
+            IrcDaemon.Replies.SendNoSuchServer(info, "Connect failed");
         }
 
         protected override int PrivateSend(CommandArgument commandArgument)

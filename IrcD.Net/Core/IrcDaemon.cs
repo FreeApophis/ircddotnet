@@ -142,7 +142,7 @@ namespace IrcD
 
         private byte[] buffer = new byte[MaxBufferSize];
         private EndPoint ep = new IPEndPoint(0, 0);
-        private EndPoint localEp;
+        private EndPoint localEndPoint;
 
         private readonly ServerOptions options;
         public ServerOptions Options
@@ -336,15 +336,37 @@ namespace IrcD
             restart = startAgain;
         }
 
+        /// <summary>
+        /// Start a IRC Server to Server Connection
+        /// </summary>
+        /// <param name="server"></param>
+        /// <param name="port"></param>
+        internal void Connect(string server, int port)
+        {
+
+            var ip = Dns.GetHostAddresses(server).FirstOrDefault();
+            if (ip != null)
+            {
+                var serverEndPoint = new IPEndPoint(ip, port);
+                var serverSocket = new Socket(serverEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                serverSocket.Connect(serverEndPoint);
+
+                // sockets.Add(serverSocket, new ServerInfo(this));
+
+            }
+
+        }
+
+
         private void MainLoop()
         {
 
             foreach (var port in Options.ServerPorts)
             {
-                localEp = new IPEndPoint(IPAddress.Any, port);
-                var connectSocket = new Socket(localEp.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                localEndPoint = new IPEndPoint(IPAddress.Any, port);
+                var connectSocket = new Socket(localEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-                connectSocket.Bind(localEp);
+                connectSocket.Bind(localEndPoint);
                 connectSocket.Listen(20);
 
                 sockets.Add(connectSocket, new UserInfo(this, connectSocket, Options.ServerName, true, true));
@@ -366,7 +388,7 @@ namespace IrcD
                             {
                                 Socket temp = s.Accept();
                                 sockets.Add(temp, new UserInfo(this, temp, ((IPEndPoint)temp.RemoteEndPoint).Address.ToString(), false, String.IsNullOrEmpty(Options.ServerPass)));
-                                Logger.Log("Client connected!");
+                                Logger.Log("New Client connected!", 4, "MainLoop");
                             }
                             else
                             {
