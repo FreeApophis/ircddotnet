@@ -23,7 +23,7 @@ using System.Text;
 
 namespace IrcD
 {
-    class ServerInfo : ConnectionInfo
+    class ServerInfo : InfoBase
     {
         public ServerInfo(IrcDaemon ircDaemon)
             : base(ircDaemon)

@@ -152,7 +152,6 @@
     <Compile Include="Commands\User.cs" />
     <Compile Include="Commands\Knock.cs" />
     <Compile Include="Commands\Ping.cs" />
-    <Compile Include="Core\ConnectionInfo.cs" />
     <Compile Include="Core\Utils\IrcCaseMapping.cs" />
     <Compile Include="Core\Utils\IrcMode.cs" />
     <Compile Include="Core\InfoBase.cs" />

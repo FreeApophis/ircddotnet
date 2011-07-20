@@ -31,7 +31,7 @@ using IrcD.Utils;
 namespace IrcD
 {
 
-    public class UserInfo : ConnectionInfo
+    public class UserInfo : InfoBase
     {
         public UserInfo(IrcDaemon ircDaemon, Socket socket, string host, bool isAcceptSocket, bool passAccepted)
             : base(ircDaemon)
