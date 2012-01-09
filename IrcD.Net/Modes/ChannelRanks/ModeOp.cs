@@ -22,8 +22,10 @@ namespace IrcD.Modes.ChannelRanks
 {
     class ModeOp : ChannelRank
     {
+        public static const int Level = 50;
+
         public ModeOp()
-            : base('o', '@', 50)
+            : base('o', '@', Level)
         {
             
         }

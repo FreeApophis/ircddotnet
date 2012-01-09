@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Names : CommandBase
     {
         public Names(IrcDaemon ircDaemon)
-            : base(ircDaemon, "NAMES")
+            : base(ircDaemon, "NAMES", "E")
         { }
 
         [CheckRegistered]

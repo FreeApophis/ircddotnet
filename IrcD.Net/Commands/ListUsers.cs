@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class ListUsers : CommandBase
     {
         public ListUsers(IrcDaemon ircDaemon)
-            : base(ircDaemon, "LUSERS")
+            : base(ircDaemon, "LUSERS", "LU")
         { }
 
         [CheckRegistered]

@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class User : CommandBase
     {
         public User(IrcDaemon ircDaemon)
-            : base(ircDaemon, "USER")
+            : base(ircDaemon, "USER", "USER")
         { }
 
         [CheckParamCount(4)]

@@ -23,8 +23,10 @@ namespace IrcD.Modes.ChannelRanks
 {
     class ModeHalfOp : ChannelRank
     {
+        public static const int Level = 30;
+
         public ModeHalfOp()
-            : base('h', '%', 30)
+            : base('h', '%', Level)
         {
 
         }
@@ -36,9 +38,7 @@ namespace IrcD.Modes.ChannelRanks
 
         public override bool CanChangeChannelRank(ChannelRank rank)
         {
-            if (rank is ModeVoice)
-                return true;
-            if (rank is ModeHalfOp)
+            if (rank.Level <= Level)
                 return true;
 
             return false;

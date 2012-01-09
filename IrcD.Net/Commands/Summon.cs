@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Summon : CommandBase
     {
         public Summon(IrcDaemon ircDaemon)
-            : base(ircDaemon, "SUMMON")
+            : base(ircDaemon, "SUMMON", "")
         { }
 
         [CheckRegistered]

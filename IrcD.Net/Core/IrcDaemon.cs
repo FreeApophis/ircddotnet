@@ -546,11 +546,11 @@ namespace IrcD
             FilterArgs(args);
             if (replyCode == ReplyCode.Null)
             {
-                commands.Handle(info, prefix, command, args);
+                commands.Handle(info, prefix, command, args, line.Length);
             }
             else
             {
-                commands.Handle(info, prefix, replyCode, args);
+                commands.Handle(info, prefix, replyCode, args, line.Length);
             }
         }
 

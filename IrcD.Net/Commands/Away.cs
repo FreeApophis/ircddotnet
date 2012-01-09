@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class Away : CommandBase
     {
         public Away(IrcDaemon ircDaemon)
-            : base(ircDaemon, "AWAY")
+            : base(ircDaemon, "AWAY", "A")
         { }
 
         [CheckRegistered]

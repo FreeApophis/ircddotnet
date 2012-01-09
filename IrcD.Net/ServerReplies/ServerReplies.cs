@@ -281,7 +281,7 @@ namespace IrcD.ServerReplies
         public void SendStatsLinkInfo(UserInfo info)
         {
             BuildMessageHeader(info, ReplyCode.StatsLinkInfo);
-            //<linkname> <sendq> <sent messages> <sent Kbytes> <received messages> <received Kbytes> <time open>
+            //ToDo: <linkname> <sendq> <sent messages> <sent Kbytes> <received messages> <received Kbytes> <time open>
 
             response.Append(" ");
             response.Append(info.Socket.ToString());

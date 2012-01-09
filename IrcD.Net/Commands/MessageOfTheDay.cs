@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class MessageOfTheDay : CommandBase
     {
         public MessageOfTheDay(IrcDaemon ircDaemon)
-            : base(ircDaemon, "MOTD")
+            : base(ircDaemon, "MOTD", "MO")
         { }
 
         [CheckRegistered]

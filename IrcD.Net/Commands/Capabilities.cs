@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Capabilities : CommandBase
     {
         public Capabilities(IrcDaemon ircDaemon)
-            : base(ircDaemon, "CAP")
+            : base(ircDaemon, "CAP", "")
         { }
 
         [CheckParamCount(1)]

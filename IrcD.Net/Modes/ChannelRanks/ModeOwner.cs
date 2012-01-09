@@ -23,8 +23,10 @@ namespace IrcD.Modes.ChannelRanks
 {
     public class ModeOwner : ChannelRank
     {
+        public static const int Level = 100;
+
         public ModeOwner()
-            : base('q', '~', 100)
+            : base('q', '~', Level)
         {
 
         }

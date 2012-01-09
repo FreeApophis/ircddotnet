@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Info : CommandBase
     {
         public Info(IrcDaemon ircDaemon)
-            : base(ircDaemon, "INFO")
+            : base(ircDaemon, "INFO", "F")
         { }
 
         protected override void PrivateHandle(UserInfo info, List<string> args)

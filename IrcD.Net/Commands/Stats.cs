@@ -29,7 +29,7 @@ namespace IrcD.Commands
     public class Stats : CommandBase
     {
         public Stats(IrcDaemon ircDaemon)
-            : base(ircDaemon, "STATS")
+            : base(ircDaemon, "STATS", "R")
         { }
 
         protected override void PrivateHandle(UserInfo info, List<string> args)

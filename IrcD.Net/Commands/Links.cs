@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Links : CommandBase
     {
         public Links(IrcDaemon ircDaemon)
-            : base(ircDaemon, "LINKS")
+            : base(ircDaemon, "LINKS", "LI")
         { }
 
         [CheckRegistered]

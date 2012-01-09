@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class Knock : CommandBase
     {
         public Knock(IrcDaemon ircDaemon)
-            : base(ircDaemon, "KNOCK")
+            : base(ircDaemon, "KNOCK", "")
         { }
 
         [CheckRegistered]

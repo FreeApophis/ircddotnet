@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class ServiceQuery : CommandBase
     {
         public ServiceQuery(IrcDaemon ircDaemon)
-            : base(ircDaemon, "SQUERY")
+            : base(ircDaemon, "SQUERY", "SQUERY")
         { }
 
         protected override void PrivateHandle(UserInfo info, List<string> args)

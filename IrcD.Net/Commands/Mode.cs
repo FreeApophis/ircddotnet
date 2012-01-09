@@ -29,7 +29,7 @@ namespace IrcD.Commands
     public class Mode : CommandBase
     {
         public Mode(IrcDaemon ircDaemon)
-            : base(ircDaemon, "MODE")
+            : base(ircDaemon, "MODE", "M")
         { }
 
         [CheckRegistered]

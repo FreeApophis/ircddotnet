@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class ServerQuit : CommandBase
     {
         public ServerQuit(IrcDaemon ircDaemon)
-            : base(ircDaemon, "SQUIT")
+            : base(ircDaemon, "SQUIT", "SQ")
         { }
 
         protected override void PrivateHandle(UserInfo info, List<string> args)

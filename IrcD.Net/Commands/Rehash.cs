@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class Rehash : CommandBase
     {
         public Rehash(IrcDaemon ircDaemon)
-            : base(ircDaemon, "REHASH")
+            : base(ircDaemon, "REHASH", "REHASH")
         { }
 
         [CheckRegistered]

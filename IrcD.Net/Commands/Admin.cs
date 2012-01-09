@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Admin : CommandBase
     {
         public Admin(IrcDaemon ircDaemon)
-            : base(ircDaemon, "ADMIN")
+            : base(ircDaemon, "ADMIN", "AD")
         { }
 
         [CheckRegistered]

@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Wallops : CommandBase
     {
         public Wallops(IrcDaemon ircDaemon)
-            : base(ircDaemon, "WALLOPS")
+            : base(ircDaemon, "WALLOPS", "WA")
         { }
 
         protected override void PrivateHandle(UserInfo info, List<string> args)

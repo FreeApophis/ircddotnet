@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class Connect : CommandBase
     {
         public Connect(IrcDaemon ircDaemon)
-            : base(ircDaemon, "CONNECT")
+            : base(ircDaemon, "CONNECT", "CO")
         { }
 
         [CheckRegistered]

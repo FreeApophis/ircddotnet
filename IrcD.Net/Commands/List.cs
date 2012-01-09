@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class List : CommandBase
     {
         public List(IrcDaemon ircDaemon)
-            : base(ircDaemon, "LIST")
+            : base(ircDaemon, "LIST", "LIST")
         { }
 
         [CheckRegistered]

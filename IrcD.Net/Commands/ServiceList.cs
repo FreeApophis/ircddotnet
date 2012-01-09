@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class ServiceList : CommandBase
     {
         public ServiceList(IrcDaemon ircDaemon)
-            : base(ircDaemon, "SERVLIST")
+            : base(ircDaemon, "SERVLIST", "SERVLIST")
         { }
 
         protected override void PrivateHandle(UserInfo info, List<string> args)

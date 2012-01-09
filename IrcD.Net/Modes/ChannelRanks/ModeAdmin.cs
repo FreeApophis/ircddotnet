@@ -23,10 +23,11 @@ namespace IrcD.Modes.ChannelRanks
 {
     public class ModeAdmin : ChannelRank
     {
-        public ModeAdmin()
-            : base('a', '&', 70)
-        {
+        public static const int Level = 70;
 
+        public ModeAdmin()
+            : base('a', '&', Level)
+        {
         }
 
         public override bool CanChangeChannelMode(ChannelMode mode)

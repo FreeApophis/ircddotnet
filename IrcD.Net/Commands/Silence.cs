@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class Silence : CommandBase
     {
         public Silence(IrcDaemon ircDaemon)
-            : base(ircDaemon, "SILENCE")
+            : base(ircDaemon, "SILENCE", "U")
         { }
 
         protected override void PrivateHandle(UserInfo info, List<string> args)

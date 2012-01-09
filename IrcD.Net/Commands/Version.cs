@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Version : CommandBase
     {
         public Version(IrcDaemon ircDaemon)
-            : base(ircDaemon, "VERSION")
+            : base(ircDaemon, "VERSION", "V")
         { }
 
         [CheckRegistered]

@@ -22,13 +22,14 @@ using System.Collections.Generic;
 using IrcD.Channel;
 using IrcD.Commands.Arguments;
 using IrcD.Utils;
+using IrcD.Modes.ChannelRanks;
 
 namespace IrcD.Commands
 {
     public class Kick : CommandBase
     {
         public Kick(IrcDaemon ircDaemon)
-            : base(ircDaemon, "KICK")
+            : base(ircDaemon, "KICK", "K")
         { }
 
         [CheckRegistered]
@@ -52,7 +53,7 @@ namespace IrcD.Commands
 
                 if (chan.UserPerChannelInfos.TryGetValue(info.Nick, out upci))
                 {
-                    if (upci.Modes.Level < 30)
+                    if (upci.Modes.Level < ModeHalfOp.Level)
                     {
                         IrcDaemon.Replies.SendChannelOpPrivilegesNeeded(info, chan);
                         continue;

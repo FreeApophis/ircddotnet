@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class Restart : CommandBase
     {
         public Restart(IrcDaemon ircDaemon)
-            : base(ircDaemon, "RESTART")
+            : base(ircDaemon, "RESTART", "RESTART")
         { }
 
         [CheckRegistered]

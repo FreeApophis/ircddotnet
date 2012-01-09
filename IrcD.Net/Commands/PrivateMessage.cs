@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class PrivateMessage : CommandBase
     {
         public PrivateMessage(IrcDaemon ircDaemon)
-            : base(ircDaemon, "PRIVMSG")
+            : base(ircDaemon, "PRIVMSG", "P")
         { }
 
         [CheckRegistered]

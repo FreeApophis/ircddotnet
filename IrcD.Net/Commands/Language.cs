@@ -29,7 +29,7 @@ namespace IrcD.Commands
     class Language : CommandBase
     {
         public Language(IrcDaemon ircDaemon)
-            : base(ircDaemon, "LANGUAGE")
+            : base(ircDaemon, "LANGUAGE", "")
         { }
 
         [CheckRegistered]

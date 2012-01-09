@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class Die : CommandBase
     {
         public Die(IrcDaemon ircDaemon)
-            : base(ircDaemon, "DIE")
+            : base(ircDaemon, "DIE", "DIE")
         { }
 
         [CheckRegistered]

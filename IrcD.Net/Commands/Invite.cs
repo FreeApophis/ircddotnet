@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Invite : CommandBase
     {
         public Invite(IrcDaemon ircDaemon)
-            : base(ircDaemon, "INVITE")
+            : base(ircDaemon, "INVITE", "I")
         { }
 
         [CheckRegistered]

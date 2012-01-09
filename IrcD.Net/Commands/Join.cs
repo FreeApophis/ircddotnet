@@ -29,7 +29,7 @@ namespace IrcD.Commands
     public class Join : CommandBase
     {
         public Join(IrcDaemon ircDaemon)
-            : base(ircDaemon, "JOIN")
+            : base(ircDaemon, "JOIN", "J")
         { }
 
         [CheckRegistered]
@@ -110,7 +110,7 @@ namespace IrcD.Commands
             }
             partargs.Add(command.ToString());
             partargs.Add(IrcDaemon.Options.StandardPartMessage);
-            IrcDaemon.Commands.Handle(info, info.Usermask, "PART", partargs);
+            IrcDaemon.Commands.Handle(info, info.Usermask, "PART", partargs, 0);
         }
 
         private void SendTopic(UserInfo info, ChannelInfo chan)

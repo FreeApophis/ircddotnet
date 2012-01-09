@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class Oper : CommandBase
     {
         public Oper(IrcDaemon ircDaemon)
-            : base(ircDaemon, "OPER")
+            : base(ircDaemon, "OPER", "OPER")
         { }
 
         [CheckRegistered]

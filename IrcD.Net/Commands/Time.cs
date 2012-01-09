@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Time : CommandBase
     {
         public Time(IrcDaemon ircDaemon)
-            : base(ircDaemon, "TIME")
+            : base(ircDaemon, "TIME", "TI")
         { }
 
         [CheckRegistered]

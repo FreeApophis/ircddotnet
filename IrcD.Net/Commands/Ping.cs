@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Ping : CommandBase
     {
         public Ping(IrcDaemon ircDaemon)
-            : base(ircDaemon, "PING")
+            : base(ircDaemon, "PING", "G")
         { }
 
         [CheckRegistered]

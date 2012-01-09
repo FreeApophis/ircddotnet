@@ -26,7 +26,7 @@ namespace IrcD.Commands
     public class Notice : CommandBase
     {
         public Notice(IrcDaemon ircDaemon)
-            : base(ircDaemon, "NOTICE")
+            : base(ircDaemon, "NOTICE", "O")
         { }
 
         [CheckRegistered]

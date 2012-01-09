@@ -31,7 +31,7 @@ namespace IrcD.Commands
     public class Who : CommandBase
     {
         public Who(IrcDaemon ircDaemon)
-            : base(ircDaemon, "WHO")
+            : base(ircDaemon, "WHO", "H")
         { }
 
         [CheckRegistered]

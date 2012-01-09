@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Kill : CommandBase
     {
         public Kill(IrcDaemon ircDaemon)
-            : base(ircDaemon, "KILL")
+            : base(ircDaemon, "KILL", "D")
         { }
 
         [CheckRegistered]

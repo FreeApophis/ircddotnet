@@ -53,12 +53,12 @@ namespace IrcD.Commands
         }
 
 
-        public void Handle(UserInfo info, string prefix, ReplyCode replyCode, List<string> args)
+        public void Handle(UserInfo info, string prefix, ReplyCode replyCode, List<string> args, int bytes)
         {
             throw new NotImplementedException();
         }
 
-        public void Handle(UserInfo info, string prefix, string command, List<string> args)
+        public void Handle(UserInfo info, string prefix, string command, List<string> args, int bytes)
         {
             CommandBase commandObject;
 
@@ -90,7 +90,7 @@ namespace IrcD.Commands
 
                 if (!skipHandle)
                 {
-                    commandObject.Handle(info, args);
+                    commandObject.Handle(info, args, bytes);
                     info.LastAlive = DateTime.Now;
                 }
             }

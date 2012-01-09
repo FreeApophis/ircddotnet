@@ -28,10 +28,11 @@ namespace IrcD.Commands
 {
     public abstract class CommandBase
     {
-        protected CommandBase(IrcDaemon ircDaemon, string name)
+        protected CommandBase(IrcDaemon ircDaemon, string name, string p10)
         {
             IrcDaemon = ircDaemon;
             this.name = name;
+            this.p10 = p10;
         }
 
         protected IrcDaemon IrcDaemon;
@@ -43,6 +44,16 @@ namespace IrcD.Commands
             get
             {
                 return name;
+            }
+        }
+
+        private readonly string p10;
+
+        public string P10Token
+        {
+            get
+            {
+                return p10;
             }
         }
 
@@ -82,10 +93,13 @@ namespace IrcD.Commands
         }
 
         abstract protected void PrivateHandle(UserInfo info, List<string> args);
-        public void Handle(UserInfo info, List<string> args)
+        public void Handle(UserInfo info, List<string> args, int bytes)
         {
-            callCountIn++;
-            byteCountIn += 0;
+            if (bytes > 0)
+            {
+                callCountIn++;
+                byteCountIn += bytes;
+            }
             PrivateHandle(info, args);
         }
 

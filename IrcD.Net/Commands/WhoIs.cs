@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class WhoIs : CommandBase
     {
         public WhoIs(IrcDaemon ircDaemon)
-            : base(ircDaemon, "WHOIS")
+            : base(ircDaemon, "WHOIS", "W")
         { }
 
         [CheckRegistered]

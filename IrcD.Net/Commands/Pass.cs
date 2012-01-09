@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class Pass : CommandBase
     {
         public Pass(IrcDaemon ircDaemon)
-            : base(ircDaemon, "PASS")
+            : base(ircDaemon, "PASS", "PA")
         { }
 
         [CheckParamCount(1)]
@@ -44,7 +44,7 @@ namespace IrcD.Commands
                 info.PassAccepted = true;
                 return;
             }
-            if(IrcDaemon.Options.ConnectionPasses.Any(p => p == args[0]))
+            if (IrcDaemon.Options.ConnectionPasses.Any(p => p == args[0]))
             {
                 // This is an allowed Server connection
             }

@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Service : CommandBase
     {
         public Service(IrcDaemon ircDaemon)
-            : base(ircDaemon, "SERVICE")
+            : base(ircDaemon, "SERVICE", "")
         { }
 
         [CheckParamCount(6)]

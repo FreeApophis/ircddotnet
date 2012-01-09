@@ -28,7 +28,7 @@ namespace IrcD.Commands
     public class IsOn : CommandBase
     {
         public IsOn(IrcDaemon ircDaemon)
-            : base(ircDaemon, "ISON")
+            : base(ircDaemon, "ISON", "ISON")
         { }
 
         [CheckRegistered]

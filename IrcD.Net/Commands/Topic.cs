@@ -26,7 +26,7 @@ namespace IrcD.Commands
     public class Topic : CommandBase
     {
         public Topic(IrcDaemon ircDaemon)
-            : base(ircDaemon, "TOPIC")
+            : base(ircDaemon, "TOPIC", "T")
         { }
 
         [CheckRegistered]

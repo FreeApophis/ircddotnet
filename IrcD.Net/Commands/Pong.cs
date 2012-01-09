@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Pong : CommandBase
     {
         public Pong(IrcDaemon ircDaemon)
-            : base(ircDaemon, "PONG")
+            : base(ircDaemon, "PONG", "Z")
         { }
 
         protected override void PrivateHandle(UserInfo info, List<string> args)

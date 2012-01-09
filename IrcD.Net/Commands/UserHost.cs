@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class UserHost : CommandBase
     {
         public UserHost(IrcDaemon ircDaemon)
-            : base(ircDaemon, "USERHOST")
+            : base(ircDaemon, "USERHOST", "USERHOST")
         { }
 
         [CheckRegistered]

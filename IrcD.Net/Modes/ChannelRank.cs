@@ -52,5 +52,11 @@ namespace IrcD.Modes
 
         public abstract bool CanChangeChannelMode(ChannelMode mode);
         public abstract bool CanChangeChannelRank(ChannelRank rank);
+        /* ToDo
+        public abstract bool CanInviteUser(UserInfo user);
+        public abstract bool CanKickUser(UserInfo user);
+        public abstract bool CanChangeTopic();
+        public abstract bool CanSpeekModerated();
+         */
     }
 }

@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class WhoWas : CommandBase
     {
         public WhoWas(IrcDaemon ircDaemon)
-            : base(ircDaemon, "WHOWAS")
+            : base(ircDaemon, "WHOWAS", "X")
         { }
 
         [CheckRegistered]

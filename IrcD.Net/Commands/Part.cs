@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Part : CommandBase
     {
         public Part(IrcDaemon ircDaemon)
-            : base(ircDaemon, "PART")
+            : base(ircDaemon, "PART", "L")
         { }
 
         [CheckRegistered]

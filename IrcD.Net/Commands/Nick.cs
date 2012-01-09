@@ -26,7 +26,7 @@ namespace IrcD.Commands
     public class Nick : CommandBase
     {
         public Nick(IrcDaemon ircDaemon)
-            : base(ircDaemon, "NICK")
+            : base(ircDaemon, "NICK", "N")
         { }
 
         protected override void PrivateHandle(UserInfo info, List<string> args)

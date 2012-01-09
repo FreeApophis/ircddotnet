@@ -27,7 +27,7 @@ namespace IrcD.Commands
     public class Quit : CommandBase
     {
         public Quit(IrcDaemon ircDaemon)
-            : base(ircDaemon, "QUIT")
+            : base(ircDaemon, "QUIT", "Q")
         { }
 
         [CheckRegistered]
