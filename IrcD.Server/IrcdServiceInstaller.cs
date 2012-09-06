@@ -18,8 +18,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#if !MONO_LTS
 using System.ComponentModel;
 using System.Configuration.Install;
 using System.ServiceProcess;
@@ -51,4 +49,3 @@ namespace IrcD.Server
         }
     }
 }
-#endif

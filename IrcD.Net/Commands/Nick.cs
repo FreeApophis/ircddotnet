@@ -79,7 +79,6 @@ namespace IrcD.Commands
         {
             var arg = GetSaveArgument<NickArgument>(commandArgument);
 
-
             BuildMessageHeader(arg);
 
             Command.Append(arg.NewNick);

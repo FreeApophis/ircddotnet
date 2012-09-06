@@ -91,7 +91,7 @@ namespace IrcD.Commands
                 return byteCountOut;
             }
         }
-
+        
         abstract protected void PrivateHandle(UserInfo info, List<string> args);
         public void Handle(UserInfo info, List<string> args, int bytes)
         {

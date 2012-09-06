@@ -79,6 +79,8 @@ namespace IrcD
         public string RealName { get; private set; }
         public string Host { get; private set; }
         public string AwayMessage { get; set; }
+                
+        public List<string> Capabilities { get; private set; }
 
         private IEnumerable<string> languages = new List<string> { "en" };
 

@@ -23,10 +23,10 @@ namespace IrcD.Modes.ChannelRanks
 {
     public class ModeAdmin : ChannelRank
     {
-        public static const int Level = 70;
+        public const int AdminLevel = 70;
 
         public ModeAdmin()
-            : base('a', '&', Level)
+            : base('a', '&', AdminLevel)
         {
         }
 

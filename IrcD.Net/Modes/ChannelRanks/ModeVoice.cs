@@ -22,10 +22,10 @@ namespace IrcD.Modes.ChannelRanks
 {
     public class ModeVoice : ChannelRank
     {
-        public static const int Level = 10;
+        public const int VoiceLevel = 10;
 
         public ModeVoice()
-            : base('v', '+', Level)
+            : base('v', '+', VoiceLevel)
         {
 
         }

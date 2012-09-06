@@ -23,10 +23,10 @@ namespace IrcD.Modes.ChannelRanks
 {
     class ModeHalfOp : ChannelRank
     {
-        public static const int Level = 30;
+        public const int HalfOpLevel = 30;
 
         public ModeHalfOp()
-            : base('h', '%', Level)
+            : base('h', '%', HalfOpLevel)
         {
 
         }

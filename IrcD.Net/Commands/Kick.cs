@@ -53,7 +53,7 @@ namespace IrcD.Commands
 
                 if (chan.UserPerChannelInfos.TryGetValue(info.Nick, out upci))
                 {
-                    if (upci.Modes.Level < ModeHalfOp.Level)
+                    if (upci.Modes.Level < ModeHalfOp.HalfOpLevel)
                     {
                         IrcDaemon.Replies.SendChannelOpPrivilegesNeeded(info, chan);
                         continue;

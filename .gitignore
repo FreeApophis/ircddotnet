@@ -1,4 +1,6 @@
 *.crc
+*.userprefs
+*.pidb
 _ReSharper.IrcD.Net
 bin
 obj

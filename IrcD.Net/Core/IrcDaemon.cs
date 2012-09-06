@@ -136,6 +136,8 @@ namespace IrcD
                 return replies;
             }
         }
+        
+        public List<string> Capabilities { get; private set; }
 
         private bool connected;
         private bool restart;

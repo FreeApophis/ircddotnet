@@ -1,8 +1,8 @@
-﻿/*
+/*
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2012 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,27 +18,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using IrcD.ServerReplies;
-namespace IrcD.Modes.ChannelRanks
+using IrcD.Channel;
+namespace IrcD.Commands.Arguments
 {
-    public class ModeOwner : ChannelRank
+    public class AwayArgument : CommandArgument
     {
-        public const int OwnerLevel = 100;
-
-        public ModeOwner()
-            : base('q', '~', OwnerLevel)
+        public AwayArgument(UserInfo sender, InfoBase receiver, string awayMessage)
+            : base(sender, receiver, "AWAY")
         {
-
+            this.awayMessage = awayMessage;
         }
 
-        public override bool CanChangeChannelMode(ChannelMode mode)
+        private readonly string awayMessage;
+        public string AwayMessage
         {
-            return false;
-        }
-
-        public override bool CanChangeChannelRank(ChannelRank rank)
-        {
-            return false;
+            get
+            {
+                return awayMessage;
+            }
         }
     }
 }
