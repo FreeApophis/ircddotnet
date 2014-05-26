@@ -192,6 +192,8 @@ namespace IrcD
 
         public IrcDaemon(IrcMode ircMode = IrcMode.Modern)
         {
+            Capabilities = new List<string>();
+
             // Create Optionobject & Set the proper IRC Protocol Version
             // The protocol version cannot be changed after construction, 
             // because the construction methods below use this Option
