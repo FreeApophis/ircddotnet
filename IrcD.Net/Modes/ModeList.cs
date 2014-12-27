@@ -36,7 +36,8 @@ namespace IrcD.Modes
 
         public void Add<T>(T element) where T : TMode
         {
-            if (!Exist<T>())
+            bool exists = (bool)typeof(ModeList<TMode>).GetMethod("Exist").MakeGenericMethod(new[] { element.GetType() }).Invoke(this, null);
+            if (exists == false)
             {
                 Add(element.Char, element);
             }
