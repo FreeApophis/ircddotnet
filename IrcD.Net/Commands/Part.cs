@@ -37,35 +37,25 @@ namespace IrcD.Commands
             var message = (args.Count > 1) ? args[1] : IrcDaemon.Options.StandardPartMessage;
 
 
-            foreach (string ch in GetSubArgument(args[0]))
+            foreach (string channelName in GetSubArgument(args[0]))
             {
-                if (IrcDaemon.Channels.ContainsKey(ch))
+                if (IrcDaemon.Channels.ContainsKey(channelName))
                 {
-                    var chan = IrcDaemon.Channels[ch];
-                    var upci = chan.UserPerChannelInfos[info.Nick];
+                    var chan = IrcDaemon.Channels[channelName];
 
                     if (info.Channels.Contains(chan))
                     {
                         Send(new PartArgument(info, chan, chan, message));
-
-                        chan.UserPerChannelInfos.Remove(info.Nick);
-                        info.UserPerChannelInfos.Remove(upci);
-
-                        if (!chan.UserPerChannelInfos.Any())
-                        {
-                            IrcDaemon.Channels.Remove(chan.Name);
-                        }
+                        chan.RemoveUser(info);
                     }
                     else
                     {
-                        IrcDaemon.Replies.SendNotOnChannel(info, ch);
-                        continue;
+                        IrcDaemon.Replies.SendNotOnChannel(info, channelName);
                     }
                 }
                 else
                 {
-                    IrcDaemon.Replies.SendNoSuchChannel(info, ch);
-                    continue;
+                    IrcDaemon.Replies.SendNoSuchChannel(info, channelName);
                 }
             }
         }

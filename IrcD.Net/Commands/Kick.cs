@@ -69,10 +69,7 @@ namespace IrcD.Commands
                 if (chan.UserPerChannelInfos.TryGetValue(subarg.Nick, out kickUser))
                 {
                     Send(new KickArgument(info, chan, chan, kickUser.UserInfo, message));
-
-                    chan.UserPerChannelInfos.Remove(kickUser.UserInfo.Nick);
-                    kickUser.UserInfo.UserPerChannelInfos.Remove(kickUser);
-
+                    chan.RemoveUser(kickUser.UserInfo);
                 }
                 else
                 {

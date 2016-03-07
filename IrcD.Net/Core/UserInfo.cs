@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -42,36 +43,17 @@ namespace IrcD
             Host = host;
             Created = DateTime.Now;
 
-            this.isAcceptSocket = isAcceptSocket;
-            this.socket = socket;
+            IsAcceptSocket = isAcceptSocket;
+            Socket = socket;
 
-            modes = new UserModeList(ircDaemon);
+            Modes = new UserModeList(ircDaemon);
         }
 
-        private readonly Socket socket;
+        internal Socket Socket { get; }
 
-        internal Socket Socket
-        {
-            get
-            {
-                return socket;
-            }
-        }
-
-        private readonly bool isAcceptSocket;
-
-        public bool IsAcceptSocket
-        {
-            get
-            {
-                return isAcceptSocket;
-            }
-        }
-
+        public bool IsAcceptSocket { get; }
         public bool PassAccepted { get; internal set; }
-
         public bool Registered { get; internal set; }
-
         public bool IsService { get; set; }
 
         public string User { get; private set; }
@@ -82,17 +64,17 @@ namespace IrcD
                 
         public List<string> Capabilities { get; private set; }
 
-        private IEnumerable<string> languages = new List<string> { "en" };
+        private IEnumerable<string> _languages = new List<string> { "en" };
 
         public IEnumerable<string> Languages
         {
             get
             {
-                return languages.Any() ? languages : System.Linq.Enumerable.Repeat("en", 1);
+                return _languages.Any() ? _languages : System.Linq.Enumerable.Repeat("en", 1);
             }
             set
             {
-                languages = value.Where(l => GoogleTranslate.Languages.ContainsKey(l));
+                _languages = value.Where(l => GoogleTranslate.Languages.ContainsKey(l));
             }
         }
 
@@ -128,7 +110,7 @@ namespace IrcD
 
         private void RegisterComplete()
         {
-            Logger.Log(string.Format("New User: {0}", this.Usermask));
+            Logger.Log($"New User: {Usermask}");
 
             Registered = true;
             if (IsService)
@@ -144,21 +126,9 @@ namespace IrcD
         }
 
 
-        internal bool UserExists
-        {
-            get
-            {
-                return User != null;
-            }
-        }
+        internal bool UserExists => User != null;
 
-        public bool NickExists
-        {
-            get
-            {
-                return Nick != null;
-            }
-        }
+        public bool NickExists => Nick != null;
 
         public void Rename(string newNick)
         {
@@ -177,86 +147,26 @@ namespace IrcD
             Nick = newNick;
         }
 
-        public string Usermask
-        {
-            get
-            {
-                return Nick + "!" + User + "@" + Host;
-            }
-        }
+        public string Usermask => Nick + "!" + User + "@" + Host;
 
-        public string Prefix
-        {
-            get
-            {
-                return ":" + Usermask;
-            }
-        }
+        public string Prefix => ":" + Usermask;
 
-        private DateTime lastAction = DateTime.Now;
-
-        public DateTime LastAction
-        {
-            get
-            {
-                return lastAction;
-            }
-            set
-            {
-                lastAction = value;
-            }
-        }
+        public DateTime LastAction { get; set; } = DateTime.Now;
 
         public DateTime LastAlive { get; set; }
 
         public DateTime LastPing { get; set; }
 
 
-        private readonly List<UserPerChannelInfo> userPerChannelInfos = new List<UserPerChannelInfo>();
+        public List<UserPerChannelInfo> UserPerChannelInfos { get; } = new List<UserPerChannelInfo>();
 
-        public List<UserPerChannelInfo> UserPerChannelInfos
-        {
-            get
-            {
-                return userPerChannelInfos;
-            }
-        }
+        public IEnumerable<ChannelInfo> Channels => UserPerChannelInfos.Select(upci => upci.ChannelInfo);
 
-        public IEnumerable<ChannelInfo> Channels
-        {
-            get
-            {
-                return userPerChannelInfos.Select(upci => upci.ChannelInfo);
-            }
-        }
+        public List<ChannelInfo> Invited { get; } = new List<ChannelInfo>();
 
-        private readonly List<ChannelInfo> invited = new List<ChannelInfo>();
+        public UserModeList Modes { get; }
 
-        public List<ChannelInfo> Invited
-        {
-            get
-            {
-                return invited;
-            }
-        }
-
-        private readonly UserModeList modes;
-
-        public UserModeList Modes
-        {
-            get
-            {
-                return modes;
-            }
-        }
-
-        public string ModeString
-        {
-            get
-            {
-                return modes.ToUserModeString();
-            }
-        }
+        public string ModeString => Modes.ToUserModeString();
 
         public DateTime Created { get; private set; }
 
@@ -270,7 +180,7 @@ namespace IrcD
 #if DEBUG
             Logger.Log(line.ToString(), location: "OUT:" + Nick);
 #endif
-            return socket.Send(Encoding.UTF8.GetBytes(line + IrcDaemon.ServerCrLf));
+            return Socket.Send(Encoding.UTF8.GetBytes(line + IrcDaemon.ServerCrLf));
         }
 
         public override int WriteLine(StringBuilder line, UserInfo exception)
@@ -283,19 +193,19 @@ namespace IrcD
 
         }
 
-        // Cleanly Quit a user, in any case, Connection dropped, QuitMesssage, all traces of 'this' mus be removed.
+        // Cleanly Quit a user, in any case, Connection dropped, QuitMesssage, all traces of 'this' must be removed.
         public void Remove(string message)
         {
             // Clean up channels
-            foreach (var upci in UserPerChannelInfos)
+            foreach (var upci in UserPerChannelInfos.Reverse<UserPerChannelInfo>())
             {
                 // Important: remove nick first! or we end in a exception-catch endless loop
-                upci.ChannelInfo.UserPerChannelInfos.Remove(Nick);
+                upci.ChannelInfo.RemoveUser(this);
 
                 IrcDaemon.Commands.Send(new QuitArgument(this, upci.ChannelInfo, message));
             }
 
-            UserPerChannelInfos.Clear();
+            Debug.Assert(UserPerChannelInfos.Any() == false);
 
             // Clean up server
 
@@ -304,13 +214,13 @@ namespace IrcD
                 IrcDaemon.Nicks.Remove(Nick);
             }
 
-            if (IrcDaemon.Sockets.ContainsKey(socket))
+            if (IrcDaemon.Sockets.ContainsKey(Socket))
             {
-                IrcDaemon.Sockets.Remove(socket);
+                IrcDaemon.Sockets.Remove(Socket);
             }
 
             // Close connection
-            socket.Close();
+            Socket.Close();
 
             // Ready for destruction 
         }

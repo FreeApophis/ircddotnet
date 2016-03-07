@@ -33,7 +33,7 @@ namespace IrcD.Commands
         [CheckRegistered]
         protected override void PrivateHandle(UserInfo info, List<string> args)
         {
-            var message = (args.Count > 0) ? args.First() : IrcDaemon.Options.StandardQuitMessage;
+            var message = args.Count > 0 ? args.First() : IrcDaemon.Options.StandardQuitMessage;
             info.Remove(message);
         }
 

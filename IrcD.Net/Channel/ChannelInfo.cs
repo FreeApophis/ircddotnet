@@ -30,64 +30,21 @@ namespace IrcD.Channel
         public ChannelInfo(string name, IrcDaemon ircDaemon)
             : base(ircDaemon)
         {
-            this.name = name;
-            channelType = ircDaemon.SupportedChannelTypes[name[0]];
-            modes = new ChannelModeList(ircDaemon);
+            Name = name;
+            ChannelType = ircDaemon.SupportedChannelTypes[name[0]];
+            Modes = new ChannelModeList(ircDaemon);
         }
 
-        private readonly ChannelType channelType;
+        public ChannelType ChannelType { get; }
 
-        public ChannelType ChannelType
-        {
-            get { return channelType; }
-        }
-        private readonly string name;
-
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-        }
-
+        public string Name { get; }
         public string Topic { get; set; }
 
-        private readonly Dictionary<string, UserPerChannelInfo> userPerChannelInfos = new Dictionary<string, UserPerChannelInfo>();
+        public Dictionary<string, UserPerChannelInfo> UserPerChannelInfos { get; } = new Dictionary<string, UserPerChannelInfo>();
+        public IEnumerable<UserInfo> Users => UserPerChannelInfos.Select(upci => upci.Value.UserInfo);
+        public ChannelModeList Modes { get; }
 
-        public Dictionary<string, UserPerChannelInfo> UserPerChannelInfos
-        {
-            get
-            {
-                return userPerChannelInfos;
-            }
-        }
-
-        public IEnumerable<UserInfo> Users
-        {
-            get
-            {
-                return userPerChannelInfos.Select(upci => upci.Value.UserInfo);
-            }
-        }
-
-        private readonly ChannelModeList modes;
-
-        public ChannelModeList Modes
-        {
-            get
-            {
-                return modes;
-            }
-        }
-
-        public string ModeString
-        {
-            get
-            {
-                return modes.ToChannelModeString();
-            }
-        }
+        public string ModeString => Modes.ToChannelModeString();
 
         public char NamesPrefix
         {
@@ -103,23 +60,25 @@ namespace IrcD.Channel
 
         public override int WriteLine(StringBuilder line)
         {
-            int bytes = 0;
-            foreach (var user in Users)
-            {
-                bytes += user.WriteLine(line);
-            }
-            return bytes;
+            return Users.Sum(user => user.WriteLine(line));
         }
 
         public override int WriteLine(StringBuilder line, UserInfo exception)
         {
-            int bytes = 0;
-            foreach (var user in Users)
-            {
-                bytes += user.WriteLine(line, exception);
-            }
-            return bytes;
+            return Users.Sum(user => user.WriteLine(line, exception));
         }
 
+        public void RemoveUser(UserInfo user)
+        {
+            var upci = UserPerChannelInfos[user.Nick];
+
+            UserPerChannelInfos.Remove(user.Nick);
+            user.UserPerChannelInfos.Remove(upci);
+
+            if (UserPerChannelInfos.Any() == false)
+            {
+                IrcDaemon.Channels.Remove(Name);
+            }
+        }
     }
 }
