@@ -27,36 +27,13 @@ namespace IrcD.Commands.Arguments
             : base(sender, receiver, "KICK")
         {
 
-            this.channel = channel;
-            this.user = user;
-            this.message = message;
+            Channel = channel;
+            User = user;
+            Message = message;
         }
 
-        private readonly ChannelInfo channel;
-        public ChannelInfo Channel
-        {
-            get
-            {
-                return channel;
-            }
-        }
-
-        private readonly UserInfo user;
-        public UserInfo User
-        {
-            get
-            {
-                return user;
-            }
-        }
-
-        private readonly string message;
-        public string Message
-        {
-            get
-            {
-                return message;
-            }
-        }
+        public ChannelInfo Channel { get; }
+        public UserInfo User { get; }
+        public string Message { get; }
     }
 }

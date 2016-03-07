@@ -27,26 +27,12 @@ namespace IrcD.Commands.Arguments
         public TopicArgument(UserInfo sender, InfoBase receiver, ChannelInfo channel, string newTopic)
             : base(sender, receiver, "TOPIC")
         {
-            this.channel = channel;
-            this.newTopic = newTopic;
+            Channel = channel;
+            NewTopic = newTopic;
         }
 
-        private readonly ChannelInfo channel;
-        public ChannelInfo Channel
-        {
-            get
-            {
-                return channel;
-            }
-        }
+        public ChannelInfo Channel { get; }
 
-        private readonly string newTopic;
-        public string NewTopic
-        {
-            get
-            {
-                return newTopic;
-            }
-        }
+        public string NewTopic { get; }
     }
 }

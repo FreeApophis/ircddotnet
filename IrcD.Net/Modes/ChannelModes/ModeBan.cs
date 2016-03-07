@@ -33,15 +33,12 @@ namespace IrcD.Modes.ChannelModes
         {
         }
 
-        private readonly List<string> banList = new List<string>();
-        public List<string> Parameter
-        {
-            get { return banList; }
-        }
+        private readonly List<string> _banList = new List<string>();
+        public List<string> Parameter => _banList;
 
         public void SendList(UserInfo info, ChannelInfo chan)
         {
-            foreach (var ban in banList)
+            foreach (var ban in _banList)
             {
                 info.IrcDaemon.Replies.SendBanList(info, chan, ban);
             }
@@ -52,7 +49,7 @@ namespace IrcD.Modes.ChannelModes
         {
             if (command is Join)
             {
-                if (banList.Select(ban => new WildCard(ban, WildcardMatch.Exact)).Any(usermask => usermask.IsMatch(user.Usermask)))
+                if (_banList.Select(ban => new WildCard(ban, WildcardMatch.Exact)).Any(usermask => usermask.IsMatch(user.Usermask)))
                 {
                     user.IrcDaemon.Replies.SendBannedFromChannel(user, channel);
                     return false;
@@ -61,7 +58,7 @@ namespace IrcD.Modes.ChannelModes
 
             if (command is PrivateMessage || command is Notice)
             {
-                if (banList.Select(ban => new WildCard(ban, WildcardMatch.Exact)).Any(usermask => usermask.IsMatch(user.Usermask)))
+                if (_banList.Select(ban => new WildCard(ban, WildcardMatch.Exact)).Any(usermask => usermask.IsMatch(user.Usermask)))
                 {
                     user.IrcDaemon.Replies.SendCannotSendToChannel(user, channel.Name, "You are banned from the Channel");
                     return false;
@@ -75,7 +72,7 @@ namespace IrcD.Modes.ChannelModes
         {
             parameter = UserInfo.NormalizeHostmask(parameter);
 
-            banList.Add(parameter);
+            _banList.Add(parameter);
 
             return parameter;
         }
@@ -84,7 +81,7 @@ namespace IrcD.Modes.ChannelModes
         {
             parameter = UserInfo.NormalizeHostmask(parameter);
 
-            return banList.RemoveAll(p => p == parameter) > 0 ? parameter : null;
+            return _banList.RemoveAll(p => p == parameter) > 0 ? parameter : null;
         }
     }
 }

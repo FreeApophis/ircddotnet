@@ -26,59 +26,31 @@ namespace IrcD.Channel
 {
     public class UserPerChannelInfo : InfoBase
     {
-        private readonly UserInfo userInfo;
-
-        public UserInfo UserInfo
-        {
-            get
-            {
-                return userInfo;
-            }
-        }
-
-        private readonly ChannelInfo channelInfo;
-
-        public ChannelInfo ChannelInfo
-        {
-            get
-            {
-                return channelInfo;
-            }
-        }
+        public UserInfo UserInfo { get; }
+        public ChannelInfo ChannelInfo { get; }
+        public RankList Modes { get; }
 
         public UserPerChannelInfo(UserInfo userInfo, ChannelInfo channelInfo)
             : base(userInfo.IrcDaemon)
         {
-            this.userInfo = userInfo;
-            this.channelInfo = channelInfo;
-            modes = new RankList(userInfo.IrcDaemon);
+            UserInfo = userInfo;
+            ChannelInfo = channelInfo;
+            Modes = new RankList(userInfo.IrcDaemon);
         }
 
 
-        private readonly RankList modes;
-
-        public RankList Modes
-        {
-            get
-            {
-                return modes;
-            }
-        }
 
         /// <summary>
         /// This method just delegates the work to 
         /// </summary>
         /// <param name="line"></param>
-        public override int WriteLine(StringBuilder line)
-        {
-            return userInfo.WriteLine(line);
-        }
+        public override int WriteLine(StringBuilder line) => UserInfo.WriteLine(line);
 
         public override int WriteLine(StringBuilder line, UserInfo exception)
         {
             if (UserInfo != exception)
             {
-                return userInfo.WriteLine(line);
+                return UserInfo.WriteLine(line);
             }
             return 0;
         }

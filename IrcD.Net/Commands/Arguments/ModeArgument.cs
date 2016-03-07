@@ -26,26 +26,12 @@ namespace IrcD.Commands.Arguments
             : base(sender, receiver, "MODE")
         {
 
-            this.target = target;
-            this.modeString = modeString;
+            Target = target;
+            ModeString = modeString;
         }
 
-        private readonly string target;
-        public string Target
-        {
-            get
-            {
-                return target;
-            }
-        }
+        public string Target { get; }
 
-        private readonly string modeString;
-        public string ModeString
-        {
-            get
-            {
-                return modeString;
-            }
-        }
+        public string ModeString { get; }
     }
 }

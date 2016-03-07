@@ -26,16 +26,9 @@ namespace IrcD.Commands.Arguments
             : base(sender, receiver, "NICK")
         {
 
-            this.newNick = newNick;
+            NewNick = newNick;
         }
 
-        private readonly string newNick;
-        public string NewNick
-        {
-            get
-            {
-                return newNick;
-            }
-        }
+        public string NewNick { get; }
     }
 }

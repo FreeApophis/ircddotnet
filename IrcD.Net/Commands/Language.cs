@@ -36,7 +36,7 @@ namespace IrcD.Commands
         [CheckParamCount(1)]
         protected override void PrivateHandle(UserInfo info, List<string> args)
         {
-            info.Languages = args[0].Split(new[] { ',' });
+            info.Languages = args[0].Split(',');
 
             IrcDaemon.Replies.SendYourLanguageIs(info);
         }

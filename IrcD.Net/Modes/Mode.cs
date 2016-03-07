@@ -22,19 +22,11 @@ namespace IrcD.Modes
 {
     public class Mode
     {
-        private readonly char mode;
-
-        public char Char
-        {
-            get
-            {
-                return mode;
-            }
-        }
+        public char Char { get; }
 
         public Mode(char mode)
         {
-            this.mode = mode;
+            Char = mode;
         }
     }
 }

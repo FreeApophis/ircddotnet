@@ -26,28 +26,11 @@ namespace IrcD.Commands.Arguments
         public KnockArgument(UserInfo sender, InfoBase receiver, ChannelInfo channel, string message)
             : base(sender, receiver, "KNOCK")
         {
-
-            this.channel = channel;
-            this.message = message;
+            Channel = channel;
+            Message = message;
         }
 
-        private readonly ChannelInfo channel;
-        public ChannelInfo Channel
-        {
-            get
-            {
-                return channel;
-            }
-        }
-
-        private readonly string message;
-        public string Message
-        {
-            get
-            {
-                return message;
-            }
-        }
-
+        public ChannelInfo Channel { get; }
+        public string Message { get; }
     }
 }

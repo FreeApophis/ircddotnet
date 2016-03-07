@@ -33,12 +33,12 @@ namespace IrcD.ServerReplies
     public class ServerReplies
     {
         private const string NumericFormat = "{0:000}";
-        private readonly StringBuilder response = new StringBuilder();
-        private readonly IrcDaemon ircDaemon;
+        private readonly StringBuilder _response = new StringBuilder();
+        private readonly IrcDaemon _ircDaemon;
 
         public ServerReplies(IrcDaemon ircDaemon)
         {
-            this.ircDaemon = ircDaemon;
+            _ircDaemon = ircDaemon;
         }
 
         #region Helper Methods
@@ -49,7 +49,7 @@ namespace IrcD.ServerReplies
             SendCreated(info);
             SendMyInfo(info);
             SendISupport(info);
-            if (string.IsNullOrEmpty(ircDaemon.Options.MessageOfTheDay))
+            if (string.IsNullOrEmpty(_ircDaemon.Options.MessageOfTheDay))
             {
                 SendNoMotd(info);
             }
@@ -60,7 +60,7 @@ namespace IrcD.ServerReplies
                 SendMotdEnd(info);
             }
 
-            if (ircDaemon.Options.IrcMode == IrcMode.Modern)
+            if (_ircDaemon.Options.IrcMode == IrcMode.Modern)
             {
                 SendListUserClient(info);
                 SendListUserOp(info);
@@ -72,12 +72,12 @@ namespace IrcD.ServerReplies
 
         private void BuildMessageHeader(UserInfo info, ReplyCode code)
         {
-            response.Length = 0;
-            response.Append(ircDaemon.ServerPrefix);
-            response.Append(" ");
-            response.AppendFormat(NumericFormat, (int)code);
-            response.Append(" ");
-            response.Append(info.Nick ?? "-");
+            _response.Length = 0;
+            _response.Append(_ircDaemon.ServerPrefix);
+            _response.Append(" ");
+            _response.AppendFormat(NumericFormat, (int)code);
+            _response.Append(" ");
+            _response.Append(info.Nick ?? "-");
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace IrcD.ServerReplies
         {
             var daemon = info.IrcDaemon;
             var currentLine = new StringBuilder();
-            var postfixlength = postfix != null ? 2 + postfix.Length : 0;
+            var postfixlength = 2 + postfix?.Length ?? 0;
 
             currentLine.Append(prefix);
 
@@ -161,12 +161,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Welcome);
 
-            response.Append(" :Welcome to the ");
-            response.Append(info.IrcDaemon.Options.NetworkName);
-            response.Append(" IRC Network ");
-            response.Append(info.Usermask);
+            _response.Append(" :Welcome to the ");
+            _response.Append(info.IrcDaemon.Options.NetworkName);
+            _response.Append(" IRC Network ");
+            _response.Append(info.Usermask);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -177,12 +177,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.YourHost);
 
-            response.Append(" :Your host is ");
-            response.Append(ircDaemon.Options.ServerName);
-            response.Append(", running version ");
-            response.Append(System.Reflection.Assembly.GetExecutingAssembly().FullName);
+            _response.Append(" :Your host is ");
+            _response.Append(_ircDaemon.Options.ServerName);
+            _response.Append(", running version ");
+            _response.Append(System.Reflection.Assembly.GetExecutingAssembly().FullName);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -193,10 +193,10 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Created);
 
-            response.Append(" :This server was created ");
-            response.Append(ircDaemon.ServerCreated);
+            _response.Append(" :This server was created ");
+            _response.Append(_ircDaemon.ServerCreated);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -207,17 +207,17 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.MyInfo);
 
-            response.Append(" :");
-            response.Append(ircDaemon.Options.ServerName);
-            response.Append(" ");
-            response.Append("ircD.Net.");
-            response.Append(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
-            response.Append(" ");
-            response.Append(ircDaemon.SupportedUserModes.ToString());
-            response.Append(" ");
-            response.Append(ircDaemon.SupportedRanks.ToString() + ircDaemon.SupportedChannelModes);
+            _response.Append(" :");
+            _response.Append(_ircDaemon.Options.ServerName);
+            _response.Append(" ");
+            _response.Append("ircD.Net.");
+            _response.Append(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+            _response.Append(" ");
+            _response.Append(_ircDaemon.SupportedUserModes);
+            _response.Append(" ");
+            _response.Append(_ircDaemon.SupportedRanks.ToString() + _ircDaemon.SupportedChannelModes);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -255,9 +255,9 @@ namespace IrcD.ServerReplies
             }
 
             BuildMessageHeader(info, ReplyCode.ISupport);
-            response.Append(" ");
+            _response.Append(" ");
 
-            SendSplitted(response.ToString(), info, features, "are supported by this server");
+            SendSplitted(_response.ToString(), info, features, "are supported by this server");
         }
 
         /// <summary>
@@ -269,9 +269,9 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.Bounce);
 
             // TODO: bounce to which server
-            response.Append(" :Try server <server name>, port <port number>");
+            _response.Append(" :Try server <server name>, port <port number>");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -283,22 +283,22 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.StatsLinkInfo);
             //ToDo: <linkname> <sendq> <sent messages> <sent Kbytes> <received messages> <received Kbytes> <time open>
 
-            response.Append(" ");
-            response.Append(info.Socket.ToString());
-            response.Append(" ");
-            response.Append("0");
-            response.Append(" ");
-            response.Append("0");
-            response.Append(" ");
-            response.Append("0");
-            response.Append(" ");
-            response.Append("0");
-            response.Append(" ");
-            response.Append("0");
-            response.Append(" ");
-            response.Append((long)(DateTime.Now - info.Created).TotalSeconds);
+            _response.Append(" ");
+            _response.Append(info.Socket);
+            _response.Append(" ");
+            _response.Append("0");
+            _response.Append(" ");
+            _response.Append("0");
+            _response.Append(" ");
+            _response.Append("0");
+            _response.Append(" ");
+            _response.Append("0");
+            _response.Append(" ");
+            _response.Append("0");
+            _response.Append(" ");
+            _response.Append((long)(DateTime.Now - info.Created).TotalSeconds);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -310,16 +310,16 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.StatsCommands);
 
-            response.Append(" ");
-            response.Append(command.Name);
-            response.Append(" ");
-            response.Append(command.CallCountIn);
-            response.Append(" ");
-            response.Append(command.ByteCountIn + command.ByteCountOut);
-            response.Append(" ");
-            response.Append(command.CallCountOut);
+            _response.Append(" ");
+            _response.Append(command.Name);
+            _response.Append(" ");
+            _response.Append(command.CallCountIn);
+            _response.Append(" ");
+            _response.Append(command.ByteCountIn + command.ByteCountOut);
+            _response.Append(" ");
+            _response.Append(command.CallCountOut);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -331,11 +331,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.EndOfStats);
 
-            response.Append(" ");
-            response.Append(query);
-            response.Append(" :End of STATS report");
+            _response.Append(" ");
+            _response.Append(query);
+            _response.Append(" :End of STATS report");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -346,16 +346,16 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.StatsUptime);
 
-            response.Append(" :Server Up ");
-            response.Append(ircDaemon.Stats.Uptime.Days);
-            response.Append(" days ");
-            response.Append(string.Format("{0:00}", ircDaemon.Stats.Uptime.Hours));
-            response.Append(":");
-            response.Append(string.Format("{0:00}", ircDaemon.Stats.Uptime.Minutes));
-            response.Append(":");
-            response.Append(string.Format("{0:00}", ircDaemon.Stats.Uptime.Seconds));
+            _response.Append(" :Server Up ");
+            _response.Append(_ircDaemon.Stats.Uptime.Days);
+            _response.Append(" days ");
+            _response.Append($"{_ircDaemon.Stats.Uptime.Hours:00}");
+            _response.Append(":");
+            _response.Append($"{_ircDaemon.Stats.Uptime.Minutes:00}");
+            _response.Append(":");
+            _response.Append($"{_ircDaemon.Stats.Uptime.Seconds:00}");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
 
@@ -368,12 +368,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.StatsOLine);
 
-            response.Append(" O ");
-            response.Append(op.Host);
-            response.Append(" * ");
-            response.Append(op.Nick);
+            _response.Append(" O ");
+            _response.Append(op.Host);
+            _response.Append(" * ");
+            _response.Append(op.Nick);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
 
@@ -386,10 +386,10 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.UserModeIs);
 
-            response.Append(" ");
-            response.Append(info.ModeString);
+            _response.Append(" ");
+            _response.Append(info.ModeString);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -400,15 +400,15 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ListUserClient);
 
-            response.Append(" :There are ");
-            response.Append(ircDaemon.Stats.UserCount);
-            response.Append(" users and ");
-            response.Append(ircDaemon.Stats.ServiceCount);
-            response.Append(" services on ");
-            response.Append(ircDaemon.Stats.ServerCount);
-            response.Append(" servers");
+            _response.Append(" :There are ");
+            _response.Append(_ircDaemon.Stats.UserCount);
+            _response.Append(" users and ");
+            _response.Append(_ircDaemon.Stats.ServiceCount);
+            _response.Append(" services on ");
+            _response.Append(_ircDaemon.Stats.ServerCount);
+            _response.Append(" servers");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -419,10 +419,10 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ListUserOp);
 
-            response.Append(ircDaemon.Stats.OperatorCount);
-            response.Append(" :operator(s) online");
+            _response.Append(_ircDaemon.Stats.OperatorCount);
+            _response.Append(" :operator(s) online");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -433,10 +433,10 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ListUserUnknown);
 
-            response.Append(ircDaemon.Stats.UnknowConnectionCount);
-            response.Append(" :unknown connection(s)");
+            _response.Append(_ircDaemon.Stats.UnknowConnectionCount);
+            _response.Append(" :unknown connection(s)");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -447,10 +447,10 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ListUserChannels);
 
-            response.Append(ircDaemon.Stats.ChannelCount);
-            response.Append(" :channels formed");
+            _response.Append(_ircDaemon.Stats.ChannelCount);
+            _response.Append(" :channels formed");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -461,13 +461,13 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ListUserMe);
 
-            response.Append(" :I have ");
-            response.Append(ircDaemon.Stats.ClientCount);
-            response.Append(" clients and ");
-            response.Append(ircDaemon.Stats.ServerCount);
-            response.Append(" servers");
+            _response.Append(" :I have ");
+            _response.Append(_ircDaemon.Stats.ClientCount);
+            _response.Append(" clients and ");
+            _response.Append(_ircDaemon.Stats.ServerCount);
+            _response.Append(" servers");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -478,11 +478,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.AdminMe);
 
-            response.Append(" ");
-            response.Append(ircDaemon.Options.ServerName);
-            response.Append(" :Administrative info");
+            _response.Append(" ");
+            _response.Append(_ircDaemon.Options.ServerName);
+            _response.Append(" :Administrative info");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -493,10 +493,10 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.AdminLocation1);
 
-            response.Append(" :");
-            response.Append(ircDaemon.Options.AdminLocation1);
+            _response.Append(" :");
+            _response.Append(_ircDaemon.Options.AdminLocation1);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
 
@@ -508,10 +508,10 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.AdminLocation2);
 
-            response.Append(" :");
-            response.Append(ircDaemon.Options.AdminLocation2);
+            _response.Append(" :");
+            _response.Append(_ircDaemon.Options.AdminLocation2);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -522,10 +522,10 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.AdminEmail);
 
-            response.Append(" :");
-            response.Append(ircDaemon.Options.AdminEmail);
+            _response.Append(" :");
+            _response.Append(_ircDaemon.Options.AdminEmail);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -537,12 +537,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Away);
 
-            response.Append(" ");
-            response.Append(awayUser.Nick);
-            response.Append(" :");
-            response.Append(awayUser.AwayMessage);
+            _response.Append(" ");
+            _response.Append(awayUser.Nick);
+            _response.Append(" :");
+            _response.Append(awayUser.AwayMessage);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
 
@@ -555,7 +555,7 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.UserHost);
 
-            response.Append(" :");
+            _response.Append(" :");
 
             var userHosts = new List<string>();
 
@@ -580,7 +580,7 @@ namespace IrcD.ServerReplies
 
             }
 
-            SendSplitted(response.ToString(), info, userHosts, null);
+            SendSplitted(_response.ToString(), info, userHosts, null);
         }
 
         /// <summary>
@@ -592,9 +592,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.IsOn);
 
-            response.Append(" :");
+            _response.Append(" :");
 
-            SendSplitted(response.ToString(), info, nickList, null);
+            SendSplitted(_response.ToString(), info, nickList, null);
         }
 
         /// <summary>
@@ -605,9 +605,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.UnAway);
 
-            response.Append(" :You are no longer marked as being away");
+            _response.Append(" :You are no longer marked as being away");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -618,9 +618,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.NowAway);
 
-            response.Append(" :You have been marked as being away");
+            _response.Append(" :You have been marked as being away");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
 
@@ -633,16 +633,16 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoIsUser);
 
-            response.Append(" ");
-            response.Append(who.Nick);
-            response.Append(" ");
-            response.Append(who.User);
-            response.Append(" ");
-            response.Append(who.Host);
-            response.Append(" * :");
-            response.Append(who.RealName);
+            _response.Append(" ");
+            _response.Append(who.Nick);
+            _response.Append(" ");
+            _response.Append(who.User);
+            _response.Append(" ");
+            _response.Append(who.Host);
+            _response.Append(" * :");
+            _response.Append(who.RealName);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -654,14 +654,14 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoIsServer);
 
-            response.Append(" ");
-            response.Append(who.Nick);
-            response.Append(" ");
-            response.Append(ircDaemon.Options.ServerName); // TODO: when doing multiple IRC Server
-            response.Append(" :");
-            response.Append(ircDaemon.Options.NetworkName); // TODO: ServerInfo?
+            _response.Append(" ");
+            _response.Append(who.Nick);
+            _response.Append(" ");
+            _response.Append(_ircDaemon.Options.ServerName); // TODO: when doing multiple IRC Server
+            _response.Append(" :");
+            _response.Append(_ircDaemon.Options.NetworkName); // TODO: ServerInfo?
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -673,11 +673,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoIsOperator);
 
-            response.Append(" ");
-            response.Append(who.Nick);
-            response.Append(" :is an IRC operator");
+            _response.Append(" ");
+            _response.Append(who.Nick);
+            _response.Append(" :is an IRC operator");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
 
@@ -690,11 +690,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.EndOfWho);
 
-            response.Append(" ");
-            response.Append(mask);
-            response.Append(" :End of /WHO list.");
+            _response.Append(" ");
+            _response.Append(mask);
+            _response.Append(" :End of /WHO list.");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -706,24 +706,24 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoIsIdle);
 
-            response.Append(" ");
-            response.Append(who.Nick);
-            response.Append(" ");
-            if (ircDaemon.Options.IrcMode == IrcMode.Modern)
+            _response.Append(" ");
+            _response.Append(who.Nick);
+            _response.Append(" ");
+            if (_ircDaemon.Options.IrcMode == IrcMode.Modern)
             {
-                response.Append((int)((DateTime.Now - who.LastAction).TotalSeconds));
-                response.Append(" ");
-                response.Append(info.Created.ToUnixTime());
-                response.Append(" :seconds idle, signon time");
+                _response.Append((int)((DateTime.Now - who.LastAction).TotalSeconds));
+                _response.Append(" ");
+                _response.Append(info.Created.ToUnixTime());
+                _response.Append(" :seconds idle, signon time");
 
             }
             else
             {
-                response.Append((int)((DateTime.Now - who.LastAction).TotalSeconds));
-                response.Append(" :seconds idle");
+                _response.Append((int)((DateTime.Now - who.LastAction).TotalSeconds));
+                _response.Append(" :seconds idle");
             }
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -735,12 +735,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.EndOfWhoIs);
 
-            response.Append(" ");
-            response.Append(who.Nick);
-            response.Append(" ");
-            response.Append(" :End of WHOIS list");
+            _response.Append(" ");
+            _response.Append(who.Nick);
+            _response.Append(" ");
+            _response.Append(" :End of WHOIS list");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -752,11 +752,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoIsChannels);
 
-            response.Append(" ");
-            response.Append(who.Nick);
-            response.Append(" :");
+            _response.Append(" ");
+            _response.Append(who.Nick);
+            _response.Append(" :");
 
-            SendSplitted(response.ToString(), info, who.UserPerChannelInfos.Select(ucpi => ucpi.Modes.NickPrefix + ucpi.ChannelInfo.Name), null);
+            SendSplitted(_response.ToString(), info, who.UserPerChannelInfos.Select(ucpi => ucpi.Modes.NickPrefix + ucpi.ChannelInfo.Name), null);
         }
 
         /// <summary>
@@ -770,9 +770,9 @@ namespace IrcD.ServerReplies
 
             BuildMessageHeader(info, ReplyCode.ListStart);
 
-            response.Append(" Channel :Users Name");
+            _response.Append(" Channel :Users Name");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -784,14 +784,14 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.List);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" ");
-            response.Append(chan.UserPerChannelInfos.Count);
-            response.Append(" :");
-            response.Append(chan.Topic);
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" ");
+            _response.Append(chan.UserPerChannelInfos.Count);
+            _response.Append(" :");
+            _response.Append(chan.Topic);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -802,9 +802,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ListEnd);
 
-            response.Append(" :End of LIST");
+            _response.Append(" :End of LIST");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -816,12 +816,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ChannelModeIs);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" ");
-            response.Append(chan.ModeString);
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" ");
+            _response.Append(chan.ModeString);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -833,11 +833,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.NoTopic);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :No topic is set");
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :No topic is set");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -849,12 +849,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Topic);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :");
-            response.Append(chan.Topic);
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :");
+            _response.Append(chan.Topic);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -870,22 +870,22 @@ namespace IrcD.ServerReplies
             // The RFC Tells the order should be <channel> <nick> however xchat and the servers I tested say it is: <nick> <channel> 
             // This is one more ridiculous RFC mistake without any errata.
 
-            if (ircDaemon.Options.IrcMode == IrcMode.Rfc1459 || ircDaemon.Options.IrcMode == IrcMode.Rfc2810)
+            if (_ircDaemon.Options.IrcMode == IrcMode.Rfc1459 || _ircDaemon.Options.IrcMode == IrcMode.Rfc2810)
             {
-                response.Append(" ");
-                response.Append(channel);
+                _response.Append(" ");
+                _response.Append(channel);
             }
 
-            response.Append(" ");
-            response.Append(invited.Nick);
+            _response.Append(" ");
+            _response.Append(invited.Nick);
 
-            if (ircDaemon.Options.IrcMode == IrcMode.Modern)
+            if (_ircDaemon.Options.IrcMode == IrcMode.Modern)
             {
-                response.Append(" ");
-                response.Append(channel);
+                _response.Append(" ");
+                _response.Append(channel);
             }
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -897,11 +897,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Summoning);
 
-            response.Append(" ");
-            response.Append(user);
-            response.Append(" :User summoned to irc");
+            _response.Append(" ");
+            _response.Append(user);
+            _response.Append(" :User summoned to irc");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -914,12 +914,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.InviteList);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" ");
-            response.Append(mask);
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" ");
+            _response.Append(mask);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -932,11 +932,11 @@ namespace IrcD.ServerReplies
             BuildMessageHeader(info, ReplyCode.EndOfInviteList);
 
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :End of channel invite list");
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :End of channel invite list");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -949,12 +949,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ExceptionList);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" ");
-            response.Append(mask);
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" ");
+            _response.Append(mask);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -966,11 +966,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.EndOfExceptionList);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :End of channel exception list");
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :End of channel exception list");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -981,13 +981,13 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Version);
 
-            response.Append(" ");
-            response.Append(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
-            response.Append(" ");
-            response.Append(ircDaemon.Options.ServerName);
-            response.Append(" :" + System.Reflection.Assembly.GetExecutingAssembly().FullName);
+            _response.Append(" ");
+            _response.Append(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+            _response.Append(" ");
+            _response.Append(_ircDaemon.Options.ServerName);
+            _response.Append(" :" + System.Reflection.Assembly.GetExecutingAssembly().FullName);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -999,33 +999,33 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoReply);
 
-            response.Append(" ");
-            response.Append(who.ChannelInfo.Name);
-            response.Append(" ");
-            response.Append(who.UserInfo.User);
-            response.Append(" ");
-            response.Append(who.UserInfo.Host);
-            response.Append(" ");
+            _response.Append(" ");
+            _response.Append(who.ChannelInfo.Name);
+            _response.Append(" ");
+            _response.Append(who.UserInfo.User);
+            _response.Append(" ");
+            _response.Append(who.UserInfo.Host);
+            _response.Append(" ");
 
             // TODO Server to Server
-            response.Append(ircDaemon.Options.ServerName);
-            response.Append(" ");
-            response.Append(who.UserInfo.Nick);
-            response.Append(" ");
-            response.Append(who.UserInfo.Modes.Exist<ModeAway>() ? "G" : "H");
-            response.Append(who.UserInfo.Modes.Exist<ModeOperator>() || who.UserInfo.Modes.Exist<ModeLocalOperator>() ? "*" : string.Empty);
-            response.Append(who.Modes.NickPrefix);
-            response.Append(" :");
+            _response.Append(_ircDaemon.Options.ServerName);
+            _response.Append(" ");
+            _response.Append(who.UserInfo.Nick);
+            _response.Append(" ");
+            _response.Append(who.UserInfo.Modes.Exist<ModeAway>() ? "G" : "H");
+            _response.Append(who.UserInfo.Modes.Exist<ModeOperator>() || who.UserInfo.Modes.Exist<ModeLocalOperator>() ? "*" : string.Empty);
+            _response.Append(who.Modes.NickPrefix);
+            _response.Append(" :");
 
             // TODO: Server to Server
             //response.Append(who.Server.Hops);            
-            response.Append(0);
-            response.Append(" ");
-            response.Append(who.UserInfo.RealName);
+            _response.Append(0);
+            _response.Append(" ");
+            _response.Append(who.UserInfo.RealName);
 
             //TODO: append d if deaf - add Deaf (such as Mode X / W on undernet)
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1036,13 +1036,13 @@ namespace IrcD.ServerReplies
         public void SendNamesReply(UserInfo info, ChannelInfo chan)
         {
             BuildMessageHeader(info, ReplyCode.NamesReply);
-            response.Append(" ");
-            response.Append(chan.NamesPrefix);
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :");
+            _response.Append(" ");
+            _response.Append(chan.NamesPrefix);
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :");
 
-            SendSplitted(response.ToString(), info, chan.UserPerChannelInfos.Values.Select(upci => upci.Modes.NickPrefix + upci.UserInfo.Nick), null);
+            SendSplitted(_response.ToString(), info, chan.UserPerChannelInfos.Values.Select(upci => upci.Modes.NickPrefix + upci.UserInfo.Nick), null);
         }
 
         /// <summary>
@@ -1054,11 +1054,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.EndOfNames);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :End of NAMES list");
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :End of NAMES list");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1071,12 +1071,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.BanList);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" ");
-            response.Append(mask);
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" ");
+            _response.Append(mask);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1088,11 +1088,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.EndOfBanList);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :End of channel ban list");
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :End of channel ban list");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1103,10 +1103,10 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Info);
 
-            response.Append(" :");
-            response.Append("TODO");
+            _response.Append(" :");
+            _response.Append("TODO");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
 
@@ -1116,14 +1116,14 @@ namespace IrcD.ServerReplies
         /// <param name="info"></param>
         public void SendMotd(UserInfo info)
         {
-            foreach (var motdLine in ircDaemon.Options.MessageOfTheDay.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var motdLine in _ircDaemon.Options.MessageOfTheDay.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 BuildMessageHeader(info, ReplyCode.Motd);
 
-                response.Append(" :- ");
-                response.Append(motdLine);
+                _response.Append(" :- ");
+                _response.Append(motdLine);
 
-                info.WriteLine(response);
+                info.WriteLine(_response);
             }
         }
 
@@ -1135,9 +1135,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.EndOfInfo);
 
-            response.Append(" :End of /INFO list");
+            _response.Append(" :End of /INFO list");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1148,11 +1148,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.MotdStart);
 
-            response.Append(" :- ");
-            response.Append(ircDaemon.Options.ServerName);
-            response.Append(" Message of the day -");
+            _response.Append(" :- ");
+            _response.Append(_ircDaemon.Options.ServerName);
+            _response.Append(" Message of the day -");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
 
@@ -1164,9 +1164,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.EndOfMotd);
 
-            response.Append(" :End of MOTD command");
+            _response.Append(" :End of MOTD command");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1177,9 +1177,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.YouAreOper);
 
-            response.Append(" :You are now an IRC operator");
+            _response.Append(" :You are now an IRC operator");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
         /// <summary>
         /// Reply Code 383
@@ -1189,10 +1189,10 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.YouAreService);
 
-            response.Append(" :You are service ");
-            response.Append(info.Nick);
+            _response.Append(" :You are service ");
+            _response.Append(info.Nick);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1203,12 +1203,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Time);
 
-            response.Append(" ");
-            response.Append(ircDaemon.ServerPrefix);
-            response.Append(" :");
-            response.Append(DateTime.Now.ToString());
+            _response.Append(" ");
+            _response.Append(_ircDaemon.ServerPrefix);
+            _response.Append(" :");
+            _response.Append(DateTime.Now);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
 
@@ -1221,11 +1221,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNoSuchNickname);
 
-            response.Append(" ");
-            response.Append(nick);
-            response.Append(" :No such nick/channel");
+            _response.Append(" ");
+            _response.Append(nick);
+            _response.Append(" :No such nick/channel");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1237,11 +1237,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNoSuchServer);
 
-            response.Append(" ");
-            response.Append(server);
-            response.Append(" :No such server");
+            _response.Append(" ");
+            _response.Append(server);
+            _response.Append(" :No such server");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1253,11 +1253,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNoSuchChannel);
 
-            response.Append(" ");
-            response.Append(channel);
-            response.Append(" :No such channel");
+            _response.Append(" ");
+            _response.Append(channel);
+            _response.Append(" :No such channel");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1270,12 +1270,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorCannotSendToChannel);
 
-            response.Append(" ");
-            response.Append(channel);
-            response.Append(" :");
-            response.Append(message);
+            _response.Append(" ");
+            _response.Append(channel);
+            _response.Append(" :");
+            _response.Append(message);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1287,11 +1287,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorTooManyChannels);
 
-            response.Append(" ");
-            response.Append(channel);
-            response.Append(" :You have joined too many channels");
+            _response.Append(" ");
+            _response.Append(channel);
+            _response.Append(" :You have joined too many channels");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1303,11 +1303,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorInvalidCapabilitesCommand);
 
-            response.Append(" ");
-            response.Append(command);
-            response.Append(" :Invalid CAP subcommand");
+            _response.Append(" ");
+            _response.Append(command);
+            _response.Append(" :Invalid CAP subcommand");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1319,11 +1319,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNoRecipient);
 
-            response.Append(" :No recipient given (");
-            response.Append(command);
-            response.Append(")");
+            _response.Append(" :No recipient given (");
+            _response.Append(command);
+            _response.Append(")");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1334,9 +1334,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNoTextToSend);
 
-            response.Append(" :No text to send");
+            _response.Append(" :No text to send");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1348,11 +1348,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorUnknownCommand);
 
-            response.Append(" ");
-            response.Append(command);
-            response.Append(" :Unknown command");
+            _response.Append(" ");
+            _response.Append(command);
+            _response.Append(" :Unknown command");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1363,9 +1363,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNoMotd);
 
-            response.Append(" :MOTD File is missing");
+            _response.Append(" :MOTD File is missing");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1376,9 +1376,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNoNicknameGiven);
 
-            response.Append(" :No nickname given");
+            _response.Append(" :No nickname given");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1390,9 +1390,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorErroneusNickname);
 
-            response.Append(" :Erroneous nickname");
+            _response.Append(" :Erroneous nickname");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1404,9 +1404,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNicknameInUse);
 
-            response.Append(" :Nickname is already in use");
+            _response.Append(" :Nickname is already in use");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
 
@@ -1420,13 +1420,13 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorUserNotInChannel);
 
-            response.Append(" ");
-            response.Append(nick);
-            response.Append(" ");
-            response.Append(channel);
-            response.Append(" :They aren't on that channel");
+            _response.Append(" ");
+            _response.Append(nick);
+            _response.Append(" ");
+            _response.Append(channel);
+            _response.Append(" :They aren't on that channel");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1438,11 +1438,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNotOnChannel);
 
-            response.Append(" ");
-            response.Append(channel);
-            response.Append(" :You're not on that channel");
+            _response.Append(" ");
+            _response.Append(channel);
+            _response.Append(" :You're not on that channel");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1455,13 +1455,13 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorUserOnChannel);
 
-            response.Append(" ");
-            response.Append(invited.Nick);
-            response.Append(" ");
-            response.Append(channel.Name);
-            response.Append(" :is already on channel");
+            _response.Append(" ");
+            _response.Append(invited.Nick);
+            _response.Append(" ");
+            _response.Append(channel.Name);
+            _response.Append(" :is already on channel");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1472,9 +1472,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorSummonDisabled);
 
-            response.Append(" :SUMMON has been disabled");
+            _response.Append(" :SUMMON has been disabled");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1485,9 +1485,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorUsersDisabled);
 
-            response.Append(" :USERS has been disabled");
+            _response.Append(" :USERS has been disabled");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1498,9 +1498,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNotRegistered);
 
-            response.Append(" :You have not registered");
+            _response.Append(" :You have not registered");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1511,9 +1511,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNeedMoreParams);
 
-            response.Append(" :Not enough parameters");
+            _response.Append(" :Not enough parameters");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1524,9 +1524,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorAlreadyRegistered);
 
-            response.Append(" :Unauthorized command (already registered)");
+            _response.Append(" :Unauthorized command (already registered)");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1537,9 +1537,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNoPermissionForHost);
 
-            response.Append(" :Your host isn't among the privileged");
+            _response.Append(" :Your host isn't among the privileged");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1550,9 +1550,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorPasswordMismatch);
 
-            response.Append(" :Password incorrect");
+            _response.Append(" :Password incorrect");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1563,9 +1563,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorYouAreBannedCreep);
 
-            response.Append(" :You are banned from this server");
+            _response.Append(" :You are banned from this server");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1576,9 +1576,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorYouWillBeBanned);
 
-            response.Append(" :You will be banned from this server");
+            _response.Append(" :You will be banned from this server");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1590,11 +1590,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorChannelIsFull);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :Cannot join channel (+l)");
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :Cannot join channel (+l)");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1607,12 +1607,12 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorUnknownMode);
 
-            response.Append(" ");
-            response.Append(mode);
-            response.Append(" :is unknown mode char to me for ");
-            response.Append(chan.Name);
+            _response.Append(" ");
+            _response.Append(mode);
+            _response.Append(" :is unknown mode char to me for ");
+            _response.Append(chan.Name);
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1624,11 +1624,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorInviteOnlyChannel);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :Cannot join channel (+i)");
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :Cannot join channel (+i)");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
         /// <summary>
         /// Reply Code 474
@@ -1639,11 +1639,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorBannedFromChannel);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :Cannot join channel (+b)");
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :Cannot join channel (+b)");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1655,11 +1655,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorBadChannelKey);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :Cannot join channel (+k)");
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :Cannot join channel (+k)");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1671,11 +1671,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorBadChannelMask);
 
-            response.Append(" ");
-            response.Append(chan);
-            response.Append(" :Bad Channel Mask");
+            _response.Append(" ");
+            _response.Append(chan);
+            _response.Append(" :Bad Channel Mask");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1687,11 +1687,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNoChannelModes);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :Channel doesn't support modes");
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :Channel doesn't support modes");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1704,13 +1704,13 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorBanListFull);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" ");
-            response.Append(mode);
-            response.Append(" :Channel list is full");
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" ");
+            _response.Append(mode);
+            _response.Append(" :Channel list is full");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1723,14 +1723,14 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorCannotKnock);
 
-            response.Append(" :Cannot knock on ");
-            response.Append(channel);
+            _response.Append(" :Cannot knock on ");
+            _response.Append(channel);
 
-            response.Append(" (");
-            response.Append(reason);
-            response.Append(")");
+            _response.Append(" (");
+            _response.Append(reason);
+            _response.Append(")");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1741,9 +1741,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNoPrivileges);
 
-            response.Append(" :Permission Denied- You're not an IRC operator");
+            _response.Append(" :Permission Denied- You're not an IRC operator");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1755,11 +1755,11 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorChannelOpPrivilegesNeeded);
 
-            response.Append(" ");
-            response.Append(chan.Name);
-            response.Append(" :You're not channel operator");
+            _response.Append(" ");
+            _response.Append(chan.Name);
+            _response.Append(" :You're not channel operator");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1770,9 +1770,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorCannotKillServer);
 
-            response.Append(" :You can't kill a server!");
+            _response.Append(" :You can't kill a server!");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1783,9 +1783,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorRestricted);
 
-            response.Append(" :Your connection is restricted!");
+            _response.Append(" :Your connection is restricted!");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1796,9 +1796,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorUniqueOpPrivilegesNeeded);
 
-            response.Append(" :You're not the original channel operator");
+            _response.Append(" :You're not the original channel operator");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1809,9 +1809,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorNoOperHost);
 
-            response.Append(" :No O-lines for your host");
+            _response.Append(" :No O-lines for your host");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1822,9 +1822,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorUserModeUnknownFlag);
 
-            response.Append(" :Unknown MODE flag");
+            _response.Append(" :Unknown MODE flag");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1835,9 +1835,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.ErrorUsersDoNotMatch);
 
-            response.Append(" :Cannot change mode for other users");
+            _response.Append(" :Cannot change mode for other users");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1848,10 +1848,10 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.YourLanguageIs);
 
-            response.Append(info.Languages.Concatenate(","));
-            response.Append(" :Your languages have been set");
+            _response.Append(info.Languages.Concatenate(","));
+            _response.Append(" :Your languages have been set");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1862,9 +1862,9 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Language);
 
-            response.Append(" <code> <revision> <maintainer> <flags> * :<info>");
+            _response.Append(" <code> <revision> <maintainer> <flags> * :<info>");
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
 
         /// <summary>
@@ -1876,14 +1876,14 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.WhoIsLanguage);
 
-            response.Append(" ");
-            response.Append(who.Nick);
-            response.Append(" ");
-            response.Append(who.Languages.Concatenate(","));
-            response.Append(" : ");
-            response.Append(who.Languages.Select(l => GoogleTranslate.Languages[l]).Concatenate(", "));
+            _response.Append(" ");
+            _response.Append(who.Nick);
+            _response.Append(" ");
+            _response.Append(who.Languages.Concatenate(","));
+            _response.Append(" : ");
+            _response.Append(who.Languages.Select(l => GoogleTranslate.Languages[l]).Concatenate(", "));
 
-            info.WriteLine(response);
+            info.WriteLine(_response);
         }
     }
 }

@@ -29,9 +29,6 @@ namespace IrcD.Modes.UserModes
             : base('O')
         { }
 
-        public override bool HandleEvent(CommandBase command, UserInfo user, List<string> args)
-        {
-            return true;
-        }
+        public override bool HandleEvent(CommandBase command, UserInfo user, List<string> args) => true;
     }
 }

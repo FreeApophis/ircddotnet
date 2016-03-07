@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using IrcD.Commands.Arguments;
 
 namespace IrcD.Commands
@@ -40,13 +41,10 @@ namespace IrcD.Commands
             }
 
             //TODO: taget parameter
-            foreach (var ch in GetSubArgument(args[0]))
+            foreach (var ch in GetSubArgument(args[0]).Where(ch => IrcDaemon.Channels.ContainsKey(ch)))
             {
-                if (IrcDaemon.Channels.ContainsKey(ch))
-                {
-                    IrcDaemon.Replies.SendNamesReply(info, IrcDaemon.Channels[ch]);
-                    IrcDaemon.Replies.SendEndOfNamesReply(info, IrcDaemon.Channels[ch]);
-                }
+                IrcDaemon.Replies.SendNamesReply(info, IrcDaemon.Channels[ch]);
+                IrcDaemon.Replies.SendEndOfNamesReply(info, IrcDaemon.Channels[ch]);
             }
         }
 

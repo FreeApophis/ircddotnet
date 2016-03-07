@@ -18,7 +18,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using IrcD.Channel;
 namespace IrcD.Commands.Arguments
 {
     public class AwayArgument : CommandArgument
@@ -26,16 +25,9 @@ namespace IrcD.Commands.Arguments
         public AwayArgument(UserInfo sender, InfoBase receiver, string awayMessage)
             : base(sender, receiver, "AWAY")
         {
-            this.awayMessage = awayMessage;
+            AwayMessage = awayMessage;
         }
 
-        private readonly string awayMessage;
-        public string AwayMessage
-        {
-            get
-            {
-                return awayMessage;
-            }
-        }
+        public string AwayMessage { get; }
     }
 }

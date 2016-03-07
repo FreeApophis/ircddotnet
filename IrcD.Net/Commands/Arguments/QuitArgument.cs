@@ -25,16 +25,9 @@ namespace IrcD.Commands.Arguments
         public QuitArgument(UserInfo sender, InfoBase receiver, string message)
             : base(sender, receiver, "QUIT")
         {
-            this.message = message;
+            Message = message;
         }
 
-        private readonly string message;
-        public string Message
-        {
-            get
-            {
-                return message;
-            }
-        }
+        public string Message { get; }
     }
 }

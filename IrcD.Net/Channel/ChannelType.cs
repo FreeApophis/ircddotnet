@@ -23,16 +23,11 @@ namespace IrcD.Channel
     {
         public ChannelType(char prefix, int maxJoinedAllowed)
         {
-            this.prefix = prefix;
+            Prefix = prefix;
             MaxJoinedAllowed = maxJoinedAllowed;
         }
 
-        private readonly char prefix;
-        public char Prefix
-        {
-            get { return prefix; }
-        }
-
+        public char Prefix { get; }
         public int MaxJoinedAllowed { get; set; }
     }
 }

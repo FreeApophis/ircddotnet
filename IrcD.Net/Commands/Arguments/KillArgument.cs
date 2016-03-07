@@ -25,17 +25,9 @@ namespace IrcD.Commands.Arguments
         public KillArgument(UserInfo sender, UserInfo receiver, string message)
             : base(sender, receiver, "KILL")
         {
-
-            this.message = message;
+            Message = message;
         }
 
-        private readonly string message;
-        public string Message
-        {
-            get
-            {
-                return message;
-            }
-        }
+        public string Message { get; }
     }
 }

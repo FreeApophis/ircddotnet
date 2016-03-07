@@ -32,16 +32,13 @@ namespace IrcD.Modes.ChannelModes
         {
         }
 
-        private readonly List<string> inviteExceptionList = new List<string>();
+        private readonly List<string> _inviteExceptionList = new List<string>();
 
-        public List<string> Parameter
-        {
-            get { return inviteExceptionList; }
-        }
+        public List<string> Parameter => _inviteExceptionList;
 
         public void SendList(UserInfo info, ChannelInfo chan)
         {
-            foreach (var invite in inviteExceptionList)
+            foreach (var invite in _inviteExceptionList)
             {
                 info.IrcDaemon.Replies.SendInviteList(info, chan, invite);
             }
@@ -58,7 +55,7 @@ namespace IrcD.Modes.ChannelModes
         {
             parameter = UserInfo.NormalizeHostmask(parameter);
 
-            inviteExceptionList.Add(parameter);
+            _inviteExceptionList.Add(parameter);
 
             return parameter;
         }
@@ -67,7 +64,7 @@ namespace IrcD.Modes.ChannelModes
         {
             parameter = UserInfo.NormalizeHostmask(parameter);
 
-            return inviteExceptionList.RemoveAll(p => p == parameter) > 0 ? parameter : null;
+            return _inviteExceptionList.RemoveAll(p => p == parameter) > 0 ? parameter : null;
         }
 
         public override IEnumerable<string> Support(IrcDaemon ircDaemon)

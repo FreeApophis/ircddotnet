@@ -28,23 +28,10 @@ namespace IrcD.Modes.ChannelRanks
 
         }
 
-        private static ModeNoRank instance;
-        public static ModeNoRank Instance
-        {
-            get
-            {
-                return instance ?? (instance = new ModeNoRank());
-            }
-        }
+        private static ModeNoRank _instance;
+        public static ModeNoRank Instance => _instance ?? (_instance = new ModeNoRank());
 
-        public override bool CanChangeChannelMode(ChannelMode mode)
-        {
-            return false;
-        }
-
-        public override bool CanChangeChannelRank(ChannelRank rank)
-        {
-            return false;
-        }
+        public override bool CanChangeChannelMode(ChannelMode mode) => false;
+        public override bool CanChangeChannelRank(ChannelRank rank) => false;
     }
 }

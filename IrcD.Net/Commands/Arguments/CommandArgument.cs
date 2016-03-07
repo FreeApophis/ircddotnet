@@ -24,36 +24,13 @@ namespace IrcD.Commands.Arguments
     {
         public CommandArgument(UserInfo sender, InfoBase receiver, string name)
         {
-            this.name = name;
-            this.sender = sender;
-            this.receiver = receiver;
+            Name = name;
+            Sender = sender;
+            Receiver = receiver;
         }
 
-        private readonly string name;
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-        }
-
-        private readonly UserInfo sender;
-        public UserInfo Sender
-        {
-            get
-            {
-                return sender;
-            }
-        }
-
-        private readonly InfoBase receiver;
-        public InfoBase Receiver
-        {
-            get
-            {
-                return receiver;
-            }
-        }
+        public string Name { get; }
+        public UserInfo Sender { get; }
+        public InfoBase Receiver { get; }
     }
 }

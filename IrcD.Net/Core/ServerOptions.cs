@@ -29,17 +29,11 @@ namespace IrcD
 
         internal ServerOptions(IrcMode ircMode)
         {
-            this.ircMode = ircMode;
+            IrcMode = ircMode;
             IrcCaseMapping = ircMode == IrcMode.Rfc1459 ? IrcCaseMapping.StrictRfc1459 : IrcCaseMapping.Rfc1459;
         }
 
-        private List<int> serverPorts = new List<int> { 6667 };
-
-        public List<int> ServerPorts
-        {
-            get { return serverPorts; }
-            set { serverPorts = value; }
-        }
+        public List<int> ServerPorts { get; set; } = new List<int> { 6667 };
 
         public string ServerPass { get; set; }
 
@@ -47,105 +41,43 @@ namespace IrcD
 
         public Tuple<IPEndPoint, string> ServerConnection { get; set; }
 
-        private string serverName;
+        private string _serverName;
 
         public string ServerName
         {
             get
             {
-                return string.IsNullOrEmpty(serverName) ? "irc#d" : serverName;
+                return string.IsNullOrEmpty(_serverName) ? "irc#d" : _serverName;
             }
             set
             {
-                serverName = value;
+                _serverName = value;
             }
         }
 
-
-        private int maxNickLength = 9;
-        public int MaxNickLength
-        {
-            get { return maxNickLength; }
-            set { maxNickLength = value; }
-        }
-
-        private int maxLineLength = 510;
-        public int MaxLineLength
-        {
-            get { return maxLineLength; }
-            set { maxLineLength = value; }
-        }
-
-        private int maxLanguages = 10;
-        public int MaxLanguages
-        {
-            get { return maxLanguages; }
-            set { maxLanguages = value; }
-        }
-
-
-        private int maxSilence = 20;
-        public int MaxSilence
-        {
-            get { return maxSilence; }
-            set { maxSilence = value; }
-        }
-
-        private int maxChannelLength = 50;
-        public int MaxChannelLength
-        {
-            get { return maxChannelLength; }
-            set { maxChannelLength = value; }
-        }
-
-        private int maxTopicLength = 300;
-        public int MaxTopicLength
-        {
-            get { return maxTopicLength; }
-            set { maxTopicLength = value; }
-        }
-
-        private int maxKickLength = 300;
-        public int MaxKickLength
-        {
-            get { return maxKickLength; }
-            set { maxKickLength = value; }
-        }
-
-        private int maxAwayLength = 300;
-        public int MaxAwayLength
-        {
-            get { return maxAwayLength; }
-            set { maxAwayLength = value; }
-        }
-
+        public int MaxNickLength { get; set; } = 9;
+        public int MaxLineLength { get; set; } = 510;
+        public int MaxLanguages { get; set; } = 10;
+        public int MaxSilence { get; set; } = 20;
+        public int MaxChannelLength { get; set; } = 50;
+        public int MaxTopicLength { get; set; } = 300;
+        public int MaxKickLength { get; set; } = 300;
+        public int MaxAwayLength { get; set; } = 300;
 
         public string MessageOfTheDay { get; set; }
 
         public string AdminLocation1 { get; set; }
-
         public string AdminLocation2 { get; set; }
-
         public string AdminEmail { get; set; }
 
-        private readonly Dictionary<string, string> oLine = new Dictionary<string, string>();
+        public string StandardPartMessage { get; set; } = "Leaving";
+        public string StandardQuitMessage { get; set; } = "Quit";
+        public string StandardKickMessage { get; set; } = "Kicked";
+        public string StandardKillMessage { get; set; } = "Killed";
 
-        public Dictionary<string, string> OLine
-        {
-            get { return oLine; }
-        }
+        public Dictionary<string, string> OLine { get; } = new Dictionary<string, string>();
 
-        private readonly List<OperHost> operHosts = new List<OperHost>();
-
-        public List<OperHost> OperHosts
-        {
-            get
-            {
-                return operHosts;
-            }
-        }
-
-        private bool clientCompatibilityMode = true;
+        public List<OperHost> OperHosts { get; } = new List<OperHost>();
 
         /// <summary>
         /// Some clients have big problems with correct parsing of the RFC,
@@ -153,64 +85,22 @@ namespace IrcD
         /// a correct behaviour, however their implementation of the RFC
         /// especially their parsers are just stupid!
         /// </summary>
-        public bool ClientCompatibilityMode
-        {
-            get { return clientCompatibilityMode; }
-            set { clientCompatibilityMode = value; }
-        }
-
-        private readonly IrcMode ircMode;
-        public IrcMode IrcMode
-        {
-            get { return ircMode; }
-        }
-
+        public bool ClientCompatibilityMode { get; set; } = true;
+        public IrcMode IrcMode { get; }
         public IrcCaseMapping IrcCaseMapping { get; set; }
 
 
-        private string standardPartMessage = "Leaving";
-
-        public string StandardPartMessage
-        {
-            get { return standardPartMessage; }
-            set { standardPartMessage = value; }
-        }
-
-        private string standardQuitMessage = "Quit";
-
-        public string StandardQuitMessage
-        {
-            get { return standardQuitMessage; }
-            set { standardQuitMessage = value; }
-        }
-
-        private string standardKickMessage = "Kicked";
-
-        public string StandardKickMessage
-        {
-            get { return standardKickMessage; }
-            set { standardKickMessage = value; }
-        }
-
-        private string standardKillMessage = "Killed";
-
-        public string StandardKillMessage
-        {
-            get { return standardKillMessage; }
-            set { standardKillMessage = value; }
-        }
-
-        private string networkName;
+        private string _networkName;
 
         public string NetworkName
         {
             get
             {
-                return networkName ?? "irc#d.NET";
+                return _networkName ?? "irc#d.NET";
             }
             set
             {
-                networkName = value;
+                _networkName = value;
             }
         }
 

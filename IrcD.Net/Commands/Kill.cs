@@ -46,10 +46,10 @@ namespace IrcD.Commands
                 IrcDaemon.Replies.SendNoSuchNick(info, args[0]);
             }
 
-            var message = (args.Count > 1) ? args[1] : IrcDaemon.Options.StandardKillMessage;
+            var message = args.Count > 1 ? args[1] : IrcDaemon.Options.StandardKillMessage;
 
             Send(new KillArgument(info, killUser, message));
-            killUser.Remove(IrcDaemon.Options.StandardKillMessage);
+            killUser?.Remove(IrcDaemon.Options.StandardKillMessage);
         }
 
         protected override int PrivateSend(CommandArgument commandArgument)

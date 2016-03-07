@@ -34,22 +34,22 @@ namespace IrcD.Commands
 
     public class CommandList : IEnumerable<CommandBase>
     {
-        private readonly Dictionary<string, CommandBase> commandList;
-        private readonly IrcDaemon ircDaemon;
+        private readonly Dictionary<string, CommandBase> _commandList;
+        private readonly IrcDaemon _ircDaemon;
 
         public CommandList(IrcDaemon ircDaemon)
         {
-            commandList = new Dictionary<string, CommandBase>(StringComparer.OrdinalIgnoreCase);
-            this.ircDaemon = ircDaemon;
+            _commandList = new Dictionary<string, CommandBase>(StringComparer.OrdinalIgnoreCase);
+            _ircDaemon = ircDaemon;
         }
         public void Add(CommandBase command)
         {
-            commandList.Add(command.Name, command);
+            _commandList.Add(command.Name, command);
         }
 
         public IEnumerable<string> Supported()
         {
-            return commandList.SelectMany(m => m.Value.Support(ircDaemon));
+            return _commandList.SelectMany(m => m.Value.Support(_ircDaemon));
         }
 
 
@@ -62,7 +62,7 @@ namespace IrcD.Commands
         {
             CommandBase commandObject;
 
-            if (commandList.TryGetValue(command, out commandObject))
+            if (_commandList.TryGetValue(command, out commandObject))
             {
                 bool skipHandle = false;
                 var handleMethodInfo = commandObject.GetType().GetMethod("Handle");
@@ -72,7 +72,7 @@ namespace IrcD.Commands
                 {
                     if (!info.Registered)
                     {
-                        ircDaemon.Replies.SendNotRegistered(info);
+                        _ircDaemon.Replies.SendNotRegistered(info);
                         skipHandle = true;
                     }
                 }
@@ -82,7 +82,7 @@ namespace IrcD.Commands
                 {
                     if (args.Count < checkParamCount.MinimumParameterCount)
                     {
-                        ircDaemon.Replies.SendNeedMoreParams(info);
+                        _ircDaemon.Replies.SendNeedMoreParams(info);
                         skipHandle = true;
                     }
                 }
@@ -104,7 +104,7 @@ namespace IrcD.Commands
                 {
                     // we only inform the client about invalid commands if he is already successfully registered
                     // we dont want to make "wrong protocol ping-pong"
-                    ircDaemon.Replies.SendUnknownCommand(info, command);
+                    _ircDaemon.Replies.SendUnknownCommand(info, command);
                 }
             }
 
@@ -123,18 +123,18 @@ namespace IrcD.Commands
 
         public void Send(CommandArgument argument)
         {
-            CommandBase commandObject = commandList[argument.Name];
+            CommandBase commandObject = _commandList[argument.Name];
             commandObject.Send(argument);
         }
 
         public IEnumerator<CommandBase> GetEnumerator()
         {
-            return commandList.Select(command => command.Value).GetEnumerator();
+            return _commandList.Select(command => command.Value).GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return commandList.Select(command => command.Value).GetEnumerator();
+            return _commandList.Select(command => command.Value).GetEnumerator();
         }
     }
 }

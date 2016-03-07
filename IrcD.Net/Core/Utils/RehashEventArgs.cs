@@ -24,27 +24,13 @@ namespace IrcD
 {
     public class RehashEventArgs : EventArgs
     {
-        private readonly IrcDaemon ircDaemon;
-        public IrcDaemon IrcDaemon
-        {
-            get
-            {
-                return ircDaemon;
-            }
-        }
-        private readonly UserInfo userInfo;
-        public UserInfo UserInfo
-        {
-            get
-            {
-                return userInfo;
-            }
-        }
+        public IrcDaemon IrcDaemon { get; }
+        public UserInfo UserInfo { get; }
 
         public RehashEventArgs(IrcDaemon ircDaemon, UserInfo userInfo)
         {
-            this.ircDaemon = ircDaemon;
-            this.userInfo = userInfo;
+            IrcDaemon = ircDaemon;
+            UserInfo = userInfo;
         }
     }
 }

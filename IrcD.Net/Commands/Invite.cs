@@ -19,6 +19,7 @@
  */
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using IrcD.Channel;
 using IrcD.Commands.Arguments;
 

@@ -26,16 +26,9 @@ namespace IrcD.Commands.Arguments
         public JoinArgument(UserInfo sender, InfoBase receiver, ChannelInfo channel)
             : base(sender, receiver, "JOIN")
         {
-            this.channel = channel;
+            Channel = channel;
         }
 
-        private readonly ChannelInfo channel;
-        public ChannelInfo Channel
-        {
-            get
-            {
-                return channel;
-            }
-        }
+        public ChannelInfo Channel { get; }
     }
 }

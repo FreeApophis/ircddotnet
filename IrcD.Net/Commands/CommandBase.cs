@@ -31,85 +31,39 @@ namespace IrcD.Commands
         protected CommandBase(IrcDaemon ircDaemon, string name, string p10)
         {
             IrcDaemon = ircDaemon;
-            this.name = name;
-            this.p10 = p10;
+            Name = name;
+            P10Token = p10;
         }
 
         protected IrcDaemon IrcDaemon;
 
-        private readonly string name;
+        public string Name { get; }
+        public string P10Token { get; }
 
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-        }
+        public long CallCountIn { get; private set; }
+        public long CallCountOut { get; private set; }
 
-        private readonly string p10;
+        public long ByteCountIn { get; private set; }
+        public long ByteCountOut { get; private set; }
 
-        public string P10Token
-        {
-            get
-            {
-                return p10;
-            }
-        }
-
-        private long callCountIn;
-        public long CallCountIn
-        {
-            get
-            {
-                return callCountIn;
-            }
-        }
-
-        private long callCountOut;
-        public long CallCountOut
-        {
-            get
-            {
-                return callCountOut;
-            }
-        }
-
-        private long byteCountIn;
-        public long ByteCountIn
-        {
-            get
-            {
-                return byteCountIn;
-            }
-        }
-        private long byteCountOut;
-        public long ByteCountOut
-        {
-            get
-            {
-                return byteCountOut;
-            }
-        }
-        
-        abstract protected void PrivateHandle(UserInfo info, List<string> args);
+        protected abstract void PrivateHandle(UserInfo info, List<string> args);
         public void Handle(UserInfo info, List<string> args, int bytes)
         {
             if (bytes > 0)
             {
-                callCountIn++;
-                byteCountIn += bytes;
+                CallCountIn++;
+                ByteCountIn += bytes;
             }
             PrivateHandle(info, args);
         }
 
-        abstract protected int PrivateSend(CommandArgument argument);
+        protected abstract int PrivateSend(CommandArgument argument);
         public void Send(CommandArgument argument)
         {
-            callCountOut++;
+            CallCountOut++;
             if (argument.Name == Name)
             {
-                byteCountOut += PrivateSend(argument);
+                ByteCountOut += PrivateSend(argument);
             }
             else
             {
@@ -142,7 +96,7 @@ namespace IrcD.Commands
 
         public static string[] GetSubArgument(string arg)
         {
-            return arg.Split(new[] { ',' });
+            return arg.Split(',');
         }
 
         /// <summary>

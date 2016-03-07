@@ -25,17 +25,9 @@ namespace IrcD.Commands.Arguments
         public PongArgument(InfoBase receiver, string parameter)
             : base(null, receiver, "PONG")
         {
-            this.parameter = parameter;
+            Parameter = parameter;
         }
 
-        private readonly string parameter;
-        public string Parameter
-        {
-            get
-            {
-                return parameter;
-            }
-        }
-
+        public string Parameter { get; }
     }
 }

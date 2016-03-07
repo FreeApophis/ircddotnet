@@ -43,7 +43,7 @@ namespace IrcD.Commands
             }
 
             foreach (var channel in from temp in GetSubArgument(args[0])
-                                    where !info.UserPerChannelInfos.Any(upci => upci.ChannelInfo.Name == temp)
+                                    where info.UserPerChannelInfos.All(upci => upci.ChannelInfo.Name != temp)
                                     select temp)
             {
                 ChannelInfo chan;

@@ -30,14 +30,7 @@ namespace IrcD.Modes.ChannelRanks
 
         }
 
-        public override bool CanChangeChannelMode(ChannelMode mode)
-        {
-            return false;
-        }
-
-        public override bool CanChangeChannelRank(ChannelRank rank)
-        {
-            return false;
-        }
+        public override bool CanChangeChannelMode(ChannelMode mode) => false;
+        public override bool CanChangeChannelRank(ChannelRank rank) => false;
     }
 }

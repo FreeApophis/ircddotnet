@@ -23,32 +23,16 @@ namespace IrcD.Modes
 {
     public abstract class ChannelRank : Mode
     {
-        private readonly char prefix;
-
-        public char Prefix
-        {
-            get
-            {
-                return prefix;
-            }
-        }
+        public char Prefix { get; }
+        public int Level { get; }
 
         protected ChannelRank(char mode, char prefix, int level)
             : base(mode)
         {
-            this.prefix = prefix;
-            this.level = level;
+            Prefix = prefix;
+            Level = level;
         }
 
-        private readonly int level;
-
-        public int Level
-        {
-            get
-            {
-                return level;
-            }
-        }
 
         public abstract bool CanChangeChannelMode(ChannelMode mode);
         public abstract bool CanChangeChannelRank(ChannelRank rank);

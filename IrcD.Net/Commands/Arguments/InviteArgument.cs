@@ -26,26 +26,11 @@ namespace IrcD.Commands.Arguments
         public InviteArgument(UserInfo sender, InfoBase receiver, UserInfo invited, ChannelInfo channel)
             : base(sender, receiver, "INVITE")
         {
-            this.invited = invited;
-            this.channel = channel;
+            Invited = invited;
+            Channel = channel;
         }
 
-        private readonly ChannelInfo channel;
-        public ChannelInfo Channel
-        {
-            get
-            {
-                return channel;
-            }
-        }
-
-        private readonly UserInfo invited;
-        public UserInfo Invited
-        {
-            get
-            {
-                return invited;
-            }
-        }
+        public ChannelInfo Channel { get; }
+        public UserInfo Invited { get; }
     }
 }

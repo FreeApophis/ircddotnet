@@ -46,148 +46,54 @@ namespace IrcD
         const int MaxBufferSize = 2048;
 
         // Main Datastructures
-        private readonly Dictionary<Socket, UserInfo> sockets = new Dictionary<Socket, UserInfo>();
-        public Dictionary<Socket, UserInfo> Sockets
-        {
-            get
-            {
-                return sockets;
-            }
-        }
-        private readonly Dictionary<string, ChannelInfo> channels = new Dictionary<string, ChannelInfo>();
-        public Dictionary<string, ChannelInfo> Channels
-        {
-            get
-            {
-                return channels;
-            }
-        }
+        public Dictionary<Socket, UserInfo> Sockets { get; } = new Dictionary<Socket, UserInfo>();
 
-        private readonly Dictionary<char, ChannelType> supportedChannelTypes = new Dictionary<char, ChannelType>();
-        public Dictionary<char, ChannelType> SupportedChannelTypes
-        {
-            get
-            {
-                return supportedChannelTypes;
-            }
-        }
+        public Dictionary<string, ChannelInfo> Channels { get; } = new Dictionary<string, ChannelInfo>();
 
-        private readonly Dictionary<string, UserInfo> nicks = new Dictionary<string, UserInfo>();
-        public Dictionary<string, UserInfo> Nicks
-        {
-            get
-            {
-                return nicks;
-            }
-        }
+        public Dictionary<char, ChannelType> SupportedChannelTypes { get; } = new Dictionary<char, ChannelType>();
+
+        public Dictionary<string, UserInfo> Nicks { get; } = new Dictionary<string, UserInfo>();
 
         #region Modes
-        private readonly ModeFactory modeFactory;
-        public ModeFactory ModeFactory
-        {
-            get
-            {
-                return modeFactory;
-            }
-        }
 
-        private readonly RankList supportedRanks;
-        public RankList SupportedRanks
-        {
-            get
-            {
-                return supportedRanks;
-            }
-        }
+        public ModeFactory ModeFactory { get; }
 
-        private readonly ChannelModeList supportedChannelModes;
-        public ChannelModeList SupportedChannelModes
-        {
-            get
-            {
-                return supportedChannelModes;
-            }
-        }
-        private readonly UserModeList supportedUserModes;
-        public UserModeList SupportedUserModes
-        {
-            get
-            {
-                return supportedUserModes;
-            }
-        }
+        public RankList SupportedRanks { get; }
+
+        public ChannelModeList SupportedChannelModes { get; }
+        public UserModeList SupportedUserModes { get; }
+
         #endregion
 
         // Protocol
-        private readonly CommandList commands;
-        public CommandList Commands
-        {
-            get
-            {
-                return commands;
-            }
-        }
+        public CommandList Commands { get; }
 
-        private readonly ServerReplies.ServerReplies replies;
-        public ServerReplies.ServerReplies Replies
-        {
-            get
-            {
-                return replies;
-            }
-        }
-        
+        public ServerReplies.ServerReplies Replies { get; }
+
         public List<string> Capabilities { get; private set; }
 
-        private bool connected;
-        private bool restart;
+        private bool _connected;
+        private bool _restart;
 
         private byte[] buffer = new byte[MaxBufferSize];
-        private EndPoint ep = new IPEndPoint(0, 0);
-        private EndPoint localEndPoint;
+        private EndPoint _ep = new IPEndPoint(0, 0);
+        private EndPoint _localEndPoint;
 
-        private readonly ServerOptions options;
-        public ServerOptions Options
-        {
-            get
-            {
-                return options;
-            }
-        }
+        public ServerOptions Options { get; }
 
-        private readonly ServerStats stats;
-        public ServerStats Stats
-        {
-            get
-            {
-                return stats;
-            }
-        }
+        public ServerStats Stats { get; }
 
-        public string ServerPrefix
-        {
-            get
-            {
-                return PrefixCharacter + Options.ServerName;
-            }
-        }
+        public string ServerPrefix => PrefixCharacter + Options.ServerName;
 
-        private readonly DateTime serverCreated;
-        public DateTime ServerCreated
-        {
-            get
-            {
-                return serverCreated;
-            }
-        }
+        public DateTime ServerCreated { get; }
 
         #region Events
         public event EventHandler<RehashEventArgs> ServerRehash;
         internal void OnRehashEvent(object sender, RehashEventArgs e)
         {
-            if (ServerRehash != null)
-                ServerRehash(sender, e);
+            ServerRehash?.Invoke(sender, e);
         }
+
         #endregion
 
         public IrcDaemon(IrcMode ircMode = IrcMode.Modern)
@@ -197,21 +103,21 @@ namespace IrcD
             // Create Optionobject & Set the proper IRC Protocol Version
             // The protocol version cannot be changed after construction, 
             // because the construction methods below use this Option
-            options = new ServerOptions(ircMode);
+            Options = new ServerOptions(ircMode);
 
             //Clean Interface to statistics, it needs the IrcDaemon Object to gather this information.
-            stats = new ServerStats(this);
+            Stats = new ServerStats(this);
 
             // Setup Modes Infrastructure
-            modeFactory = new ModeFactory();
-            supportedChannelModes = new ChannelModeList(this);
-            supportedRanks = new RankList(this);
-            supportedUserModes = new UserModeList(this);
+            ModeFactory = new ModeFactory();
+            SupportedChannelModes = new ChannelModeList(this);
+            SupportedRanks = new RankList(this);
+            SupportedUserModes = new UserModeList(this);
 
             // The Protocol Objects 
-            commands = new CommandList(this);
-            replies = new ServerReplies.ServerReplies(this);
-            serverCreated = DateTime.Now;
+            Commands = new CommandList(this);
+            Replies = new ServerReplies.ServerReplies(this);
+            ServerCreated = DateTime.Now;
 
             // Add Commands
             SetupCommands();
@@ -223,121 +129,121 @@ namespace IrcD
 
         private void SetupCommands()
         {
-            commands.Add(new Admin(this));
-            commands.Add(new Away(this));
-            commands.Add(new Connect(this));
-            commands.Add(new Die(this));
-            commands.Add(new Error(this));
-            commands.Add(new Info(this));
-            commands.Add(new Invite(this));
-            commands.Add(new IsOn(this));
-            commands.Add(new Join(this));
-            commands.Add(new Kick(this));
-            commands.Add(new Kill(this));
-            commands.Add(new Links(this));
-            commands.Add(new List(this));
-            commands.Add(new ListUsers(this));
-            commands.Add(new MessageOfTheDay(this));
-            commands.Add(new Mode(this));
-            commands.Add(new Names(this));
-            commands.Add(new Nick(this));
-            commands.Add(new Notice(this));
-            commands.Add(new Oper(this));
-            commands.Add(new Part(this));
-            commands.Add(new Pass(this));
-            commands.Add(new Ping(this));
-            commands.Add(new Pong(this));
-            commands.Add(new PrivateMessage(this));
-            commands.Add(new Quit(this));
-            commands.Add(new Rehash(this));
-            commands.Add(new Restart(this));
-            commands.Add(new ServerQuit(this));
-            commands.Add(new Service(this));
-            commands.Add(new Stats(this));
-            commands.Add(new Summon(this));
-            commands.Add(new Time(this));
-            commands.Add(new Topic(this));
-            commands.Add(new Trace(this));
-            commands.Add(new User(this));
-            commands.Add(new UserHost(this));
-            commands.Add(new Version(this));
-            commands.Add(new Wallops(this));
-            commands.Add(new Who(this));
-            commands.Add(new WhoIs(this));
-            commands.Add(new WhoWas(this));
+            Commands.Add(new Admin(this));
+            Commands.Add(new Away(this));
+            Commands.Add(new Connect(this));
+            Commands.Add(new Die(this));
+            Commands.Add(new Error(this));
+            Commands.Add(new Info(this));
+            Commands.Add(new Invite(this));
+            Commands.Add(new IsOn(this));
+            Commands.Add(new Join(this));
+            Commands.Add(new Kick(this));
+            Commands.Add(new Kill(this));
+            Commands.Add(new Links(this));
+            Commands.Add(new List(this));
+            Commands.Add(new ListUsers(this));
+            Commands.Add(new MessageOfTheDay(this));
+            Commands.Add(new Mode(this));
+            Commands.Add(new Names(this));
+            Commands.Add(new Nick(this));
+            Commands.Add(new Notice(this));
+            Commands.Add(new Oper(this));
+            Commands.Add(new Part(this));
+            Commands.Add(new Pass(this));
+            Commands.Add(new Ping(this));
+            Commands.Add(new Pong(this));
+            Commands.Add(new PrivateMessage(this));
+            Commands.Add(new Quit(this));
+            Commands.Add(new Rehash(this));
+            Commands.Add(new Restart(this));
+            Commands.Add(new ServerQuit(this));
+            Commands.Add(new Service(this));
+            Commands.Add(new Stats(this));
+            Commands.Add(new Summon(this));
+            Commands.Add(new Time(this));
+            Commands.Add(new Topic(this));
+            Commands.Add(new Trace(this));
+            Commands.Add(new User(this));
+            Commands.Add(new UserHost(this));
+            Commands.Add(new Version(this));
+            Commands.Add(new Wallops(this));
+            Commands.Add(new Who(this));
+            Commands.Add(new WhoIs(this));
+            Commands.Add(new WhoWas(this));
 
             if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
             {
-                commands.Add(new ServiceList(this));
-                commands.Add(new ServiceQuery(this));
+                Commands.Add(new ServiceList(this));
+                Commands.Add(new ServiceQuery(this));
             }
 
             if (Options.IrcMode == IrcMode.Modern)
             {
-                commands.Add(new Capabilities(this));
-                commands.Add(new Knock(this));
-                commands.Add(new Language(this));
-                commands.Add(new Silence(this));
+                Commands.Add(new Capabilities(this));
+                Commands.Add(new Knock(this));
+                Commands.Add(new Language(this));
+                Commands.Add(new Silence(this));
             }
         }
 
         private void SetupModes()
         {
-            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeBan>());
+            SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModeBan>());
             if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
-                supportedChannelModes.Add(modeFactory.AddChannelMode<ModeBanException>());
+                SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModeBanException>());
 
             if (Options.IrcMode == IrcMode.Modern)
-                supportedChannelModes.Add(modeFactory.AddChannelMode<ModeColorless>());
+                SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModeColorless>());
 
-            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeInvite>());
+            SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModeInvite>());
             if (Options.IrcMode == IrcMode.Rfc2810 || Options.IrcMode == IrcMode.Modern)
-                supportedChannelModes.Add(modeFactory.AddChannelMode<ModeInviteException>());
+                SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModeInviteException>());
 
-            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeKey>());
-            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeLimit>());
-            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeModerated>());
-            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeNoExternal>());
-            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeSecret>());
-            supportedChannelModes.Add(modeFactory.AddChannelMode<ModePrivate>());
-            supportedChannelModes.Add(modeFactory.AddChannelMode<ModeTopic>());
+            SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModeKey>());
+            SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModeLimit>());
+            SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModeModerated>());
+            SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModeNoExternal>());
+            SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModeSecret>());
+            SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModePrivate>());
+            SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModeTopic>());
             if (Options.IrcMode == IrcMode.Modern)
-                supportedChannelModes.Add(modeFactory.AddChannelMode<ModeTranslate>());
+                SupportedChannelModes.Add(ModeFactory.AddChannelMode<ModeTranslate>());
 
-            if (Options.IrcMode == IrcMode.Modern) supportedRanks.Add(modeFactory.AddChannelRank<ModeHalfOp>());
-            supportedRanks.Add(modeFactory.AddChannelRank<ModeOp>());
-            supportedRanks.Add(modeFactory.AddChannelRank<ModeVoice>());
+            if (Options.IrcMode == IrcMode.Modern) SupportedRanks.Add(ModeFactory.AddChannelRank<ModeHalfOp>());
+            SupportedRanks.Add(ModeFactory.AddChannelRank<ModeOp>());
+            SupportedRanks.Add(ModeFactory.AddChannelRank<ModeVoice>());
 
-            supportedUserModes.Add(modeFactory.AddUserMode<ModeLocalOperator>());
-            supportedUserModes.Add(modeFactory.AddUserMode<ModeInvisible>());
-            supportedUserModes.Add(modeFactory.AddUserMode<ModeOperator>());
-            supportedUserModes.Add(modeFactory.AddUserMode<ModeRestricted>());
-            supportedUserModes.Add(modeFactory.AddUserMode<ModeWallops>());
+            SupportedUserModes.Add(ModeFactory.AddUserMode<ModeLocalOperator>());
+            SupportedUserModes.Add(ModeFactory.AddUserMode<ModeInvisible>());
+            SupportedUserModes.Add(ModeFactory.AddUserMode<ModeOperator>());
+            SupportedUserModes.Add(ModeFactory.AddUserMode<ModeRestricted>());
+            SupportedUserModes.Add(ModeFactory.AddUserMode<ModeWallops>());
         }
 
         private void SetupChannelTypes()
         {
             ChannelType chan = new NormalChannel();
-            supportedChannelTypes.Add(chan.Prefix, chan);
+            SupportedChannelTypes.Add(chan.Prefix, chan);
         }
 
         public void Start()
         {
-            if (connected) return;
+            if (_connected) return;
 
             do
             {
-                restart = false;
-                connected = true;
+                _restart = false;
+                _connected = true;
 
                 MainLoop();
-            } while (restart);
+            } while (_restart);
         }
 
         public void Stop(bool startAgain)
         {
-            connected = false;
-            restart = startAgain;
+            _connected = false;
+            _restart = startAgain;
         }
 
         /// <summary>
@@ -367,20 +273,20 @@ namespace IrcD
 
             foreach (var port in Options.ServerPorts)
             {
-                localEndPoint = new IPEndPoint(IPAddress.Any, port);
-                var connectSocket = new Socket(localEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                _localEndPoint = new IPEndPoint(IPAddress.Any, port);
+                var connectSocket = new Socket(_localEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-                connectSocket.Bind(localEndPoint);
+                connectSocket.Bind(_localEndPoint);
                 connectSocket.Listen(20);
 
-                sockets.Add(connectSocket, new UserInfo(this, connectSocket, Options.ServerName, true, true));
+                Sockets.Add(connectSocket, new UserInfo(this, connectSocket, Options.ServerName, true, true));
             }
 
-            while (connected)
+            while (_connected)
             {
                 try
                 {
-                    var activeSockets = new List<Socket>(sockets.Keys);
+                    var activeSockets = new List<Socket>(Sockets.Keys);
 
                     Socket.Select(activeSockets, null, null, 2000000);
 
@@ -388,10 +294,10 @@ namespace IrcD
                     {
                         try
                         {
-                            if (sockets[s].IsAcceptSocket)
+                            if (Sockets[s].IsAcceptSocket)
                             {
                                 Socket temp = s.Accept();
-                                sockets.Add(temp, new UserInfo(this, temp, ((IPEndPoint)temp.RemoteEndPoint).Address.ToString(), false, String.IsNullOrEmpty(Options.ServerPass)));
+                                Sockets.Add(temp, new UserInfo(this, temp, ((IPEndPoint)temp.RemoteEndPoint).Address.ToString(), false, String.IsNullOrEmpty(Options.ServerPass)));
                                 Logger.Log("New Client connected!", 4, "MainLoop");
                             }
                             else
@@ -399,29 +305,29 @@ namespace IrcD
                                 try
                                 {
                                     buffer.Initialize();
-                                    int numBytes = s.ReceiveFrom(buffer, ref ep);
+                                    int numBytes = s.ReceiveFrom(buffer, ref _ep);
                                     foreach (string line in Encoding.UTF8.GetString(buffer, 0, numBytes).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
                                     {
-                                        Parser(line, s, sockets[s]);
+                                        Parser(line, s, Sockets[s]);
                                     }
                                 }
                                 catch (SocketException e)
                                 {
-                                    Logger.Log("ERROR:  (Socket reset) " + e.Message + "(CODE:" + e.ErrorCode + ")", 4, "E1" + sockets[s].Nick);
-                                    sockets[s].Remove("Socket reset by peer (" + e.ErrorCode + ")");
+                                    Logger.Log("ERROR:  (Socket reset) " + e.Message + "(CODE:" + e.ErrorCode + ")", 4, "E1" + Sockets[s].Nick);
+                                    Sockets[s].Remove("Socket reset by peer (" + e.ErrorCode + ")");
 
                                 }
                             }
                         }
                         catch (Exception e)
                         {
-                            Logger.Log("Unknown ERROR: " + e.Message, 4, "E2" + sockets[s].Nick);
+                            Logger.Log("Unknown ERROR: " + e.Message, 4, "E2" + Sockets[s].Nick);
                             Logger.Log("Trace: " + e.StackTrace);
                         }
                     }
 
                     // Pinger : we only ping if necessary
-                    foreach (var user in from user in sockets.Where(s => s.Value.Registered)
+                    foreach (var user in from user in Sockets.Where(s => s.Value.Registered)
                                          let interval = DateTime.Now.AddMinutes(-1)
                                          where user.Value.LastAction < interval && user.Value.LastAlive < interval
                                          select user.Value)
@@ -447,19 +353,19 @@ namespace IrcD
             }
 
             // QUIT Server
-            foreach (var user in sockets.Values.Where(u => !u.IsAcceptSocket).ToArray())
+            foreach (var user in Sockets.Values.Where(u => !u.IsAcceptSocket).ToArray())
             {
                 user.Remove("Server Shutdown");
             }
 
-            foreach (var serverSocket in sockets.Values)
+            foreach (var serverSocket in Sockets.Values)
             {
                 serverSocket.Socket.Close(5);
             }
 
-            sockets.Clear();
-            channels.Clear();
-            nicks.Clear();
+            Sockets.Clear();
+            Channels.Clear();
+            Nicks.Clear();
             GC.Collect();
         }
 
@@ -550,11 +456,11 @@ namespace IrcD
             FilterArgs(args);
             if (replyCode == ReplyCode.Null)
             {
-                commands.Handle(info, prefix, command, args, line.Length);
+                Commands.Handle(info, prefix, command, args, line.Length);
             }
             else
             {
-                commands.Handle(info, prefix, replyCode, args, line.Length);
+                Commands.Handle(info, prefix, replyCode, args, line.Length);
             }
         }
 

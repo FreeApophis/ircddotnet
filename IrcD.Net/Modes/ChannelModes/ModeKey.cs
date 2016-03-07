@@ -32,17 +32,17 @@ namespace IrcD.Modes.ChannelModes
         {
         }
 
-        private string key;
+        private string _key;
 
         public string Parameter
         {
             get
             {
-                return key;
+                return _key;
             }
             set
             {
-                key = value;
+                _key = value;
             }
         }
 
@@ -52,7 +52,7 @@ namespace IrcD.Modes.ChannelModes
             {
                 var keys = args.Count > 1 ? (IEnumerable<string>)CommandBase.GetSubArgument(args[1]) : new List<string>();
 
-                if (!keys.Any(k => k == key))
+                if (keys.All(k => k != _key))
                 {
                     user.IrcDaemon.Replies.SendBadChannelKey(user, channel);
                     return false;
@@ -64,8 +64,8 @@ namespace IrcD.Modes.ChannelModes
 
         public string Add(string parameter)
         {
-            key = parameter;
-            return key;
+            _key = parameter;
+            return _key;
         }
     }
 }

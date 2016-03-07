@@ -32,20 +32,20 @@ namespace IrcD.Modes.ChannelModes
 {
     class ModeTranslate : ChannelMode
     {
-        private readonly GoogleTranslate translator;
+        private readonly GoogleTranslate _translator;
 
         public ModeTranslate()
             : base('T')
         {
-            translator = new GoogleTranslate();
+            _translator = new GoogleTranslate();
         }
 
-        private bool onlyOnce;
+        private bool _onlyOnce;
 
         public override bool HandleEvent(CommandBase command, ChannelInfo channel, UserInfo user, List<string> args)
         {
-            if (onlyOnce) { return true; }
-            onlyOnce = true;
+            if (_onlyOnce) { return true; }
+            _onlyOnce = true;
 
             if (command is Join)
             {
@@ -53,20 +53,20 @@ namespace IrcD.Modes.ChannelModes
             }
             if (!channel.Modes.HandleEvent(command, channel, user, args))
             {
-                onlyOnce = false;
+                _onlyOnce = false;
                 return false;
             }
             if (command is PrivateMessage || command is Notice)
             {
 
-                var translateDelegate = new GoogleTranslate.TranslateMultipleDelegate(translator.TranslateText);
+                var translateDelegate = new GoogleTranslate.TranslateMultipleDelegate(_translator.TranslateText);
                 translateDelegate.BeginInvoke(args[1], channel.Users.Select(u => u.Languages.First()).Distinct(), TranslateCallBack, Tuple.Create(channel, user, command));
 
-                onlyOnce = false;
+                _onlyOnce = false;
                 return false;
             }
 
-            onlyOnce = false;
+            _onlyOnce = false;
             return true;
         }
 

@@ -32,13 +32,13 @@ namespace IrcD.Modes.ChannelModes
 
         }
 
-        private int limit;
+        private int _limit;
 
         public string Parameter
         {
             get
             {
-                return limit.ToString();
+                return _limit.ToString();
             }
             set
             {
@@ -48,10 +48,10 @@ namespace IrcD.Modes.ChannelModes
 
         private void SetLimit(string value)
         {
-            int.TryParse(value, out limit);
-            if (limit < 1)
+            int.TryParse(value, out _limit);
+            if (_limit < 1)
             {
-                limit = 1;
+                _limit = 1;
             }
         }
 
@@ -60,7 +60,7 @@ namespace IrcD.Modes.ChannelModes
             if (command is Join)
             {
 
-                if (limit <= channel.UserPerChannelInfos.Count)
+                if (_limit <= channel.UserPerChannelInfos.Count)
                 {
                     user.IrcDaemon.Replies.SendChannelIsFull(user, channel);
                     return false;

@@ -45,7 +45,7 @@ namespace IrcD.Modes
 
         public T GetMode<T>() where T : TMode
         {
-            return Values.Where(mode => mode is T).FirstOrDefault() as T;
+            return Values.FirstOrDefault(mode => mode is T) as T;
         }
 
         public void RemoveMode<T>() where T : TMode

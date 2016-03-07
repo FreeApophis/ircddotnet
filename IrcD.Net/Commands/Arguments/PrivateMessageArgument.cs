@@ -25,26 +25,11 @@ namespace IrcD.Commands.Arguments
         public PrivateMessageArgument(UserInfo sender, InfoBase receiver, string target, string message)
             : base(sender, receiver, "PRIVMSG")
         {
-            this.target = target;
-            this.message = message;
+            Target = target;
+            Message = message;
         }
 
-        private readonly string target;
-        public string Target
-        {
-            get
-            {
-                return target;
-            }
-        }
-
-        private readonly string message;
-        public string Message
-        {
-            get
-            {
-                return message;
-            }
-        }
+        public string Target { get; }
+        public string Message { get; }
     }
 }
