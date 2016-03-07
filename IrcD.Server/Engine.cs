@@ -28,6 +28,8 @@ namespace IrcD.Server
 {
     class Engine
     {
+        private static bool blocking = false;
+
         public static void Main(string[] args)
         {
             switch (Environment.OSVersion.Platform)
@@ -88,7 +90,6 @@ namespace IrcD.Server
             var ircDaemon = new IrcDaemon(settings.GetIrcMode());
             settings.SetDaemon(ircDaemon);
             settings.LoadSettings();
-            bool blocking = true;
 
             if (blocking)
             {
