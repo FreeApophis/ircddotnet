@@ -92,7 +92,7 @@ namespace IrcD.Commands
         {
             var command = new StringBuilder();
             var partargs = new List<string>();
-            // this is a part all channels, this is plainly stupid to handle PARTS in a join message.
+            // this is a part all channels, it is plainly stupid to handle PARTS in a join message.
             // we won't handle that, we give it to the part handler! YO! why not defining a /part * instead of /join 0
 
             command.Length = 0; bool first = true;

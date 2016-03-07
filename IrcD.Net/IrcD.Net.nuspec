@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>0.0.0.0</version>
+    <title>$title$</title>
+    <authors>Thomas Bruderer</authors>
+    <owners>Thomas Bruderer</owners>
+    <licenseUrl>https://github.com/FreeApophis/ircddotnet/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/FreeApophis/ircddotnet</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Fully Functional Object Oriented Implementation of an IrcD Server</description>
+    <releaseNotes>First nuPackage. Channel Handling Fixed on quitting users.</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>IRC Server Testing</tags>
+  </metadata>
+  <files>
+    <file src="bin\$configuration$\$id$.dll" target="lib\" />
+  </files>
+</package>

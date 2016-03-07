@@ -1,0 +1,1 @@
+nuget pack IrcD.Net.csproj -IncludeReferencedProjects -Prop Configuration=Release -Version 0.6.0.0

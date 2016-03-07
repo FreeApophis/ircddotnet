@@ -58,16 +58,6 @@ namespace IrcD.Channel
             }
         }
 
-        public override int WriteLine(StringBuilder line)
-        {
-            return Users.Sum(user => user.WriteLine(line));
-        }
-
-        public override int WriteLine(StringBuilder line, UserInfo exception)
-        {
-            return Users.Sum(user => user.WriteLine(line, exception));
-        }
-
         public void RemoveUser(UserInfo user)
         {
             var upci = UserPerChannelInfos[user.Nick];
@@ -80,5 +70,17 @@ namespace IrcD.Channel
                 IrcDaemon.Channels.Remove(Name);
             }
         }
+
+        public override int WriteLine(StringBuilder line)
+        {
+            return Users.Sum(user => user.WriteLine(line));
+        }
+
+        public override int WriteLine(StringBuilder line, UserInfo exception)
+        {
+            return Users.Sum(user => user.WriteLine(line, exception));
+        }
+
+
     }
 }
