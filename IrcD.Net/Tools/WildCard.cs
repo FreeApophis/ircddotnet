@@ -56,13 +56,13 @@ namespace IrcD.Utils
             switch (matchType)
             {
                 case WildcardMatch.Exact:
-                    return escapedPattern;
+                    return "^" + escapedPattern + "$";
                 case WildcardMatch.Anywhere:
-                    return escapedPattern + "$";
+                    return escapedPattern;
                 case WildcardMatch.StartsWith:
                     return "^" + escapedPattern;
                 case WildcardMatch.EndsWith:
-                    return "^" + escapedPattern + "$";
+                    return escapedPattern + "$";
                 default:
                     throw new ArgumentOutOfRangeException("matchType");
             }
