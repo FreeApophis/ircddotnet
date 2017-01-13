@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 using System.Collections.Generic;
 using IrcD.Channel;
 using IrcD.Commands;
+using IrcD.Core;
 
 namespace IrcD.Modes.ChannelModes
 {
@@ -41,6 +42,7 @@ namespace IrcD.Modes.ChannelModes
                     return false;
                 }
             }
+
             return true;
         }
     }

@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ namespace IrcD.Server
     public sealed class ServiceEngine : ServiceBase
     {
         public static string IrcdServiceName = "IRCd.net";
-        private Thread botThread;
+        private Thread _botThread;
 
         public ServiceEngine()
         {
@@ -43,8 +43,8 @@ namespace IrcD.Server
         protected override void OnStart(string[] args)
         {
 
-            botThread = new Thread(Engine.Start) { IsBackground = true };
-            botThread.Start();
+            _botThread = new Thread(Engine.Start) { IsBackground = true };
+            _botThread.Start();
 
             base.OnStart(args);
         }
@@ -52,13 +52,13 @@ namespace IrcD.Server
 
         protected override void OnStop()
         {
-            botThread.Abort();
+            _botThread.Abort();
             base.OnStop();
         }
 
         protected override void OnShutdown()
         {
-            botThread.Abort();
+            _botThread.Abort();
             base.OnShutdown();
         }
 

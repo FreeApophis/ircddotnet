@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ using System.Text;
 using IrcD.Channel;
 using IrcD.Commands;
 using IrcD.Commands.Arguments;
+using IrcD.Core;
 using IrcD.Modes.ChannelModes;
 
 namespace IrcD.Modes
@@ -118,6 +119,7 @@ namespace IrcD.Modes
                         }
                         return;
                     }
+
                     plus = true;
                 }
 
@@ -261,6 +263,7 @@ namespace IrcD.Modes
                 validmode.Append(" ");
                 validmode.Append(param);
             }
+
             info.IrcDaemon.Commands.Send(new ModeArgument(info, chan, chan.Name, validmode.ToString()));
         }
 
@@ -272,16 +275,19 @@ namespace IrcD.Modes
             {
                 modes.Append(mode.Char);
             }
+
             modes.Append(',');
             foreach (var mode in Values.Where(m => m is IParameterB))
             {
                 modes.Append(mode.Char);
             }
+
             modes.Append(',');
             foreach (var mode in Values.Where(m => m is IParameterC))
             {
                 modes.Append(mode.Char);
             }
+
             modes.Append(',');
             foreach (var mode in Values.Where(m => !(m is IParameterListA) && !(m is IParameterB) && !(m is IParameterC)))
             {
@@ -299,15 +305,17 @@ namespace IrcD.Modes
             foreach (var mode in Values.Where(m => !(m is IParameterListA)).OrderBy(c => c.Char))
             {
                 modes.Append(mode.Char);
-                if (mode is IParameterB)
+                var b = mode as IParameterB;
+                if (b != null)
                 {
                     parameters.Append(" ");
-                    parameters.Append(((IParameterB)mode).Parameter);
+                    parameters.Append(b.Parameter);
                 }
-                if (mode is IParameterC)
+                var c = mode as IParameterC;
+                if (c != null)
                 {
                     parameters.Append(" ");
-                    parameters.Append(((IParameterC)mode).Parameter);
+                    parameters.Append(c.Parameter);
                 }
             }
 

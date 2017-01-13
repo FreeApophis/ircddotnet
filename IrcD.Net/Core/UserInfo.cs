@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,10 +26,12 @@ using System.Net.Sockets;
 using System.Text;
 using IrcD.Channel;
 using IrcD.Commands.Arguments;
+using IrcD.Core.Utils;
 using IrcD.Modes;
-using IrcD.Utils;
+using IrcD.Tools;
+using Enumerable = System.Linq.Enumerable;
 
-namespace IrcD
+namespace IrcD.Core
 {
 
     public class UserInfo : InfoBase
@@ -42,6 +44,7 @@ namespace IrcD
             PassAccepted = passAccepted;
             Host = host;
             Created = DateTime.Now;
+            Capabilities = null;
 
             IsAcceptSocket = isAcceptSocket;
             Socket = socket;
@@ -61,7 +64,7 @@ namespace IrcD
         public string RealName { get; private set; }
         public string Host { get; private set; }
         public string AwayMessage { get; set; }
-                
+
         public List<string> Capabilities { get; private set; }
 
         private IEnumerable<string> _languages = new List<string> { "en" };
@@ -70,11 +73,11 @@ namespace IrcD
         {
             get
             {
-                return _languages.Any() ? _languages : System.Linq.Enumerable.Repeat("en", 1);
+                return _languages.Any() ? _languages : Enumerable.Repeat("en", 1);
             }
             set
             {
-                _languages = value.Where(l => GoogleTranslate.Languages.ContainsKey(l));
+                _languages = value.Where(l => Tools.Languages.All.ContainsKey(l));
             }
         }
 
@@ -189,6 +192,7 @@ namespace IrcD
             {
                 return WriteLine(line);
             }
+
             return 0;
 
         }
@@ -222,7 +226,7 @@ namespace IrcD
             // Close connection
             Socket.Close();
 
-            // Ready for destruction 
+            // Ready for destruction
         }
 
         internal static string NormalizeHostmask(string parameter)

@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +25,10 @@ using System.Linq;
 using System.Text;
 using IrcD.Channel;
 using IrcD.Modes.UserModes;
-using IrcD.Utils;
 using IrcD.Commands;
+using IrcD.Core;
+using IrcD.Core.Utils;
+using IrcD.Tools;
 
 namespace IrcD.ServerReplies
 {
@@ -110,7 +112,7 @@ namespace IrcD.ServerReplies
                 {
                     currentLine.Append(feature);
 
-                    foreach (var language in GoogleTranslate.Languages.Keys)
+                    foreach (var language in Languages.All.Keys)
                     {
                         if (currentLine.Length + 1 + language.Length + postfixlength > daemon.Options.MaxLineLength)
                         {
@@ -127,8 +129,10 @@ namespace IrcD.ServerReplies
                         currentLine.Append(",");
                         currentLine.Append(language);
                     }
+
                     continue;
                 }
+
                 if (currentLine.Length + 1 + feature.Length + postfixlength > daemon.Options.MaxLineLength)
                 {
                     if (postfix != null)
@@ -867,7 +871,7 @@ namespace IrcD.ServerReplies
         {
             BuildMessageHeader(info, ReplyCode.Inviting);
 
-            // The RFC Tells the order should be <channel> <nick> however xchat and the servers I tested say it is: <nick> <channel> 
+            // The RFC Tells the order should be <channel> <nick> however xchat and the servers I tested say it is: <nick> <channel>
             // This is one more ridiculous RFC mistake without any errata.
 
             if (_ircDaemon.Options.IrcMode == IrcMode.Rfc1459 || _ircDaemon.Options.IrcMode == IrcMode.Rfc2810)
@@ -1881,7 +1885,7 @@ namespace IrcD.ServerReplies
             _response.Append(" ");
             _response.Append(who.Languages.Concatenate(","));
             _response.Append(" : ");
-            _response.Append(who.Languages.Select(l => GoogleTranslate.Languages[l]).Concatenate(", "));
+            _response.Append(who.Languages.Select(l => Languages.All[l]).Concatenate(", "));
 
             info.WriteLine(_response);
         }

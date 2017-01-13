@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,11 +22,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using IrcD.Commands.Arguments;
+using IrcD.Core;
+using IrcD.Core.Utils;
 using IrcD.ServerReplies;
-
+using IrcD.Tools;
 #if DEBUG
 using System.Text;
-using IrcD.Utils;
+
 #endif
 
 namespace IrcD.Commands
@@ -78,13 +80,10 @@ namespace IrcD.Commands
                 }
 
                 var checkParamCount = Attribute.GetCustomAttribute(handleMethodInfo, typeof(CheckParamCountAttribute)) as CheckParamCountAttribute;
-                if (checkParamCount != null)
+                if (args.Count < checkParamCount?.MinimumParameterCount)
                 {
-                    if (args.Count < checkParamCount.MinimumParameterCount)
-                    {
-                        _ircDaemon.Replies.SendNeedMoreParams(info);
-                        skipHandle = true;
-                    }
+                    _ircDaemon.Replies.SendNeedMoreParams(info);
+                    skipHandle = true;
                 }
 
 

@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,25 +19,20 @@
  */
 
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using IrcD.Channel;
 using IrcD.Commands;
-using IrcD.Utils;
 using IrcD.Commands.Arguments;
+using IrcD.Core;
 
 namespace IrcD.Modes.ChannelModes
 {
     class ModeTranslate : ChannelMode
     {
-        private readonly GoogleTranslate _translator;
 
         public ModeTranslate()
             : base('T')
         {
-            _translator = new GoogleTranslate();
         }
 
         private bool _onlyOnce;
@@ -45,6 +40,7 @@ namespace IrcD.Modes.ChannelModes
         public override bool HandleEvent(CommandBase command, ChannelInfo channel, UserInfo user, List<string> args)
         {
             if (_onlyOnce) { return true; }
+
             _onlyOnce = true;
 
             if (command is Join)
@@ -56,11 +52,11 @@ namespace IrcD.Modes.ChannelModes
                 _onlyOnce = false;
                 return false;
             }
+
             if (command is PrivateMessage || command is Notice)
             {
 
-                var translateDelegate = new GoogleTranslate.TranslateMultipleDelegate(_translator.TranslateText);
-                translateDelegate.BeginInvoke(args[1], channel.Users.Select(u => u.Languages.First()).Distinct(), TranslateCallBack, Tuple.Create(channel, user, command));
+                // Translation Code Removed
 
                 _onlyOnce = false;
                 return false;
@@ -68,46 +64,6 @@ namespace IrcD.Modes.ChannelModes
 
             _onlyOnce = false;
             return true;
-        }
-
-        private static void TranslateCallBack(IAsyncResult asyncResult)
-        {
-            var state = (Tuple<ChannelInfo, UserInfo, CommandBase>)asyncResult.AsyncState;
-            var asyncDelegate = ((AsyncResult)asyncResult).AsyncDelegate;
-            var result = ((GoogleTranslate.TranslateMultipleDelegate)asyncDelegate).EndInvoke(asyncResult);
-
-            foreach (var user in state.Item1.Users.Where(u => u != state.Item2))
-            {
-                Tuple<string, string, string> res;
-                string message;
-
-                if (user.Languages.Contains(result[GoogleTranslate.Original].Item1))
-                {
-                    message = "[" + result[GoogleTranslate.Original].Item1 + "] " + result[GoogleTranslate.Original].Item3;
-                }
-                else if (result.TryGetValue(user.Languages.First(), out res))
-                {
-                    message = "[" + res.Item1 + "] " + res.Item3;
-                }
-                else if (result.Any())
-                {
-                    message = "[" + result.Last().Value.Item1 + "] " + result.Last().Value.Item3;
-                }
-                else
-                {
-                    // This should never happen: There must be always at least the Original in the result
-                    message = "BUG: Translation failed miserably";
-                }
-
-                if (state.Item3 is PrivateMessage)
-                {
-                    user.IrcDaemon.Commands.Send(new PrivateMessageArgument(state.Item2, user, state.Item1.Name, message));
-                }
-                if (state.Item3 is Notice)
-                {
-                    user.IrcDaemon.Commands.Send(new PrivateMessageArgument(state.Item2, user, state.Item1.Name, message));
-                }
-            }
         }
     }
 }

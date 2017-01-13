@@ -18,6 +18,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using IrcD.Core;
+
 namespace IrcD.Commands.Arguments
 {
     public class AwayArgument : CommandArgument

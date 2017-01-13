@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IrcD.Channel;
 using IrcD.Commands;
+using IrcD.Core;
 
 namespace IrcD.Modes
 {
@@ -41,12 +42,12 @@ namespace IrcD.Modes
         /// <param name="channel">The Channel the Mode is operating</param>
         /// <param name="user">The User which uses the Command on the channel</param>
         /// <param name="args"></param>
-        /// <returns>Handle Event should return true when the command is allowed to proceed normally. 
+        /// <returns>Handle Event should return true when the command is allowed to proceed normally.
         /// It should return false, if the Mode forbids the further execution of the Command.</returns>
         public abstract bool HandleEvent(CommandBase command, ChannelInfo channel, UserInfo user, List<string> args);
 
         /// <summary>
-        ///  Returns a list of ISUPPORT / Numeric 005 information this Mode is providing. 
+        ///  Returns a list of ISUPPORT / Numeric 005 information this Mode is providing.
         /// </summary>
         /// <param name="ircDaemon">Server Object</param>
         /// <returns>returns strings for direct usage in an ISUPPORT reply</returns>

@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@ using System;
 using System.Linq;
 using IrcD.Modes.UserModes;
 
-namespace IrcD
+namespace IrcD.Core
 {
     public class ServerStats
     {
-        readonly IrcDaemon ircDaemon;
+        readonly IrcDaemon _ircDaemon;
 
         public ServerStats(IrcDaemon ircDaemon)
         {
-            this.ircDaemon = ircDaemon;
+            _ircDaemon = ircDaemon;
         }
 
         public int ServerCount
@@ -45,23 +45,17 @@ namespace IrcD
         {
             get
             {
-                return ircDaemon.Sockets.Count(s => s.Value.IsService);
+                return _ircDaemon.Sockets.Count(s => s.Value.IsService);
             }
         }
 
-        public int UserCount
-        {
-            get
-            {
-                return ircDaemon.Nicks.Count - ServiceCount;
-            }
-        }
+        public int UserCount => _ircDaemon.Nicks.Count - ServiceCount;
 
         public int OperatorCount
         {
             get
             {
-                return ircDaemon.Sockets.Count(s => s.Value.Modes.Exist<ModeOperator>());
+                return _ircDaemon.Sockets.Count(s => s.Value.Modes.Exist<ModeOperator>());
             }
         }
 
@@ -69,7 +63,7 @@ namespace IrcD
         {
             get
             {
-                return ircDaemon.Sockets.Count(s => s.Value.Modes.Exist<ModeLocalOperator>());
+                return _ircDaemon.Sockets.Count(s => s.Value.Modes.Exist<ModeLocalOperator>());
             }
         }
 
@@ -77,33 +71,15 @@ namespace IrcD
         {
             get
             {
-                return ircDaemon.Sockets.Count(s => !s.Value.IsAcceptSocket);
+                return _ircDaemon.Sockets.Count(s => !s.Value.IsAcceptSocket);
             }
         }
 
 
-        public int ChannelCount
-        {
-            get
-            {
-                return ircDaemon.Channels.Count;
-            }
-        }
+        public int ChannelCount => _ircDaemon.Channels.Count;
 
-        public int ClientCount
-        {
-            get
-            {
-                return ircDaemon.Nicks.Count;
-            }
-        }
+        public int ClientCount => _ircDaemon.Nicks.Count;
 
-        public TimeSpan Uptime
-        {
-            get
-            {
-                return DateTime.Now - ircDaemon.ServerCreated;
-            }
-        }
+        public TimeSpan Uptime => DateTime.Now - _ircDaemon.ServerCreated;
     }
 }

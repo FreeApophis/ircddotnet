@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2008-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *  Copyright (c) 2005-2009 Davide Icardi, reinux
  *  
  *  http://www.codeproject.com/KB/recipes/wildcardtoregex.aspx
@@ -13,7 +13,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace IrcD.Utils
+namespace IrcD.Tools
 {
 
     /// 
@@ -67,13 +67,5 @@ namespace IrcD.Utils
                     throw new ArgumentOutOfRangeException("matchType");
             }
         }
-    }
-
-    public enum WildcardMatch
-    {
-        Exact = 0,
-        Anywhere = 1,
-        StartsWith = 2,
-        EndsWith = 3
     }
 }

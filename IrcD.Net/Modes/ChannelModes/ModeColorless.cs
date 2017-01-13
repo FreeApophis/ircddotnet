@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,8 @@ using System.Collections.Generic;
 using System.Linq;
 using IrcD.Channel;
 using IrcD.Commands;
-using IrcD.Utils;
+using IrcD.Core;
+using IrcD.Tools;
 
 namespace IrcD.Modes.ChannelModes
 {
@@ -42,12 +43,14 @@ namespace IrcD.Modes.ChannelModes
                     channel.IrcDaemon.Replies.SendCannotSendToChannel(user, channel.Name, "Color is not permitted in this channel");
                     return false;
                 }
+
                 if (args[1].Any(c => c == IrcConstants.IrcBold || c == IrcConstants.IrcNormal || c == IrcConstants.IrcUnderline || c == IrcConstants.IrcReverse))
                 {
                     channel.IrcDaemon.Replies.SendCannotSendToChannel(user, channel.Name, "Control codes (bold/underline/reverse) are not permitted in this channel");
                     return false;
                 }
             }
+
             return true;
         }
     }

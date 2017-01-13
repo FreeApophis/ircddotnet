@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using System.Collections.Generic;
+using IrcD.Tools;
 using NUnit.Framework;
-using IrcD.Utils;
 
 namespace IrcD.Test
 {

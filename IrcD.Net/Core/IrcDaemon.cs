@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,17 +26,18 @@ using System.Net.Sockets;
 using System.Text;
 using IrcD.Channel;
 using IrcD.Commands;
+using IrcD.Commands.Arguments;
+using IrcD.Core.Utils;
 using IrcD.Modes;
 using IrcD.Modes.ChannelModes;
 using IrcD.Modes.ChannelRanks;
 using IrcD.Modes.UserModes;
 using IrcD.ServerReplies;
-using IrcD.Utils;
+using IrcD.Tools;
 using Mode = IrcD.Commands.Mode;
 using Version = IrcD.Commands.Version;
-using IrcD.Commands.Arguments;
 
-namespace IrcD
+namespace IrcD.Core
 {
 
     public class IrcDaemon
@@ -75,7 +76,7 @@ namespace IrcD
         private bool _connected;
         private bool _restart;
 
-        private byte[] buffer = new byte[MaxBufferSize];
+        private readonly byte[] _buffer = new byte[MaxBufferSize];
         private EndPoint _ep = new IPEndPoint(0, 0);
         private EndPoint _localEndPoint;
 
@@ -101,7 +102,7 @@ namespace IrcD
             Capabilities = new List<string>();
 
             // Create Optionobject & Set the proper IRC Protocol Version
-            // The protocol version cannot be changed after construction, 
+            // The protocol version cannot be changed after construction,
             // because the construction methods below use this Option
             Options = new ServerOptions(ircMode);
 
@@ -114,7 +115,7 @@ namespace IrcD
             SupportedRanks = new RankList(this);
             SupportedUserModes = new UserModeList(this);
 
-            // The Protocol Objects 
+            // The Protocol Objects
             Commands = new CommandList(this);
             Replies = new ServerReplies.ServerReplies(this);
             ServerCreated = DateTime.Now;
@@ -304,11 +305,11 @@ namespace IrcD
                             {
                                 try
                                 {
-                                    buffer.Initialize();
-                                    int numBytes = s.ReceiveFrom(buffer, ref _ep);
-                                    foreach (string line in Encoding.UTF8.GetString(buffer, 0, numBytes).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                                    _buffer.Initialize();
+                                    int numBytes = s.ReceiveFrom(_buffer, ref _ep);
+                                    foreach (string line in Encoding.UTF8.GetString(_buffer, 0, numBytes).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
                                     {
-                                        Parser(line, s, Sockets[s]);
+                                        Parser(line, Sockets[s]);
                                     }
                                 }
                                 catch (SocketException e)
@@ -369,7 +370,7 @@ namespace IrcD
             GC.Collect();
         }
 
-        private void Parser(string line, Socket sock, UserInfo info)
+        private void Parser(string line, UserInfo info)
         {
 
 #if DEBUG
@@ -396,6 +397,7 @@ namespace IrcD
                 {
                     /* we have a prefix */
                     while (line[++i] != ' ') { }
+
                     prefix = line.Substring(1, i - 1);
                 }
                 else
@@ -413,6 +415,7 @@ namespace IrcD
                 else
                 {
                     while ((i < (line.Length - 1)) && line[++i] != ' ') { }
+
                     if (line.Length - 1 == i) { ++i; }
                     command = line.Substring(commandStart, i - commandStart);
                 }
@@ -435,6 +438,7 @@ namespace IrcD
                         args.Add(line.Substring(i + 1));
                         break;
                     }
+
                     ++i;
                 }
 
@@ -479,6 +483,7 @@ namespace IrcD
         {
             if (nick.Length > Options.MaxNickLength)
                 return false;
+
             if (Options.IrcMode == IrcMode.Modern)
             {
                 if (nick.Any(c => c == ' ' || c == ',' || c == '\x7' || c == '!' || c == '@' || c == '*' || c == '?' || c == '+' || c == '%' || c == '#'))

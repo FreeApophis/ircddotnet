@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,11 +18,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Net;
-using IrcD.Utils;
+using IrcD.Core.Utils;
 
-namespace IrcD
+namespace IrcD.Core
 {
     public class ServerOptions
     {
@@ -31,13 +32,14 @@ namespace IrcD
         {
             IrcMode = ircMode;
             IrcCaseMapping = ircMode == IrcMode.Rfc1459 ? IrcCaseMapping.StrictRfc1459 : IrcCaseMapping.Rfc1459;
+            ConnectionPasses = null;
         }
 
         public List<int> ServerPorts { get; set; } = new List<int> { 6667 };
 
         public string ServerPass { get; set; }
 
-        public List<string> ConnectionPasses { get; set; }
+        public List<string> ConnectionPasses { get; }
 
         public Tuple<IPEndPoint, string> ServerConnection { get; set; }
 

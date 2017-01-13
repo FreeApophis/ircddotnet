@@ -1,6 +1,6 @@
-﻿using IrcD.Utils;
+﻿using IrcD.Tools;
 
-namespace IrcD
+namespace IrcD.Core.Utils
 {
     public enum IrcCaseMapping
     {

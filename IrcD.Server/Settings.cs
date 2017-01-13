@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using IrcD.Utils;
+using IrcD.Core;
+using IrcD.Core.Utils;
+using IrcD.Tools;
 
 namespace IrcD.Server
 {
@@ -112,24 +114,13 @@ namespace IrcD.Server
             if (mode == default(string))
                 return IrcCaseMapping.Ascii;
 
-#if NET4 
             IrcCaseMapping result;
             if (Enum.TryParse(mode, true, out result))
             {
                 return result;
             }
-            return IrcCaseMapping.Ascii;
-#else
-            try
-            {
-                return (IrcCaseMapping)Enum.Parse(typeof(IrcCaseMapping), mode, true);
-            }
-            catch (ArgumentException)
-            {
-                return IrcCaseMapping.Ascii;
-            }
-#endif
 
+            return IrcCaseMapping.Ascii;
 
         }
 
@@ -200,7 +191,6 @@ namespace IrcD.Server
             if (mode == default(string))
                 return IrcMode.Modern;
 
-#if NET4
             IrcMode result;
             if (Enum.TryParse(mode, true, out result))
             {
@@ -208,16 +198,6 @@ namespace IrcD.Server
             }
 
             return IrcMode.Modern;
-#else
-            try
-            {
-                return (IrcMode)Enum.Parse(typeof(IrcMode), mode, true);
-            }
-            catch (ArgumentException)
-            {
-                return IrcMode.Modern;
-            }
-#endif
         }
 
         internal void SetDaemon(IrcDaemon ircDaemon)

@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,20 +21,15 @@
 
 using System;
 
-namespace IrcD.Utils
+namespace IrcD.Tools
 {
     public class EnumDescription : Attribute
     {
-        private readonly string text;
-
-        public string Text
-        {
-            get { return text; }
-        }
+        public string Text { get; }
 
         public EnumDescription(string text)
         {
-            this.text = text;
+            Text = text;
         }
     }
 

@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 using System.Linq;
 using System.Text;
+using IrcD.Core;
 using IrcD.Modes.ChannelRanks;
 
 namespace IrcD.Modes
@@ -42,6 +43,7 @@ namespace IrcD.Modes
             {
                 ranks.Append(rank.Char);
             }
+
             ranks.Append(")");
 
             foreach (var rank in Values.OrderByDescending(rank => rank.Level))
@@ -64,13 +66,7 @@ namespace IrcD.Modes
             }
         }
 
-        public string NickPrefix
-        {
-            get
-            {
-                return NickPrefixRaw != ' ' ? NickPrefixRaw.ToString() : string.Empty;
-            }
-        }
+        public string NickPrefix => NickPrefixRaw != ' ' ? NickPrefixRaw.ToString() : string.Empty;
 
         public ChannelRank CurrentRank
         {

@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,25 +27,25 @@ namespace IrcD.Server
     [RunInstaller(true)]
     public class IrcdServiceInstaller : Installer
     {
-        private readonly ServiceProcessInstaller processInstaller;
-        private readonly ServiceInstaller serviceInstaller;
+        private readonly ServiceProcessInstaller _processInstaller;
+        private readonly ServiceInstaller _serviceInstaller;
 
         public IrcdServiceInstaller()
         {
-            processInstaller = new ServiceProcessInstaller();
-            serviceInstaller = new ServiceInstaller();
+            _processInstaller = new ServiceProcessInstaller();
+            _serviceInstaller = new ServiceInstaller();
 
-            processInstaller.Account = ServiceAccount.LocalSystem;
-            processInstaller.Username = null;
-            processInstaller.Password = null;
+            _processInstaller.Account = ServiceAccount.LocalSystem;
+            _processInstaller.Username = null;
+            _processInstaller.Password = null;
 
             //# Service Information
-            serviceInstaller.DisplayName = ServiceEngine.IrcdServiceName;
-            serviceInstaller.StartType = ServiceStartMode.Automatic;
-            serviceInstaller.ServiceName = ServiceEngine.IrcdServiceName;
+            _serviceInstaller.DisplayName = ServiceEngine.IrcdServiceName;
+            _serviceInstaller.StartType = ServiceStartMode.Automatic;
+            _serviceInstaller.ServiceName = ServiceEngine.IrcdServiceName;
 
-            Installers.Add(processInstaller);
-            Installers.Add(serviceInstaller);
+            Installers.Add(_processInstaller);
+            Installers.Add(_serviceInstaller);
         }
     }
 }

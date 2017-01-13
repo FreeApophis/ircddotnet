@@ -2,7 +2,7 @@
  *  The ircd.net project is an IRC deamon implementation for the .NET Plattform
  *  It should run on both .NET and Mono
  * 
- *  Copyright (c) 2009-2010 Thomas Bruderer <apophis@apophis.ch>
+ *  Copyright (c) 2009-2017 Thomas Bruderer <apophis@apophis.ch>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,53 +34,53 @@ namespace IrcD.Modes
         public delegate UserMode ConstructUserMode();
 
         #region Channel Mode
-        private readonly Dictionary<char, ConstructChannelMode> channelModeFactory = new Dictionary<char, ConstructChannelMode>();
+        private readonly Dictionary<char, ConstructChannelMode> _channelModeFactory = new Dictionary<char, ConstructChannelMode>();
 
         public T AddChannelMode<T>() where T : ChannelMode, new()
         {
             var mode = GetConstructor<T>();
-            channelModeFactory.Add(mode.Char, GetConstructor<T>);
+            _channelModeFactory.Add(mode.Char, GetConstructor<T>);
             return mode;
         }
 
         public ChannelMode GetChannelMode(char c)
         {
             ConstructChannelMode channelMode;
-            return channelModeFactory.TryGetValue(c, out channelMode) ? channelMode.Invoke() : null;
+            return _channelModeFactory.TryGetValue(c, out channelMode) ? channelMode.Invoke() : null;
         }
         #endregion
 
         #region Channel Rank
-        private readonly Dictionary<char, ConstructChannelRank> channelRankFactory = new Dictionary<char, ConstructChannelRank>();
+        private readonly Dictionary<char, ConstructChannelRank> _channelRankFactory = new Dictionary<char, ConstructChannelRank>();
 
         public T AddChannelRank<T>() where T : ChannelRank, new()
         {
             var mode = GetConstructor<T>();
-            channelRankFactory.Add(mode.Char, GetConstructor<T>);
+            _channelRankFactory.Add(mode.Char, GetConstructor<T>);
             return mode;
         }
 
         public ChannelRank GetChannelRank(char c)
         {
             ConstructChannelRank channelRank;
-            return channelRankFactory.TryGetValue(c, out channelRank) ? channelRank.Invoke() : null;
+            return _channelRankFactory.TryGetValue(c, out channelRank) ? channelRank.Invoke() : null;
         }
         #endregion
 
         #region User Mode
-        private readonly Dictionary<char, ConstructUserMode> userModeFactory = new Dictionary<char, ConstructUserMode>();
+        private readonly Dictionary<char, ConstructUserMode> _userModeFactory = new Dictionary<char, ConstructUserMode>();
 
         public T AddUserMode<T>() where T : UserMode, new()
         {
             var mode = GetConstructor<T>();
-            userModeFactory.Add(mode.Char, GetConstructor<T>);
+            _userModeFactory.Add(mode.Char, GetConstructor<T>);
             return mode;
         }
 
         public UserMode GetUserMode(char c)
         {
             ConstructUserMode userMode;
-            return userModeFactory.TryGetValue(c, out userMode) ? userMode.Invoke() : null;
+            return _userModeFactory.TryGetValue(c, out userMode) ? userMode.Invoke() : null;
         }
         #endregion
     }
