@@ -158,6 +158,7 @@ namespace IrcD.Core
             Commands.Add(new Quit(this));
             Commands.Add(new Rehash(this));
             Commands.Add(new Restart(this));
+            Commands.Add(new Server(this));
             Commands.Add(new ServerQuit(this));
             Commands.Add(new Service(this));
             Commands.Add(new Stats(this));
@@ -510,5 +511,16 @@ namespace IrcD.Core
         {
             return SupportedChannelTypes.Any(t => t.Value.Prefix == channel[0]) && (!channel.Any(c => c == ' ' || c == ',' || c == '\x7' || c == ':'));
         }
+
+        public void ConnectFromServer(UserInfo info)
+        {
+            //
+        }
+
+        public void ConnectToServer()
+        {
+            //
+        }
+
     }
 }

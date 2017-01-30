@@ -51,7 +51,10 @@ namespace IrcD.Commands
             if (IrcDaemon.Options.ConnectionPasses.Any(p => p == args[0]))
             {
                 // This is an allowed Server connection
+                IrcDaemon.ConnectFromServer(info);
+                return;
             }
+
             IrcDaemon.Replies.SendPasswordMismatch(info);
         }
 
