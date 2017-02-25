@@ -7,7 +7,7 @@
  *  
  *  http://www.codeproject.com/KB/recipes/wildcardtoregex.aspx
  *
- *  No explicit license, and GPL 3 in this Project
+ *  No explicit license
  */
 
 using System;
