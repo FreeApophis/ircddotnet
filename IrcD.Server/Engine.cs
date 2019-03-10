@@ -19,10 +19,6 @@
  *   this software without specific prior written permission.
  */
 
-using System;
-using System.Configuration.Install;
-using System.Reflection;
-using System.ServiceProcess;
 using System.Threading;
 using IrcD.Core;
 using IrcD.Core.Utils;
@@ -35,60 +31,10 @@ namespace IrcD.Server
 
         public static void Main(string[] args)
         {
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.MacOSX:
-                    Start();
-                    break;
-                case PlatformID.Unix:
-                    Start();
-                    break;
-                case PlatformID.Win32NT:
-                    if (Environment.UserInteractive)
-                    {
-                        var parameter = string.Concat(args);
-                        switch (parameter)
-                        {
-                            case "--install":
-                                ManagedInstallerClass.InstallHelper(new[] { Assembly.GetExecutingAssembly().Location });
-                                return;
-                            case "--uninstall":
-                                ManagedInstallerClass.InstallHelper(new[] { "/u", Assembly.GetExecutingAssembly().Location });
-                                return;
-                        }
-                        /* blocking */
-                        Start();
-                    }
-
-                    try
-                    {
-                        var servicesToRun = new ServiceBase[] { new ServiceEngine() };
-                        ServiceBase.Run(servicesToRun);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Exception: {0} \n\nStack: {1}", ex.Message, ex.StackTrace);
-                    }
-                    break;
-                case PlatformID.Win32S:
-                    Console.WriteLine("16bit OS not supported... (STOP)");
-                    break;
-                case PlatformID.Win32Windows:
-                    Start();
-                    break;
-                case PlatformID.WinCE:
-                    Start();
-                    break;
-                case PlatformID.Xbox:
-                    Start();
-                    break;
-                default:
-                    Console.WriteLine("What kind of Platform are you? (STOP)");
-                    break;
-            }
+            Run();
         }
 
-        public static void Start()
+        public static void Run()
         {
             var settings = new Settings();
             var ircDaemon = new IrcDaemon(settings.GetIrcMode());

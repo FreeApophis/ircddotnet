@@ -19,7 +19,6 @@
  *   this software without specific prior written permission.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,15 +27,6 @@ namespace IrcD.Tools
 {
     public static class Enumerable
     {
-        public static IEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> func)
-        {
-            var ie1 = first.GetEnumerator();
-            var ie2 = second.GetEnumerator();
-
-            while (ie1.MoveNext() && ie2.MoveNext())
-                yield return func(ie1.Current, ie2.Current);
-        }
-
         public static string Concatenate<T>(this IEnumerable<T> strings, string separator)
         {
             var stringBuilder = new StringBuilder();

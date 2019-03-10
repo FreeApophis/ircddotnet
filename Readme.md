@@ -3,7 +3,8 @@ IrcD.Net
 
 Fully Functional Object Oriented Implementation of IrcD Server.
 
-
+[![Build Status](https://travis-ci.org/FreeApophis/ircddotnet.svg?branch=master)](https://travis-ci.org/FreeApophis/ircddotnet)
+[![NuGet package](https://buildstats.info/nuget/IrcD.Net)](https://www.nuget.org/packages/IrcD.Net)
 
 Functionality
 -------------
