@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Fully Functional Object Oriented Implementation of an IrcD Server</Description>
+	<PackageLicenseExpression>BSD-3-Clause-Clear</PackageLicenseExpression>
     <RepositoryType>IRC Server Testing</RepositoryType>
     <Authors>Thomas Bruderer</Authors>
     <Company>apophis.ch</Company>
