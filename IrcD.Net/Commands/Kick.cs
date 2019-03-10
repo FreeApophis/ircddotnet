@@ -20,12 +20,12 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 using IrcD.Channel;
 using IrcD.Commands.Arguments;
 using IrcD.Core;
 using IrcD.Core.Utils;
 using IrcD.Modes.ChannelRanks;
-using IrcD.Tools;
 
 namespace IrcD.Commands
 {

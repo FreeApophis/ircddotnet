@@ -1,32 +1,32 @@
-﻿using NUnit.Framework;
+﻿
+using Xunit;
 
 namespace IrcD.Test
 {
-    [TestFixture]
     public class P10Numeric
     {
-        [Test]
+        [Fact]
         public void ServerNumeric()
         {
             var serverNumeric = new Core.Utils.P10Numeric(0);
-            Assert.AreEqual("AA", serverNumeric.ToString());
-            Assert.IsTrue(serverNumeric.IsServer);
+            Assert.Equal("AA", serverNumeric.ToString());
+            Assert.True(serverNumeric.IsServer);
 
             serverNumeric = new Core.Utils.P10Numeric(4095);
-            Assert.AreEqual("]]", serverNumeric.ToString());
-            Assert.IsTrue(serverNumeric.IsServer);
+            Assert.Equal("]]", serverNumeric.ToString());
+            Assert.True(serverNumeric.IsServer);
         }
 
-        [Test]
+        [Fact]
         public void ClientNumeric()
         {
             var clientNumeric = new Core.Utils.P10Numeric(2, 63);
-            Assert.AreEqual("ACAA]", clientNumeric.ToString());
-            Assert.IsFalse(clientNumeric.IsServer);
+            Assert.Equal("ACAA]", clientNumeric.ToString());
+            Assert.False(clientNumeric.IsServer);
 
             clientNumeric = new Core.Utils.P10Numeric(4095, 262143);
-            Assert.AreEqual("]]]]]", clientNumeric.ToString());
-            Assert.IsFalse(clientNumeric.IsServer);
+            Assert.Equal("]]]]]", clientNumeric.ToString());
+            Assert.False(clientNumeric.IsServer);
         }
     }
 }
