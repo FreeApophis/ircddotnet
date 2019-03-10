@@ -5,12 +5,13 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Fully Functional Object Oriented Implementation of an IrcD Server</Description>
 	<PackageLicenseExpression>BSD-3-Clause-Clear</PackageLicenseExpression>
-    <RepositoryType>IRC Server Testing</RepositoryType>
+    <RepositoryType></RepositoryType>
     <Authors>Thomas Bruderer</Authors>
     <Company>apophis.ch</Company>
     <Version>1.0.0</Version>
     <PackageProjectUrl>https://github.com/FreeApophis/ircddotnet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/FreeApophis/ircddotnet</RepositoryUrl>
+    <PackageTags>IRC Server Testing</PackageTags>
   </PropertyGroup>
 
 </Project>
