@@ -108,8 +108,7 @@ namespace IrcD.Modes
                     var list = cmode as IParameterListA;
                     if (list != null)
                     {
-                        ChannelMode channelMode;
-                        if (TryGetValue(cmode.Char, out channelMode))
+                        if (TryGetValue(cmode.Char, out ChannelMode channelMode))
                         {
                             ((IParameterListA)channelMode).SendList(info, chan);
                         }
@@ -215,9 +214,8 @@ namespace IrcD.Modes
                     var parameter = parameterTail.FirstOrDefault();
                     if (parameter != null)
                     {
-                        UserPerChannelInfo upci;
                         parameterTail = parameterTail.Skip(1);
-                        if (chan.UserPerChannelInfos.TryGetValue(parameter, out upci))
+                        if (chan.UserPerChannelInfos.TryGetValue(parameter, out UserPerChannelInfo upci))
                         {
                             if (plus.Value)
                             {

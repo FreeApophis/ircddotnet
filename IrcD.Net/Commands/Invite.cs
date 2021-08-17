@@ -37,15 +37,13 @@ namespace IrcD.Commands
         [CheckParamCount(2)]
         protected override void PrivateHandle(UserInfo info, List<string> args)
         {
-            UserInfo invited;
-            if (!IrcDaemon.Nicks.TryGetValue(args[0], out invited))
+            if (!IrcDaemon.Nicks.TryGetValue(args[0], out UserInfo invited))
             {
                 IrcDaemon.Replies.SendNoSuchNick(info, args[0]);
             }
 
             var channel = args[1];
-            ChannelInfo chan;
-            if (IrcDaemon.Channels.TryGetValue(channel, out chan))
+            if (IrcDaemon.Channels.TryGetValue(channel, out ChannelInfo chan))
             {
                 if (chan.UserPerChannelInfos.ContainsKey(invited.Nick))
                 {

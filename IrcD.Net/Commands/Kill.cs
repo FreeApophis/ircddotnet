@@ -43,8 +43,7 @@ namespace IrcD.Commands
                 return;
             }
 
-            UserInfo killUser;
-            if (!IrcDaemon.Nicks.TryGetValue(args[0], out killUser))
+            if (!IrcDaemon.Nicks.TryGetValue(args[0], out UserInfo killUser))
             {
                 IrcDaemon.Replies.SendNoSuchNick(info, args[0]);
             }

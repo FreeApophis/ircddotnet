@@ -37,8 +37,7 @@ namespace IrcD.Modes.ChannelModes
         {
             if (command is PrivateMessage || command is Notice)
             {
-                UserPerChannelInfo upci;
-                if (!channel.UserPerChannelInfos.TryGetValue(user.Nick, out upci) || upci.Modes.Level < 10)
+                if (!channel.UserPerChannelInfos.TryGetValue(user.Nick, out UserPerChannelInfo upci) || upci.Modes.Level < 10)
                 {
                     user.IrcDaemon.Replies.SendCannotSendToChannel(user, channel.Name);
                     return false;

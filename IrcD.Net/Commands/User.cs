@@ -49,8 +49,7 @@ namespace IrcD.Commands
                 return;
             }
 
-            int flags;
-            int.TryParse(args[1], out flags);
+            int.TryParse(args[1], out int flags);
 
             if ((flags & 8) > 0)
             {

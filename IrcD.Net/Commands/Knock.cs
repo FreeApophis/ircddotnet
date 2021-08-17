@@ -38,9 +38,8 @@ namespace IrcD.Commands
         [CheckParamCount(1)]
         protected override void PrivateHandle(UserInfo info, List<string> args)
         {
-            ChannelInfo chan;
 
-            if (IrcDaemon.Channels.TryGetValue(args[0], out chan))
+            if (IrcDaemon.Channels.TryGetValue(args[0], out ChannelInfo chan))
             {
                 if (!chan.Modes.HandleEvent(this, chan, info, args))
                 {

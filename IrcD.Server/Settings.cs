@@ -91,8 +91,7 @@ namespace IrcD.Server
             {
                 if (iface.Element("port") != null)
                 {
-                    int port;
-                    if (int.TryParse(iface.Element("port")?.Value, out port))
+                    if (int.TryParse(iface.Element("port")?.Value, out int port))
                     {
                         result.Add(port);
                     }
@@ -114,8 +113,7 @@ namespace IrcD.Server
             if (mode == default(string))
                 return IrcCaseMapping.Ascii;
 
-            IrcCaseMapping result;
-            if (Enum.TryParse(mode, true, out result))
+            if (Enum.TryParse(mode, true, out IrcCaseMapping result))
             {
                 return result;
             }
@@ -130,8 +128,7 @@ namespace IrcD.Server
 
             if (match.Any())
             {
-                bool result;
-                if (bool.TryParse(match.First().Value, out result))
+                if (bool.TryParse(match.First().Value, out bool result))
                 {
                     return result;
                 }
@@ -146,8 +143,7 @@ namespace IrcD.Server
 
             if (match.Any())
             {
-                int result;
-                if (int.TryParse(match.First().Value, out result))
+                if (int.TryParse(match.First().Value, out int result))
                 {
                     return result;
                 }
@@ -191,8 +187,7 @@ namespace IrcD.Server
             if (mode == default(string))
                 return IrcMode.Modern;
 
-            IrcMode result;
-            if (Enum.TryParse(mode, true, out result))
+            if (Enum.TryParse(mode, true, out IrcMode result))
             {
                 return result;
             }

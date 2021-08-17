@@ -73,8 +73,7 @@ namespace IrcD.Commands
             }
             else if (IrcDaemon.ValidNick(args[0]))
             {
-                UserInfo user;
-                if (IrcDaemon.Nicks.TryGetValue(args[0], out user))
+                if (IrcDaemon.Nicks.TryGetValue(args[0], out UserInfo user))
                 {
                     if (user.Modes.Exist<ModeAway>())
                     {

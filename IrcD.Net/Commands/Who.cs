@@ -49,14 +49,13 @@ namespace IrcD.Commands
                 return;
             }
 
-            ChannelInfo channel;
             var mask = string.Empty;
 
             if (args.Count < 1 || args[0] == "0")
             {
                 whoList = IrcDaemon.Nicks.SelectMany(n => n.Value.UserPerChannelInfos);
             }
-            else if (args.Count > 0 && IrcDaemon.Channels.TryGetValue(args[0], out channel))
+            else if (args.Count > 0 && IrcDaemon.Channels.TryGetValue(args[0], out ChannelInfo channel))
             {
                 whoList = channel.UserPerChannelInfos.Values;
                 if (!channel.UserPerChannelInfos.ContainsKey(info.Nick))

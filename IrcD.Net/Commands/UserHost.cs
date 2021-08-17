@@ -40,8 +40,7 @@ namespace IrcD.Commands
             var users = new List<UserInfo>();
             foreach (var arg in args)
             {
-                UserInfo user;
-                if (IrcDaemon.Nicks.TryGetValue(arg, out user))
+                if (IrcDaemon.Nicks.TryGetValue(arg, out UserInfo user))
                 {
                     users.Add(user);
                 }

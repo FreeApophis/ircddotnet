@@ -48,8 +48,7 @@ namespace IrcD.Modes.ChannelModes
 
             if (command is Invite)
             {
-                UserPerChannelInfo upci;
-                if (channel.UserPerChannelInfos.TryGetValue(user.Nick, out upci))
+                if (channel.UserPerChannelInfos.TryGetValue(user.Nick, out UserPerChannelInfo upci))
                 {
                     if (upci.Modes.Level < 30)
                     {

@@ -44,8 +44,7 @@ namespace IrcD.Commands
                 return;
             }
 
-            int port;
-            if (int.TryParse(args[1], out port))
+            if (int.TryParse(args[1], out int port))
             {
                 IrcDaemon.Connect(args[0], port);
             }

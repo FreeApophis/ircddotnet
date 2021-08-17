@@ -70,8 +70,7 @@ namespace IrcD.Commands
         /// <returns></returns>
         public bool ValidOperLine(string user, string pass)
         {
-            string realpass;
-            if (IrcDaemon.Options.OLine.TryGetValue(user, out realpass))
+            if (IrcDaemon.Options.OLine.TryGetValue(user, out string realpass))
             {
                 if (pass == realpass)
                     return true;

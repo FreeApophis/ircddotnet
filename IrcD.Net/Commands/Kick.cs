@@ -52,9 +52,8 @@ namespace IrcD.Commands
                 }
 
                 var chan = IrcDaemon.Channels[subarg.Channel];
-                UserPerChannelInfo upci;
 
-                if (chan.UserPerChannelInfos.TryGetValue(info.Nick, out upci))
+                if (chan.UserPerChannelInfos.TryGetValue(info.Nick, out UserPerChannelInfo upci))
                 {
                     if (upci.Modes.Level < ModeHalfOp.HalfOpLevel)
                     {
@@ -68,8 +67,7 @@ namespace IrcD.Commands
                     continue;
                 }
 
-                UserPerChannelInfo kickUser;
-                if (chan.UserPerChannelInfos.TryGetValue(subarg.Nick, out kickUser))
+                if (chan.UserPerChannelInfos.TryGetValue(subarg.Nick, out UserPerChannelInfo kickUser))
                 {
                     Send(new KickArgument(info, chan, chan, kickUser.UserInfo, message));
                     chan.RemoveUser(kickUser.UserInfo);

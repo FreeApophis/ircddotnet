@@ -37,8 +37,7 @@ namespace IrcD.Modes.ChannelModes
         {
             if (command is Topic)
             {
-                UserPerChannelInfo upci;
-                if (!channel.UserPerChannelInfos.TryGetValue(user.Nick, out upci))
+                if (!channel.UserPerChannelInfos.TryGetValue(user.Nick, out UserPerChannelInfo upci))
                 {
                     user.IrcDaemon.Replies.SendNotOnChannel(user, channel.Name);
                     return false;

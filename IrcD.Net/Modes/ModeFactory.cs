@@ -46,8 +46,7 @@ namespace IrcD.Modes
 
         public ChannelMode GetChannelMode(char c)
         {
-            ConstructChannelMode channelMode;
-            return _channelModeFactory.TryGetValue(c, out channelMode) ? channelMode.Invoke() : null;
+            return _channelModeFactory.TryGetValue(c, out ConstructChannelMode channelMode) ? channelMode.Invoke() : null;
         }
         #endregion
 
@@ -63,8 +62,7 @@ namespace IrcD.Modes
 
         public ChannelRank GetChannelRank(char c)
         {
-            ConstructChannelRank channelRank;
-            return _channelRankFactory.TryGetValue(c, out channelRank) ? channelRank.Invoke() : null;
+            return _channelRankFactory.TryGetValue(c, out ConstructChannelRank channelRank) ? channelRank.Invoke() : null;
         }
         #endregion
 
@@ -80,8 +78,7 @@ namespace IrcD.Modes
 
         public UserMode GetUserMode(char c)
         {
-            ConstructUserMode userMode;
-            return _userModeFactory.TryGetValue(c, out userMode) ? userMode.Invoke() : null;
+            return _userModeFactory.TryGetValue(c, out ConstructUserMode userMode) ? userMode.Invoke() : null;
         }
         #endregion
     }
