@@ -87,9 +87,7 @@ namespace IrcD.Commands
 
         protected T GetSaveArgument<T>(CommandArgument commandArgument) where T : CommandArgument
         {
-            var argument = commandArgument as T;
-
-            if (argument == null)
+            if (commandArgument is not T argument)
             {
                 throw new InvalidCastException("this shall not happen");
             }
