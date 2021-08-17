@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
     
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Fully Functional Object Oriented Implementation of an IrcD Server</Description>

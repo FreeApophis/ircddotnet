@@ -53,19 +53,14 @@ namespace IrcD.Tools
             escapedPattern = escapedPattern.Replace("\\*", ".*");
             escapedPattern = escapedPattern.Replace("\\?", ".");
 
-            switch (matchType)
+            return matchType switch
             {
-                case WildcardMatch.Exact:
-                    return "^" + escapedPattern + "$";
-                case WildcardMatch.Anywhere:
-                    return escapedPattern;
-                case WildcardMatch.StartsWith:
-                    return "^" + escapedPattern;
-                case WildcardMatch.EndsWith:
-                    return escapedPattern + "$";
-                default:
-                    throw new ArgumentOutOfRangeException("matchType");
-            }
+                WildcardMatch.Exact => "^" + escapedPattern + "$",
+                WildcardMatch.Anywhere => escapedPattern,
+                WildcardMatch.StartsWith => "^" + escapedPattern,
+                WildcardMatch.EndsWith => escapedPattern + "$",
+                _ => throw new ArgumentOutOfRangeException("matchType"),
+            };
         }
     }
 }

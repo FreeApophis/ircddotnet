@@ -61,15 +61,12 @@ namespace IrcD.Core.Utils
 
         private int Power(int @base, int power)
         {
-            switch (power)
+            return power switch
             {
-                case 0:
-                    return 1;
-                case 1:
-                    return @base;
-                default:
-                    return @base * Power(@base, power - 1);
-            }
+                0 => 1,
+                1 => @base,
+                _ => @base * Power(@base, power - 1),
+            };
         }
 
         public override string ToString()
