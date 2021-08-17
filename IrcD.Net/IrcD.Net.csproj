@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Fully Functional Object Oriented Implementation of an IrcD Server</Description>
 	<PackageLicenseExpression>BSD-3-Clause-Clear</PackageLicenseExpression>
@@ -13,5 +15,9 @@
     <RepositoryUrl>https://github.com/FreeApophis/ircddotnet</RepositoryUrl>
     <PackageTags>IRC Server Testing</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Funcky" Version="2.5.0" />
+  </ItemGroup>
 
 </Project>

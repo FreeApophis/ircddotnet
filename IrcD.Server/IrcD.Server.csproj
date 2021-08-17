@@ -3,7 +3,13 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Funcky" Version="2.5.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\IrcD.Net\IrcD.Net.csproj" />
