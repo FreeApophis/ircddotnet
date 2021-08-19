@@ -19,8 +19,10 @@
  *   this software without specific prior written permission.
  */
 
+using Pastel;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Text;
 
 namespace IrcD.Tools
@@ -32,7 +34,7 @@ namespace IrcD.Tools
             var stackTrace = new StackTrace();
             var callerFrame = stackTrace.GetFrame(1);
 
-            Console.WriteLine("{0} in {2}: {1}", level, message, location ?? FormatLocation(callerFrame));
+            Console.WriteLine("{0} in {2}: {1}", level, message.Pastel("ffffcc"), location ?? FormatLocation(callerFrame));
         }
 
         public static string FormatLocation(StackFrame frame)
