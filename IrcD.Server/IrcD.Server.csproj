@@ -15,4 +15,10 @@
     <ProjectReference Include="..\IrcD.Net\IrcD.Net.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="config.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
